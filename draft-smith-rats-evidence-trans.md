@@ -131,7 +131,7 @@ In order to conduct Evidence appraisal, a Verifier requires fresh Evidence from 
 Before a Verifier can appraise Evidence it may require transformation to an internal representation.
 This document specifies Evidence transformation methods for DICE and SPDM formats to the CoRIM internal representation.
 
-## Terminology and Requirements Language
+## Terminology
 
 This document uses terms and concepts defined by the RATS architecture.
 For a complete glossary see {{Section 4 of -rats-arch}}.
