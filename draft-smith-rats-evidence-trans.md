@@ -157,6 +157,21 @@ By using an internal representation, the Verifier processes Evidence inputs such
 This specification describes how Evidence in DICE {{-dice-attest}}, SPDM {{-spdm}}, and concise evidence {{-ce}} formats are transformed into the CoRIM {{-corim}} internal representation.
 If other internal representations exist, a similar specification may be required that transforms Evidence to some other internal representation.
 
+# DICE / SPDM input data
+
+An SPDM Requester sends commands to the Attestation Environment which is part of the SPDM Responder.
+The responses to those commands include a certificate chain containing DICE measurements and SPDM MEASUREMENTS RESPONSE, which contains SPDM measurements.
+
+# ACS Entries generated from DICE / SPDM input data
+
+DICE/SPDM evidence is transformed into one or more ACS entries, each of which is created from upto four separate components:
+- Environment class provides a unique name, which is the same for all instances of the Target Environment
+- Environment instance provides an identifier which differes for each instance of the TE
+- Fields in measurement map provide measurements of parts of the TE named in environment
+- Authorized-by indicates the root key used to authorize the key chain leading to SPDM signatures
+
+The sections below describe how these fields are filled in for different types of measurements
+
 # Transforming SPDM Evidence {#sec-spdm-trans}
 
 This section defines how Evidence from SPDM {{-spdm}} is transformed into a format where it can be added to an appraisal claims set.
