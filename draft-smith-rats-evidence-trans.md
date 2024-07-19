@@ -228,9 +228,35 @@ The OIDs which identify the certificate containing the hardware identity key are
 - joint-iso-itu-t(2) international-organizations(23) tcg(133) platformClass(5) tcg-dice(4) tcg-dice-kp(100) identityLoc(6)
 - iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) dmtf(412) spdm(274) hardwareIdentity(2)
 
+The hardware entity key SHOULD be represented using a format which contains a single key, for example `tagged-cose-key-type`.
+
 # Populating the authorized-by field
 
+A verifier transforming evidence from DICE/SPDM to CoMID SHOULD include `authorized-by` field in each `measurement-values-map` indicating the entity which is responsible for ensuring that the evidence is a valid measurement of the current state of the Target Environment.
+This is often the entity which manufactured or configured the Attestation Environment which measured the Target Environment.
+
+For measurements translated from DICE/SPDM the authorized-by field should contain the key at the root of the certificate chain returned in the SPDM CERTIFICATES response message.
+The value of the `authorized-by` entry SHOULD use a format which contains a single key, for example `tagged-cose-key-type`.
+
 ## Organisational unit changes within authorized-by
+
+Some DICE root keys are owned by a registry, which authorise lower level keys of different organisations.
+If a registry has authorized both organisations A and B to authorize certificates which can be used to authorize SPDM responses then there is a possibility that organisation A might generate fake responses purporting to authorise organisation B's attesters.
+
+To make this detectable, the registry may indicate when it signs a certificate authorizing a key controlled by a different organization.
+This indication is copied to an ACS entry, and can be matched against a CoMID file.
+
+If the subject key of a certificate is not controlled by the same organisation as the issuer key then the issuer SHOULD include an OU field in the subjectName field. The OU value indicates the entry which controls the subject key in the certificate.
+
+For example, the subject key might have the value `CNAME="Example Corporation" OU=1234`.
+
+A verifier processing a certificate containing an OU field in its subjectName field should generate an ACS entry with these values:
+- `environment-map / class / class-id` SHALL be set to the value <OID for OU>
+- `environment-map / class / vendor` SHALL be set to the string representation of the issuerName
+- `measurement-map / mkey / raw-value` SHALL be set to the numeric value of the OU field
+
+The verifier can include a reference value or the condition code within a conditional-environment triple to ensure that the key chain anchored on the registry was authorizing the correct organisation.
+
 # Security and Privacy Considerations {#sec-sec}
 
 There are no security and privacy considerations.
