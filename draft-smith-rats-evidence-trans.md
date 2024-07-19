@@ -210,6 +210,27 @@ If the `measurement-values-map` fields in Evidence triples have conflicting valu
 
 # Transforming Concise Evidence {#sec-ce-trans}
 
+# Populating the environment instance field
+
+A verifier transforming evidence from DICE/SPDM to CoMID may choose to add an `instance` key to the `environment-map` of the ACS entries it is creating.
+If it does this then a verifier can distinguish between evidence from two Target Environments of the same type, for example two physically identical network cards.
+Physically identical TEs may be running different versions of firmware, so each must be verified separately.
+
+The verifier SHOULD add an `instance` key to the `environment-map` of each ACS entry created from the DICE/SPDM measurement information.
+
+If the verifier adds such an `instance` key then the corresponding value SHOULD be set to the key which represents the hardware identity, that is the key which does not change when the measurements of the device change.
+The hardware identity key is the subject key of a certificate containing one of the hardware identity extensions below.
+If multiple certificates in the chain contain one of the hardware identity extensions then the verifier SHOULD use the subject key from the certificate closest to the root key.
+
+The OIDs which identify the certificate containing the hardware identity key are:
+
+- joint-iso-itu-t(2) international-organizations(23) tcg(133) platformClass(5) tcg-dice(4) tcg-dice-kp(100) identityInit(6)
+- joint-iso-itu-t(2) international-organizations(23) tcg(133) platformClass(5) tcg-dice(4) tcg-dice-kp(100) identityLoc(6)
+- iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) dmtf(412) spdm(274) hardwareIdentity(2)
+
+# Populating the authorized-by field
+
+## Organisational unit changes within authorized-by
 # Security and Privacy Considerations {#sec-sec}
 
 There are no security and privacy considerations.
