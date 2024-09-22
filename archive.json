@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-19T01:25:13.414813+00:00",
+  "timestamp": "2024-09-22T01:39:13.823353+00:00",
   "repo": "ietf-rats-wg/draft-smith-rats-evidence-trans",
   "labels": [
     {
@@ -49,6 +49,39 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOMOnZXM6XWALy",
+      "title": "Truth tables should not use abbreviations",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/issues/1",
+      "state": "CLOSED",
+      "author": "nedmsmith",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The truth tables in section 8.2.1 Internal Representation of Conceptual Messages uses abbreviations for the various attributes of the ECT structure. These should be replaced with more readable values used in the ECT CDDL.",
+      "createdAt": "2024-09-20T15:43:40Z",
+      "updatedAt": "2024-09-20T15:49:42Z",
+      "closedAt": "2024-09-20T15:49:42Z",
+      "comments": []
+    },
+    {
+      "number": 2,
+      "id": "I_kwDOMOnZXM6XWB2O",
+      "title": "Use of parens surrounding cross-references",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/issues/2",
+      "state": "OPEN",
+      "author": "nedmsmith",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I believe it is a document convention to surround cross-references with parens: e.g.: \r\n```\r\n({{my-cross-reference}})\r\n```\r\n\r\nA cleanup task is needed that fixes all the instances that don't conform to the convention.",
+      "createdAt": "2024-09-20T15:46:54Z",
+      "updatedAt": "2024-09-20T15:46:54Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
   "pulls": []
 }
