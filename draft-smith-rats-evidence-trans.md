@@ -23,8 +23,8 @@ pi:
 author:
 - ins: A. Draper
   name: Andrew Draper
-  org: Intel
-  email: andrew.draper@intel.com
+  org: Altera
+  email: andrew.draper@altera.com
 - ins: N. Smith
   name: Ned Smith
   org: Intel
