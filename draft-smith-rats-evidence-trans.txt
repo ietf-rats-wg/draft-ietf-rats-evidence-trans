@@ -3,9 +3,10 @@
 
 
 Remote ATtestation ProcedureS                                  A. Draper
-Internet-Draft                                                  N. Smith
-Intended status: Standards Track                                   Intel
-Expires: 29 July 2025                                    25 January 2025
+Internet-Draft                                                    Altera
+Intended status: Standards Track                                N. Smith
+Expires: 29 July 2025                                              Intel
+                                                         25 January 2025
 
 
                         Evidence Transformations
@@ -520,8 +521,8 @@ Acknowledgments
 Authors' Addresses
 
    Andrew Draper
-   Intel
-   Email: andrew.draper@intel.com
+   Altera
+   Email: andrew.draper@altera.com
 
 
    Ned Smith
