@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-23T01:25:30.031593+00:00",
+  "timestamp": "2025-01-26T01:35:01.691195+00:00",
   "repo": "ietf-rats-wg/draft-smith-rats-evidence-trans",
   "labels": [
     {
@@ -83,5 +83,90 @@
       "comments": []
     }
   ],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 3,
+      "id": "PR_kwDOMOnZXM6I9qc6",
+      "title": "Ned additions jan 24",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/pull/3",
+      "state": "MERGED",
+      "author": "nedmsmith",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "nedmsmith"
+      ],
+      "labels": [],
+      "body": "Fleshed out sections for DICE TcbInfo evidence transformation and concise evidence transformation for the evidence-triples.",
+      "createdAt": "2025-01-25T00:44:01Z",
+      "updatedAt": "2025-01-25T18:21:29Z",
+      "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "704056e0137c9a8488d35229cfafca94595b0bd0",
+      "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "headRefName": "ned-additions-jan-24",
+      "headRefOid": "93ce1db60c1a0b03fcb2540defd31cb65a15c985",
+      "closedAt": "2025-01-25T00:44:58Z",
+      "mergedAt": "2025-01-25T00:44:58Z",
+      "mergedBy": "nedmsmith",
+      "mergeCommit": {
+        "oid": "a878e56a41a221651b4016f74e073cc8d4d561f4"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM6Za9b9",
+          "commit": {
+            "abbreviatedOid": "93ce1db"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-25T09:42:39Z",
+          "updatedAt": "2025-01-25T09:42:39Z",
+          "comments": [
+            {
+              "originalPosition": 58,
+              "body": "@nedmsmith it is reconciliation not Reconsiliation",
+              "createdAt": "2025-01-25T09:42:39Z",
+              "updatedAt": "2025-01-25T09:42:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6Za9dE",
+          "commit": {
+            "abbreviatedOid": "93ce1db"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "See minor edits",
+          "createdAt": "2025-01-25T09:43:11Z",
+          "updatedAt": "2025-01-25T09:43:11Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6ZbR55",
+          "commit": {
+            "abbreviatedOid": "93ce1db"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-25T18:21:29Z",
+          "updatedAt": "2025-01-25T18:21:29Z",
+          "comments": [
+            {
+              "originalPosition": 58,
+              "body": "I couldn't find the s spelling in any dictionary. Is it a British spelling? Whatever the spelling it should match what is in the CoRIM draft ",
+              "createdAt": "2025-01-25T18:21:29Z",
+              "updatedAt": "2025-01-25T18:21:29Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
