@@ -5,8 +5,8 @@
 Remote ATtestation ProcedureS                                  A. Draper
 Internet-Draft                                                    Altera
 Intended status: Standards Track                                N. Smith
-Expires: 29 July 2025                                              Intel
-                                                         25 January 2025
+Expires: 4 August 2025                                             Intel
+                                                         31 January 2025
 
 
                         Evidence Transformations
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 July 2025.
+   This Internet-Draft will expire on 4 August 2025.
 
 Copyright Notice
 
