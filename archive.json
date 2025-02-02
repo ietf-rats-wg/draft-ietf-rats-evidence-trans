@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-30T01:24:17.698412+00:00",
+  "timestamp": "2025-02-02T01:36:32.647502+00:00",
   "repo": "ietf-rats-wg/draft-smith-rats-evidence-trans",
   "labels": [
     {
@@ -167,6 +167,34 @@
           ]
         }
       ]
+    },
+    {
+      "number": 4,
+      "id": "PR_kwDOMOnZXM6JrmuV",
+      "title": "Update draft-smith-rats-evidence-trans.md",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/pull/4",
+      "state": "OPEN",
+      "author": "nedmsmith",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "nedmsmith"
+      ],
+      "labels": [],
+      "body": "added content for sections on identity and attest key transformations. Updated acknowledgements section.",
+      "createdAt": "2025-01-31T19:42:09Z",
+      "updatedAt": "2025-01-31T19:43:28Z",
+      "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "6d1b9df291af2d0eca4691912522d387a124c39f",
+      "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "headRefName": "key-trans",
+      "headRefOid": "4e690b3535facc88909cb07d97f2ef3a5c4bc94c",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
