@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-02T01:36:32.647502+00:00",
+  "timestamp": "2025-02-04T01:25:47.944511+00:00",
   "repo": "ietf-rats-wg/draft-smith-rats-evidence-trans",
   "labels": [
     {
@@ -81,6 +81,61 @@
       "updatedAt": "2024-09-20T15:46:54Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOMOnZXM6ofhQD",
+      "title": "Which key should be the authority for evidence from DICE/SPDM",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/issues/5",
+      "state": "OPEN",
+      "author": "andrew-draper",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Which key should be put into the authority entry of DICE/SPDM generated evidence?\n\nIt needs to be something which the verifier can match against, so it must be a global key rather than a device specific key.\n\nI suggest that the certificate chain root key authorising the DICE/SPDM evidence is used for this. If there are multiple certificate chains available then all root keys \n\nIt might be worth adding a section describing this.",
+      "createdAt": "2025-02-03T08:59:07Z",
+      "updatedAt": "2025-02-03T16:40:21Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The verifier matching rule is based on authorized-by condition. It can be any key. \nThe key that generated the signature over the digest of the claims should be the key that is in the authority field in the ECT. Note that in the SPDM case, the slot contains the full cert chain. The $crypto-key-type-choice varients that support the full chain might be advised? The authorized-by matching should follow the same convention. \n\nNote that the cert chain will include the device ID cert which is the global identity hence the cert chain is globally unique. ",
+          "createdAt": "2025-02-03T16:40:20Z",
+          "updatedAt": "2025-02-03T16:40:20Z"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOMOnZXM6oflKd",
+      "title": "Need text describing how instance field is used to separate evidence from multiple attesters",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/issues/6",
+      "state": "OPEN",
+      "author": "andrew-draper",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "If there are multiple attesters then the Verifier needs a way to separate evidence from them.\n\nThe instance field should be filled in with a value derived from the deviceid key to ensure that evidence from each verifier is kept separate.",
+      "createdAt": "2025-02-03T09:04:10Z",
+      "updatedAt": "2025-02-03T22:35:03Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "If the evidence authority uses a $crypto-key-type-choice that is a cert chain, then the chain will contain the deviceID cert making the authority globally unique. \n\nHowever, there is a different issue you're describing (I think) which is how does the Attester uniquely identify itself to the Verifier. There are two parts to the attester-verifier session. Authentication (which should use the deviceID key) and evidence collection which should use whatever attestation keys are most appropriate for the evidence that is reported. It's best to think of these as different keys. \n\nNote there is a thread on RATS which is arguing for these keys being mandatorily separate as one of the researchers has identified this as a potential security flaw.\n\nThe way corim can express the identity of the attester is using instance-id in environment-map where the ID value references the deviceID key. This could be done using the DeviceID directly, or some variant of the $crypto-key-type-choice that includes the DeviceID key. The identity of the device could be one of the claims asserted as part of connection establishment (maybe the DeviceID cert should have a bit of evidence that makes this claim)? Remember when we discussed whether to use some of the cert fields as evidence but decided not to? The consequence of that decision is the identity of device needs to be repeated in the DiceTcbInfo fields for the instance-id claim to be tied to the deviceID. \n\nThe DiceTcbInfo.type field is an OCTET STRING: \"type \u2013 a machine readable description of the measurement.\" \n\nFor this to match a reference value environment-map.instance-id.$crypto-key-type-choice. It (OCTET STRING) needs to start with a CBOR tag. (Actually all measurement-map values start with a CBOR tag). But using $crypto-key-type-choice allows the devid cert to be used as a way to link the deviceID cert to the device and for any attestation key in the same device to be linked to the deviceID. \n\nNote: If the deviceID cert contains only the DiceTcbInfo.`type` value. The reference value needs to be able to match this evidence. Since the external representation of Ref-Val triple makes measurement-map mandatory, there needs to be a measurement also. In this particular case, it makes sense to repeat the DeviceID key in the measurement-values-map.$crypto-key-type-choice. We can document it this way this convention to avoid having to make a pedestrian change to DiceTcbInfo that puts the $crypto-key-type-choice value in there twice.\n\nNote: The $crypto-key-type-choice should probably not be a cert or cert-path form since the inclusion of the digest of the cert or path will affect the signature over the cert which is circular.\n\nThe internal representation doesn't mandate the existence of `element-list` (aka measurement-map) hence DiceTcbInfo.type could exists in an internal representation that populated only the environment. Hence, the duplicated value in measurement-values-map could be deleted for internal representation.\n\nNevertheless, the matching rules for evidence given instance-id.$crypto-key-type-choice with reference value having both instance-id.$crypto-key-type-choice and element-list.element-claims.$crypto-key-type-choice (where both values are the same) should still not trigger a processing error. \n\nThis will result in the Verifier being able to disambiguate Attesters based on the DeviceID credential, but not introduce some irregularity that requires the Verifier to start using certificate fields as if they were intended as Evidence. ",
+          "createdAt": "2025-02-03T17:20:30Z",
+          "updatedAt": "2025-02-03T19:07:43Z"
+        },
+        {
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "More context:\nThere are 3 ways to add novel environments to an ACS using corim schemas. \n(a) Evidence - Verifiers accepts it without logical conditions.\n(b) Conditional Endorsement - Verifier accepts it if the condition matches.\n(c) Membership triple - Verifier accepts it if the Endorser (signer) is in the TA list.\n\nRATS has made hand wavy observations that certificates are a form of endorsement. Any information in a certificate could in theory be considered to be Endorsement claims. But there isn't a discipline for how to map X.509 v3 fields into an ACS.\n\nIn (a), a device ID cert could contain attestatation information (e.g., DiceTcbInfo). But since the signer is the mfg'r, not an Attesting Env, the claims are actually Endorsements. Typically, Device ID certs are embedded in the Attester and hence are often size optimized. Adding an `instance-id` in this way may be mixed for practical reasons.\n\nIn (b), there's no real way to add an instance-id using conditions that are based on class attributes since ever member of the class would end up with the same instance identifier. Unless, there are special rules Verifiers follow.\n\nIn (c), the Verifier searches the certificate/path as the matching criteria. The domain-type could be extended to include $crypto-key-type-choice which includes matching on subject public key / key thumbprint. Note: matching on UUID as device instance id is already supported. This can then result in the addition of an ACS entry for an environment-map.instance-id. If the instance ID is in the cert used to authenticate to the Verifier, then the link between Attester-Verifier session and the ACS can be pinned down. Subsequently, any conditional endorsement that is specific to an instance of the Attester can be expressed in terms of the Attester's instance-id without needing special processing rules expressed as prose in a spec or profile.",
+          "createdAt": "2025-02-03T22:35:01Z",
+          "updatedAt": "2025-02-03T22:35:01Z"
+        }
+      ]
     }
   ],
   "pulls": [
