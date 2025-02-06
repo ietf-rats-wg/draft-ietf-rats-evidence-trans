@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-04T01:25:47.944511+00:00",
+  "timestamp": "2025-02-06T01:27:10.688286+00:00",
   "repo": "ietf-rats-wg/draft-smith-rats-evidence-trans",
   "labels": [
     {
@@ -118,7 +118,7 @@
       "labels": [],
       "body": "If there are multiple attesters then the Verifier needs a way to separate evidence from them.\n\nThe instance field should be filled in with a value derived from the deviceid key to ensure that evidence from each verifier is kept separate.",
       "createdAt": "2025-02-03T09:04:10Z",
-      "updatedAt": "2025-02-03T22:35:03Z",
+      "updatedAt": "2025-02-04T21:35:13Z",
       "closedAt": null,
       "comments": [
         {
@@ -134,6 +134,27 @@
           "body": "More context:\nThere are 3 ways to add novel environments to an ACS using corim schemas. \n(a) Evidence - Verifiers accepts it without logical conditions.\n(b) Conditional Endorsement - Verifier accepts it if the condition matches.\n(c) Membership triple - Verifier accepts it if the Endorser (signer) is in the TA list.\n\nRATS has made hand wavy observations that certificates are a form of endorsement. Any information in a certificate could in theory be considered to be Endorsement claims. But there isn't a discipline for how to map X.509 v3 fields into an ACS.\n\nIn (a), a device ID cert could contain attestatation information (e.g., DiceTcbInfo). But since the signer is the mfg'r, not an Attesting Env, the claims are actually Endorsements. Typically, Device ID certs are embedded in the Attester and hence are often size optimized. Adding an `instance-id` in this way may be mixed for practical reasons.\n\nIn (b), there's no real way to add an instance-id using conditions that are based on class attributes since ever member of the class would end up with the same instance identifier. Unless, there are special rules Verifiers follow.\n\nIn (c), the Verifier searches the certificate/path as the matching criteria. The domain-type could be extended to include $crypto-key-type-choice which includes matching on subject public key / key thumbprint. Note: matching on UUID as device instance id is already supported. This can then result in the addition of an ACS entry for an environment-map.instance-id. If the instance ID is in the cert used to authenticate to the Verifier, then the link between Attester-Verifier session and the ACS can be pinned down. Subsequently, any conditional endorsement that is specific to an instance of the Attester can be expressed in terms of the Attester's instance-id without needing special processing rules expressed as prose in a spec or profile.",
           "createdAt": "2025-02-03T22:35:01Z",
           "updatedAt": "2025-02-03T22:35:01Z"
+        },
+        {
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@nedmsmith I agree with mostly what is said here. In addition to what is stated above, in PSA and Arm CCA Case, there is a instance identifier for each PSA/Arm CCA Device which is a `tagged-ue-id-type`  which binds the unique device instance to the Attestation Public key used to verify the Evidence. \n\nAnd yes,  Class Identifier should not be used to represent Device Instances, as all the Instance of the same class, share the same class identity.",
+          "createdAt": "2025-02-04T18:03:28Z",
+          "updatedAt": "2025-02-04T18:03:28Z"
+        },
+        {
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "body": "And I think, the specification are adequately clear about usage of instances within the environment..\n\n`Instance measurements apply to a specific Attester instance. Environments identified by a class identifier have measurements that are common to the class. Environments identified by an instance identifier have measurements that are specific to that instance`",
+          "createdAt": "2025-02-04T18:11:19Z",
+          "updatedAt": "2025-02-04T18:11:19Z"
+        },
+        {
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> tagged-ue-id-type\n\nHow does the tagged-ue-id-type get associated with the device class? Is it in the devID cert or is there an instance RIM that asserts it?",
+          "createdAt": "2025-02-04T21:35:09Z",
+          "updatedAt": "2025-02-04T21:35:09Z"
         }
       ]
     }
