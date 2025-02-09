@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-06T01:27:10.688286+00:00",
+  "timestamp": "2025-02-09T01:38:04.578862+00:00",
   "repo": "ietf-rats-wg/draft-smith-rats-evidence-trans",
   "labels": [
     {
@@ -94,7 +94,7 @@
       "labels": [],
       "body": "Which key should be put into the authority entry of DICE/SPDM generated evidence?\n\nIt needs to be something which the verifier can match against, so it must be a global key rather than a device specific key.\n\nI suggest that the certificate chain root key authorising the DICE/SPDM evidence is used for this. If there are multiple certificate chains available then all root keys \n\nIt might be worth adding a section describing this.",
       "createdAt": "2025-02-03T08:59:07Z",
-      "updatedAt": "2025-02-03T16:40:21Z",
+      "updatedAt": "2025-02-07T20:37:56Z",
       "closedAt": null,
       "comments": [
         {
@@ -103,6 +103,13 @@
           "body": "The verifier matching rule is based on authorized-by condition. It can be any key. \nThe key that generated the signature over the digest of the claims should be the key that is in the authority field in the ECT. Note that in the SPDM case, the slot contains the full cert chain. The $crypto-key-type-choice varients that support the full chain might be advised? The authorized-by matching should follow the same convention. \n\nNote that the cert chain will include the device ID cert which is the global identity hence the cert chain is globally unique. ",
           "createdAt": "2025-02-03T16:40:20Z",
           "updatedAt": "2025-02-03T16:40:20Z"
+        },
+        {
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "One way to address the use case is to populate the ECT authority field with all of the signers in the cert chain that signed the evidence. This would allow an authorized-by condition to be met for long-term authorities (aka Root CA / DeviceID) for evidence that was signed by SPDM/DICE alias keys. \n\nThe matching language in CoRIM doesn't need to change.\n\nThe processing / transformation section for populating authority would need to describe walking the cert path for the claims added to the ECT and adding a $crypto-key-type-choice value for each cert in the path. The form of $crypto-key-type-choice used should be consistent to avoid confusion when trying to author authorized-by conditions. Maybe a key thumbprint for space considerations but this may depend on a method for computing the thumbprint (I think CoRIM has an issue for doing this).",
+          "createdAt": "2025-02-07T20:37:55Z",
+          "updatedAt": "2025-02-07T20:37:55Z"
         }
       ]
     },
@@ -118,7 +125,7 @@
       "labels": [],
       "body": "If there are multiple attesters then the Verifier needs a way to separate evidence from them.\n\nThe instance field should be filled in with a value derived from the deviceid key to ensure that evidence from each verifier is kept separate.",
       "createdAt": "2025-02-03T09:04:10Z",
-      "updatedAt": "2025-02-04T21:35:13Z",
+      "updatedAt": "2025-02-07T20:23:35Z",
       "closedAt": null,
       "comments": [
         {
@@ -155,8 +162,38 @@
           "body": "> tagged-ue-id-type\n\nHow does the tagged-ue-id-type get associated with the device class? Is it in the devID cert or is there an instance RIM that asserts it?",
           "createdAt": "2025-02-04T21:35:09Z",
           "updatedAt": "2025-02-04T21:35:09Z"
+        },
+        {
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As explained during call, when instance identifier (`a tagged-ue-id-type`) is represented in a CoRIM Reference Value or Evidence in EAT format, it is always used in conjunction with a class identity representing device class, which in this case is class-id: `psa.implementation-id`. The instance is never used in isolation, be it in messages or internally in a Verifier, as uniqueness of identity is always tied to combined `class-identifier`+`instance-identifier`",
+          "createdAt": "2025-02-07T10:19:42Z",
+          "updatedAt": "2025-02-07T10:19:42Z"
+        },
+        {
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> The instance field should be filled in with a value derived from the deviceid key to ensure that evidence from each verifier is kept separate.\n\nPopulating the `instance-id` with an identifier (whether its deviceID, tagged-ue-id-type, or other) is a reasonable convention for disambiguating different attesters.\n\nIn the case where a host is virtualized (TDX, SEV, CCA), an identifier that is unique to the TEE (vs. the device/platform) would have the appropriate tenant semantics.\n\nPopulating both class and instance IDs is possible in concise-evidence and apparently in EAT, but it doesn't appear to be possible in DiceTcbInfo and I'm not sure about SPDM (not using the EAT / Concise-evidence options). ",
+          "createdAt": "2025-02-07T20:23:34Z",
+          "updatedAt": "2025-02-07T20:23:34Z"
         }
       ]
+    },
+    {
+      "number": 7,
+      "id": "I_kwDOMOnZXM6pOHAz",
+      "title": "Adding certificates to ACS as part of Evidence processing",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/issues/7",
+      "state": "OPEN",
+      "author": "nedmsmith",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Evidence is asserted with the authority of the key that signed it and if Issue #5 is applied, it contains the set of cert path keys as transitively trusted entities. However, there isn't a way to use conditional endorsement to attribute claims to any of the entities in the cert path. For example, a deviceID certificate may have a device type classification, or have key quality properties. \n\nBut for conditional endorsement to be used, there needs to be an ECT entry already in the ACS. A reasonable way to achieve this is for the Evidence processing behavior to add ECT entries for cert path keys. A straight forward approach is the subjectPublicKeyInfo of the Issuer is placed in the ECT `authority` field and the subjectPublicKeyInfo of the Subject is placed in the `ECT.environment-map.instance-id` field. The `claims-list` portion need not be populated.\n\nA conditional endorsement that matches on instance-id can now add to `claims-list` subsequently.",
+      "createdAt": "2025-02-07T20:40:58Z",
+      "updatedAt": "2025-02-07T21:13:15Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
