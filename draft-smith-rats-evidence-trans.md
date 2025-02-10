@@ -276,7 +276,7 @@ Cases where Concise Evidence CDDL is identical to CoRIM CDDL the transformation 
 
 The `ce.evidence-triples` structure is a list of `evidence-triple-record`.
 An `evidence-triple-record` consists of an `environment-map` and a list of `measurement-map`.
-For each `evidence-triple-record` and `ae` ECT is constructed.
+For each `evidence-triple-record` an `ae` ECT is constructed.
 
 {:cet-enum: counter="cet" style="format Step %d."}
 
@@ -293,11 +293,11 @@ For each `evidence-triple-record` and `ae` ECT is constructed.
 
 {: cet2-enum}
 
-* For each e in CE.`[ + measurement-map]`:
+* For each ce in CE.`[ + measurement-map]`; and each ect in ECT.`[ + element-list]`:
 
-> > **copy**(e.`measurement-map`.`mkey`, ECT.`element-list`.`element-map`.`element-id`)
+> > **copy**(ce.`mkey`, ect.`element-map`.`element-id`)
 
-> > **copy**(e.`measurement-map`.`mval`, ECT.`element-list`.`element-map`.`element-claims`)
+> > **copy**(ce.`mval`, ect`.`element-map`.`element-claims`)
 
 {: cet-enum}
 * The signer of the envelope containing CE is copied to the ECT.`authority` field.
@@ -311,7 +311,85 @@ The completed ECT is added to the `ae` list.
 
 ## Transforming the ce.identity-triples {#sec-identity-triple}
 
+The `ce.identity-triples` structure is a list of `ev-identity-triple-record`.
+An `ev-identity-triple-record` consists of an `environment-map` and a list of `$crypto-key-type-choice`.
+For each `ev-identity-triple-record` an `ae` ECT is constructed where the `$crypto-key-type-choice` values are copied as ECT Evidence measurement values.
+The ECT internal representation accommodates keys as a type of measurement.
+In order for the `$crypto-key-type-choice` keys to be verified a CoRIM `identity-triples` claim MUST be asserted.
+
+{:ikt-enum: counter="ikt" style="format Step %d."}
+
+{: ikt-enum}
+* An `ae` ECT entry is allocated.
+
+* The `cmtype` of the ECT is set to `evidence`.
+
+* The Concise Evidence (CE) entry populates the `ae` ECT `environment` fields.
+
+> > **copy**(CE.`ce-identity-triple-record`.`environment-map`, ECT.`environment`.`environment-map`).
+
+> > **copy**(_null_, ECT.`element-list`.`element-map`.`element-id`).
+
+{:ikt2-enum: counter="ikt2" style="format %i"}
+
+{: ikt2-enum}
+
+* For each cek in CE.`[ + $crypto-key-type-choice ]`; and each ect in ECT.`element-list`.`element-map`.`element-claims`.`intrep-keys`.`[ + typed-crypto-key ]`:
+
+> > **copy**(cek, ect.`key`)
+
+> > **set**( &(identity-key: 1), ect.`key-type`)
+
+{: ikt-enum}
+* The signer of the envelope containing CE is copied to the ECT.`authority` field.
+For example, a CE may be wrapped by an EAT token {{-eat}} or DICE certificate {{-dice-attest}}.
+The signer identity MUST be expressed using `$crypto-key-type-choice`.
+A profile or other arrangement is used to coordinate which `$crypto-key-type-choice` is used for both Evidence and Reference Values.
+
+* If CE has a profile, the profile is converted to a `$profile-type-choice` then copied to the ECT`.`profile` field.
+
+The completed ECT is added to the `ae` list.
+
 ## Transforming the ce.attest-key-triples {#sec-attest-key-triple}
+
+The `ce.attest-key-triples` structure is a list of `ev-attest-key-triple-record`.
+An `ev-attest-key-triple-record` consists of an `environment-map` and a list of `$crypto-key-type-choice`.
+For each `ev-attest-key-triple-record` an `ae` ECT is constructed where the `$crypto-key-type-choice` values are copied as ECT Evidence measurement values.
+The ECT internal representation accommodates keys as a type of measurement.
+In order for the `$crypto-key-type-choice` keys to be verified a CoRIM `attest-key-triples` claim MUST be asserted.
+
+{:akt-enum: counter="akt" style="format Step %d."}
+
+{: akt-enum}
+* An `ae` ECT entry is allocated.
+
+* The `cmtype` of the ECT is set to `evidence`.
+
+* The Concise Evidence (CE) entry populates the `ae` ECT `environment` fields.
+
+> > **copy**(CE.`ce-attest-key-triple-record`.`environment-map`, ECT.`environment`.`environment-map`).
+
+> > **copy**(_null_, ECT.`element-list`.`element-map`.`element-id`).
+
+{:akt2-enum: counter="akt2" style="format %i"}
+
+{: akt2-enum}
+
+* For each cek in CE.`[ + $crypto-key-type-choice ]`; and each ect in ECT.`element-list`.`element-map`.`element-claims`.`intrep-keys`.`[ + typed-crypto-key ]`:
+
+> > **copy**(cek, ect.`key`)
+
+> > **set**( &(attest-key: 0), ect.`key-type`)
+
+{: akt-enum}
+* The signer of the envelope containing CE is copied to the ECT.`authority` field.
+For example, a CE may be wrapped by an EAT token {{-eat}} or DICE certificate {{-dice-attest}}.
+The signer identity MUST be expressed using `$crypto-key-type-choice`.
+A profile or other arrangement is used to coordinate which `$crypto-key-type-choice` is used for both Evidence and Reference Values.
+
+* If CE has a profile, the profile is converted to a `$profile-type-choice` then copied to the ECT`.`profile` field.
+
+The completed ECT is added to the `ae` list.
 
 # Transforming SPDM Evidence {#sec-spdm-trans}
 
@@ -357,4 +435,6 @@ Email: dionnaglaze@google.com
 
 # Acknowledgments
 {:unnumbered}
+
+The authors would like to thank James D. Beaney, Francisco J. Chinchilla, Vincent R. Scarlata, and Piotr Zmijewski for review feedback.
 
