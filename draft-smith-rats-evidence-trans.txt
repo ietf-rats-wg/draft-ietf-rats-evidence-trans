@@ -5,8 +5,8 @@
 Remote ATtestation ProcedureS                                  A. Draper
 Internet-Draft                                                    Altera
 Intended status: Standards Track                                N. Smith
-Expires: 4 August 2025                                             Intel
-                                                         31 January 2025
+Expires: 14 August 2025                                            Intel
+                                                        10 February 2025
 
 
                         Evidence Transformations
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 August 2025.
+   This Internet-Draft will expire on 14 August 2025.
 
 Copyright Notice
 
@@ -319,8 +319,8 @@ Table of Contents
 
    The ce.evidence-triples structure is a list of evidence-triple-
    record.  An evidence-triple-record consists of an environment-map and
-   a list of measurement-map.  For each evidence-triple-record and ae
-   ECT is constructed.
+   a list of measurement-map.  For each evidence-triple-record an ae ECT
+   is constructed.
 
    Step 1.  An ae ECT entry is allocated.
 
@@ -332,13 +332,12 @@ Table of Contents
       *copy*(CE.evidence-triple-record.environment-map,
          ECT.environment.environment-map).
 
-   i  For each e in CE.[ + measurement-map]:
+   i  For each ce in CE.[ + measurement-map]; and each ect in ECT.[ +
+      element-list]:
 
-      *copy*(e.measurement-map.mkey, ECT.element-list.element-
-         map.element-id)
+      *copy*(ce.mkey, ect.element-map.element-id)
 
-      *copy*(e.measurement-map.mval, ECT.element-list.element-
-         map.element-claims)
+      *copy*(ce.mval, ect.element-map.element-claims`)
 
    Step 4.  The signer of the envelope containing CE is copied to the
             ECT.authority field.  For example, a CE may be wrapped by an
@@ -355,7 +354,91 @@ Table of Contents
 
 4.2.  Transforming the ce.identity-triples
 
+   The ce.identity-triples structure is a list of ev-identity-triple-
+   record.  An ev-identity-triple-record consists of an environment-map
+   and a list of $crypto-key-type-choice.  For each ev-identity-triple-
+   record an ae ECT is constructed where the $crypto-key-type-choice
+   values are copied as ECT Evidence measurement values.  The ECT
+   internal representation accommodates keys as a type of measurement.
+   In order for the $crypto-key-type-choice keys to be verified a CoRIM
+   identity-triples claim MUST be asserted.
+
+   Step 1.  An ae ECT entry is allocated.
+
+   Step 2.  The cmtype of the ECT is set to evidence.
+
+   Step 3.  The Concise Evidence (CE) entry populates the ae ECT
+            environment fields.
+
+      *copy*(CE.ce-identity-triple-record.environment-map,
+         ECT.environment.environment-map).
+
+      *copy*(_null_, ECT.element-list.element-map.element-id).
+
+   i  For each cek in CE.[ + $crypto-key-type-choice ]; and each ect in
+      ECT.element-list.element-map.element-claims.intrep-keys.[ + typed-
+      crypto-key ]:
+
+      *copy*(cek, ect.key)
+
+      *set*( &(identity-key: 1), ect.key-type)
+
+   Step 4.  The signer of the envelope containing CE is copied to the
+            ECT.authority field.  For example, a CE may be wrapped by an
+            EAT token [I-D.ietf-rats-eat] or DICE certificate
+            [DICE.Attest].  The signer identity MUST be expressed using
+            $crypto-key-type-choice.  A profile or other arrangement is
+            used to coordinate which $crypto-key-type-choice is used for
+            both Evidence and Reference Values.
+
+   Step 5.  If CE has a profile, the profile is converted to a $profile-
+            type-choice then copied to the ECT.profile` field.
+
+   The completed ECT is added to the ae list.
+
 4.3.  Transforming the ce.attest-key-triples
+
+   The ce.attest-key-triples structure is a list of ev-attest-key-
+   triple-record.  An ev-attest-key-triple-record consists of an
+   environment-map and a list of $crypto-key-type-choice.  For each ev-
+   attest-key-triple-record an ae ECT is constructed where the $crypto-
+   key-type-choice values are copied as ECT Evidence measurement values.
+   The ECT internal representation accommodates keys as a type of
+   measurement.  In order for the $crypto-key-type-choice keys to be
+   verified a CoRIM attest-key-triples claim MUST be asserted.
+
+   Step 1.  An ae ECT entry is allocated.
+
+   Step 2.  The cmtype of the ECT is set to evidence.
+
+   Step 3.  The Concise Evidence (CE) entry populates the ae ECT
+            environment fields.
+
+      *copy*(CE.ce-attest-key-triple-record.environment-map,
+         ECT.environment.environment-map).
+
+      *copy*(_null_, ECT.element-list.element-map.element-id).
+
+   i  For each cek in CE.[ + $crypto-key-type-choice ]; and each ect in
+      ECT.element-list.element-map.element-claims.intrep-keys.[ + typed-
+      crypto-key ]:
+
+      *copy*(cek, ect.key)
+
+      *set*( &(attest-key: 0), ect.key-type)
+
+   Step 4.  The signer of the envelope containing CE is copied to the
+            ECT.authority field.  For example, a CE may be wrapped by an
+            EAT token [I-D.ietf-rats-eat] or DICE certificate
+            [DICE.Attest].  The signer identity MUST be expressed using
+            $crypto-key-type-choice.  A profile or other arrangement is
+            used to coordinate which $crypto-key-type-choice is used for
+            both Evidence and Reference Values.
+
+   Step 5.  If CE has a profile, the profile is converted to a $profile-
+            type-choice then copied to the ECT.profile` field.
+
+   The completed ECT is added to the ae list.
 
 5.  Transforming SPDM Evidence
 
@@ -517,6 +600,10 @@ Contributors
    Email: dionnaglaze@google.com
 
 Acknowledgments
+
+   The authors would like to thank James D.  Beaney, Francisco J.
+   Chinchilla, Vincent R.  Scarlata, and Piotr Zmijewski for review
+   feedback.
 
 Authors' Addresses
 
