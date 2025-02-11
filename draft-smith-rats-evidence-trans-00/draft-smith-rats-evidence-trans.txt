@@ -1,0 +1,617 @@
+
+
+
+
+Remote ATtestation ProcedureS                                  A. Draper
+Internet-Draft                                                    Altera
+Intended status: Standards Track                                N. Smith
+Expires: 15 August 2025                                            Intel
+                                                        11 February 2025
+
+
+                        Evidence Transformations
+                 draft-smith-rats-evidence-trans-latest
+
+Abstract
+
+   Remote Attestation Procedures (RATS) enable Relying Parties to assess
+   the trustworthiness of a remote Attester and therefore to decide
+   whether to engage in secure interactions with it - or not.  Evidence
+   about trustworthiness can be rather complex and it is deemed
+   unrealistic that every Relying Party is capable of the appraisal of
+   Evidence.  Therefore that burden is typically offloaded to a
+   Verifier.  In order to conduct Evidence appraisal, a Verifier
+   requires fresh Evidence from an Attester.  Before a Verifier can
+   appraise Evidence it may require transformation to an internal
+   representation.  This document specifies Evidence transformation
+   methods for DICE and SPDM formats to the CoRIM internal
+   representation.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 15 August 2025.
+
+Copyright Notice
+
+   Copyright (c) 2025 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction
+     1.1.  Terminology
+   2.  Verifier Reconciliation
+   3.  Transforming DICE Certificate Extension Evidence
+   4.  Transforming TCG Concise Evidence
+     4.1.  Transforming the ce.evidence-triples
+     4.2.  Transforming the ce.identity-triples
+     4.3.  Transforming the ce.attest-key-triples
+   5.  Transforming SPDM Evidence
+   6.  Security and Privacy Considerations
+   7.  IANA Considerations
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
+   Contributors
+   Acknowledgments
+   Authors' Addresses
+
+1.  Introduction
+
+   Remote Attestation Procedures (RATS) enable Relying Parties to assess
+   the trustworthiness of a remote Attester and therefore to decide
+   whether to engage in secure interactions with it - or not.  Evidence
+   about trustworthiness can be rather complex and it is deemed
+   unrealistic that every Relying Party is capable of the appraisal of
+   Evidence.  Therefore that burden is typically offloaded to a
+   Verifier.  In order to conduct Evidence appraisal, a Verifier
+   requires fresh Evidence from an Attester.  Before a Verifier can
+   appraise Evidence it may require transformation to an internal
+   representation.  This document specifies Evidence transformation
+   methods for DICE and SPDM formats to the CoRIM internal
+   representation.
+
+1.1.  Terminology
+
+   This document uses terms and concepts defined by the RATS
+   architecture.  For a complete glossary see Section 4 of [RFC9334].
+   Addintional RATS architecture is found in
+   [I-D.ietf-rats-endorsements].  RATS architecture terms and concepts
+   are always referenced as proper nouns, i.e., with Capital Letters.
+
+   In this document, an Evidence structure describes an external
+   representation.  There are many possible Evidence structures
+   including [I-D.ietf-rats-eat] and [RFC5280].  The bytes composing the
+   CoRIM data structure are the same either way.
+
+   The terminology from CoRIM [I-D.ietf-rats-corim], CBOR [STD94], CDDL
+   [RFC8610] and COSE [STD96] applies.
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+2.  Verifier Reconciliation
+
+   This specification assumes the reader is familiar with Verifier
+   Reconsiliation as described in Section 2 of [I-D.ietf-rats-corim].
+   It describes how a Verifier should process the CoRIM to enable CoRIM
+   authors to convey their intended meaning and how a Verifier
+   reconciles its various inputs.  Evidence is one of its inputs.  The
+   Verifier is expected to create an internal representation from an
+   external representation.  By using an internal representation, the
+   Verifier processes Evidence inputs such that they can be appraised
+   consistently.
+
+   This specification defines format transformations for Evidence in
+   DICE [DICE.Attest], SPDM [SPDM], and concise evidence [TCG.CE]
+   formats that are transformed into a Verifier's internal
+   representation.  This specification uses the CoMID internal
+   representation (Section 8.2.1 of [I-D.ietf-rats-corim]) as the
+   transformation target.  Other internal representations are possible
+   but out of scope for this specification.
+
+3.  Transforming DICE Certificate Extension Evidence
+
+   This section defines how Evidence from an X.509 certificate
+   containing a DICE certificate extension [DICE.Attest] is transformed
+   into an internal representation that can be processed by Verifiers.
+
+   Verifiers supporting the DICE certificate extension Evidence SHOULD
+   implement this transformation.
+
+   This specification defines transformation methods for two DICE
+   certificate extensions DiceTcbInfo and DiceMultiTcbInfo.  These
+   extensions are identified by the following object identifiers:
+
+   *  tcg-dice-TcbInfo - "2.23.133.5.4.1"
+
+   *  tcg-dice-MultiTcbInfo - "2.23.133.5.4.5"
+
+   Each DiceTcbInfo entry in a MultiTcbInfo is converted to a CoRIM ECT
+   (see Section 8.2.1 of [I-D.ietf-rats-corim]) using the transformation
+   steps in this section.  Each DiceMultiTcbInfo entry is independent of
+   the others such that each is transformed to a separate ECT entry.  A
+   list of Evidence ECTs (i.e., ae = [ + ECT]) is constructed using
+   CoRIM attestation evidence internal representation (see
+   Section 8.2.1.1 of [I-D.ietf-rats-corim]).
+
+   For each DiceTcbInfo (DTI) entry in a DiceMultiTcbInfo allocate an
+   ECT structure.
+
+   Step 1.  An ae entry is allocated.
+
+   Step 2.  The cmtype of the ECT is set to evidence.
+
+   Step 3.  The DiceTcbInfo (DTI) entry populates the ae ECT.
+
+   i  The DTI entry populates the ae ECT environment-map
+
+      *copy*(DTI.type, ECT.environment.environment-map.class-
+         map.class-id).  The binary representation of DTI.type MUST be
+         equivalent to the binary representation of class-id without the
+         CBOR tag.
+
+      *copy*(DTI.vendor, ECT.environment.environment-map.class-
+         map.vendor).
+
+      *copy*(DTI.model, ECT.environment.environment-map.class-
+         map.model).
+
+      *copy*(DTI.layer, ECT.environment.environment-map.class-
+         map.layer).
+
+      *copy*(DTI.index, ECT.environment.environment-map.class-
+         map.index).
+
+   ii The DTI entry populates the ae ECT elemenet-list.
+
+      *copy*(DTI.version, ECT.element-list.element-map.measurement-
+         values-map.version-map.version).
+
+      *copy*(DTI.svn, ECT.element-list.element-map.measurement-
+         values-map.svn).
+
+      *copy*(DTI.vendorInfo, ECT.element-list.element-
+         map.measurement-values-map.raw-value).
+
+      Foreach FWID in FWIDLIST: *copy*(DTI.FWID.digest, ECT.element-
+         list.element-map.measurement-values-map.digests.digest.val).
+
+      Foreach FWID in FWIDLIST: *copy*(DTI.FWID.hashAlg, ECT.element-
+         list.element-map.measurement-values-map.digests.digest.alg).
+
+   iiiThe DTI entry populates the ae ECT elemenet-list.flags.  Foreach
+      _f_ in DTI.OperationalFlags and each _m_ in
+      DTI.OperationalFlagsMask:
+
+      If _m_.notConfigured = 1 AND _f_.notConfigured = 1;
+         *set*(ECT.element-list.element-map.measurement-values-
+         map.flags.is-configured = FALSE).
+
+      If _m_.notConfigured = 1 AND _f_.notConfigured = 0;
+         *set*(ECT.element-list.element-map.measurement-values-
+         map.flags.is-configured = TRUE).
+
+      If _m_.notSecure = 1 AND _f_.notSecure = 1; *set*(ECT.element-
+         list.element-map.measurement-values-map.flags.is-secure =
+         FALSE).
+
+      If _m_.notSecure = 1 AND _f_.notSecure = 0; *set*(ECT.element-
+         list.element-map.measurement-values-map.flags.is-secure =
+         TRUE).
+
+      If _m_.recovery = 1 AND _f_.recovery = 1; *set*(ECT.element-
+         list.element-map.measurement-values-map.flags.is-recovery =
+         FALSE).
+
+      If _m_.recovery = 1 AND _f_.recovery = 0; *set*(ECT.element-
+         list.element-map.measurement-values-map.flags.is-recovery =
+         TRUE).
+
+      If _m_.debug = 1 AND _f_.debug = 1; *set*(ECT.element-
+         list.element-map.measurement-values-map.flags.is-debug =
+         FALSE).
+
+      If _m_.debug = 1 AND _f_.debug = 0; *set*(ECT.element-
+         list.element-map.measurement-values-map.flags.is-debug = TRUE).
+
+      If _m_.notReplayProtected = 1 AND _f_.notReplayProtected = 1;
+         *set*(ECT.element-list.element-map.measurement-values-
+         map.flags.is-replay-protected = FALSE).
+
+      If _m_.notReplayProtected = 1 AND _f_.notReplayProtected = 0;
+         *set*(ECT.element-list.element-map.measurement-values-
+         map.flags.is-replay-protected = TRUE).
+
+      If _m_.notIntegrityProtected = 1 AND _f_.notIntegrityProtected
+         = 1; *set*(ECT.element-list.element-map.measurement-values-
+         map.flags.is-integrity-proteccted = FALSE).
+
+      If _m_.notIntegrityProtected = 1 AND _f_.notIntegrityProtected
+         = 0; *set*(ECT.element-list.element-map.measurement-values-
+         map.flags.is-integrity-proteccted = TRUE).
+
+      If _m_.notRuntimeMeasured = 1 AND _f_.notRuntimeMeasured = 1;
+         *set*(ECT.element-list.element-map.measurement-values-
+         map.flags.is-runtime-meas = FALSE).
+
+      If _m_.notRuntimeMeasured = 1 AND _f_.notRuntimeMeasured = 0;
+         *set*(ECT.element-list.element-map.measurement-values-
+         map.flags.is-runtime-meas = TRUE).
+
+      If _m_.notImmutable = 1 AND _f_.notImmutable = 1;
+         *set*(ECT.element-list.element-map.measurement-values-
+         map.flags.is-immutable = FALSE).
+
+      If _m_.notImmutable = 1 AND _f_.notImmutable = 0;
+         *set*(ECT.element-list.element-map.measurement-values-
+         map.flags.is-immutable = TRUE).
+
+      If _m_.notTcb = 1 AND _f_.notTcb = 1; *set*(ECT.element-
+         list.element-map.measurement-values-map.flags.is-tcb = FALSE).
+
+      If _m_.notTcb = 1 AND _f_.notTcb = 0; *set*(ECT.element-
+         list.element-map.measurement-values-map.flags.is-tcb = TRUE).
+
+   Step 4.  The signer of the certificate containing DTI is copied to
+            the ECT.authority field.  The signer identity MUST be
+            expressed using $crypto-key-type-choice.  A profile or other
+            arrangement is used to coordinate which $crypto-key-type-
+            choice is used for both Evidence and Reference Values.
+
+   The completed ECT is added to the ae list.
+
+4.  Transforming TCG Concise Evidence
+
+   This section defines how Evidence from TCG [TCG.CE] is transformed
+   into an internal representation that can be processed by Verifiers.
+
+   Verifiers supporting the TCG Concise Evidence format SHOULD implement
+   this transformation.
+
+   Concise evidence may be recognized by any of the following registered
+   types:
+
+       +==========+========+===============+=======================+
+       | CBOR tag | C-F ID | TN Tag        | Media Type            |
+       +==========+========+===============+=======================+
+       | #6.571   | 10571  | #6.1668557429 | "application/ce+cbor" |
+       +----------+--------+---------------+-----------------------+
+
+                                  Table 1
+
+   A Concise Evidence entry is converted to a CoRIM ECT (see
+   Section 8.2.1 of [I-D.ietf-rats-corim]) using the transformation
+   steps in this section.  A list of Evidence ECTs (i.e., ae = [ + ECT])
+   is constructed using CoRIM attestation evidence internal
+   representation (see Section 8.2.1.1 of [I-D.ietf-rats-corim]).  The
+   Concise Evidence scheme uses CoRIM CDDL definitions to define several
+   Evidence representations called _triples_. Cases where Concise
+   Evidence CDDL is identical to CoRIM CDDL the transformation logic
+   uses the structure names in common.
+
+4.1.  Transforming the ce.evidence-triples
+
+   The ce.evidence-triples structure is a list of evidence-triple-
+   record.  An evidence-triple-record consists of an environment-map and
+   a list of measurement-map.  For each evidence-triple-record an ae ECT
+   is constructed.
+
+   Step 1.  An ae ECT entry is allocated.
+
+   Step 2.  The cmtype of the ECT is set to evidence.
+
+   Step 3.  The Concise Evidence (CE) entry populates the ae ECT
+            environment fields.
+
+      *copy*(CE.evidence-triple-record.environment-map,
+         ECT.environment.environment-map).
+
+   i  For each ce in CE.[ + measurement-map]; and each ect in ECT.[ +
+      element-list]:
+
+      *copy*(ce.mkey, ect.element-map.element-id)
+
+      *copy*(ce.mval, ect.element-map.element-claims`)
+
+   Step 4.  The signer of the envelope containing CE is copied to the
+            ECT.authority field.  For example, a CE may be wrapped by an
+            EAT token [I-D.ietf-rats-eat] or DICE certificate
+            [DICE.Attest].  The signer identity MUST be expressed using
+            $crypto-key-type-choice.  A profile or other arrangement is
+            used to coordinate which $crypto-key-type-choice is used for
+            both Evidence and Reference Values.
+
+   Step 5.  If CE has a profile, the profile is converted to a $profile-
+            type-choice then copied to the ECT.profile` field.
+
+   The completed ECT is added to the ae list.
+
+4.2.  Transforming the ce.identity-triples
+
+   The ce.identity-triples structure is a list of ev-identity-triple-
+   record.  An ev-identity-triple-record consists of an environment-map
+   and a list of $crypto-key-type-choice.  For each ev-identity-triple-
+   record an ae ECT is constructed where the $crypto-key-type-choice
+   values are copied as ECT Evidence measurement values.  The ECT
+   internal representation accommodates keys as a type of measurement.
+   In order for the $crypto-key-type-choice keys to be verified a CoRIM
+   identity-triples claim MUST be asserted.
+
+   Step 1.  An ae ECT entry is allocated.
+
+   Step 2.  The cmtype of the ECT is set to evidence.
+
+   Step 3.  The Concise Evidence (CE) entry populates the ae ECT
+            environment fields.
+
+      *copy*(CE.ce-identity-triple-record.environment-map,
+         ECT.environment.environment-map).
+
+      *copy*(_null_, ECT.element-list.element-map.element-id).
+
+   i  For each cek in CE.[ + $crypto-key-type-choice ]; and each ect in
+      ECT.element-list.element-map.element-claims.intrep-keys.[ + typed-
+      crypto-key ]:
+
+      *copy*(cek, ect.key)
+
+      *set*( &(identity-key: 1), ect.key-type)
+
+   Step 4.  The signer of the envelope containing CE is copied to the
+            ECT.authority field.  For example, a CE may be wrapped by an
+            EAT token [I-D.ietf-rats-eat] or DICE certificate
+            [DICE.Attest].  The signer identity MUST be expressed using
+            $crypto-key-type-choice.  A profile or other arrangement is
+            used to coordinate which $crypto-key-type-choice is used for
+            both Evidence and Reference Values.
+
+   Step 5.  If CE has a profile, the profile is converted to a $profile-
+            type-choice then copied to the ECT.profile` field.
+
+   The completed ECT is added to the ae list.
+
+4.3.  Transforming the ce.attest-key-triples
+
+   The ce.attest-key-triples structure is a list of ev-attest-key-
+   triple-record.  An ev-attest-key-triple-record consists of an
+   environment-map and a list of $crypto-key-type-choice.  For each ev-
+   attest-key-triple-record an ae ECT is constructed where the $crypto-
+   key-type-choice values are copied as ECT Evidence measurement values.
+   The ECT internal representation accommodates keys as a type of
+   measurement.  In order for the $crypto-key-type-choice keys to be
+   verified a CoRIM attest-key-triples claim MUST be asserted.
+
+   Step 1.  An ae ECT entry is allocated.
+
+   Step 2.  The cmtype of the ECT is set to evidence.
+
+   Step 3.  The Concise Evidence (CE) entry populates the ae ECT
+            environment fields.
+
+      *copy*(CE.ce-attest-key-triple-record.environment-map,
+         ECT.environment.environment-map).
+
+      *copy*(_null_, ECT.element-list.element-map.element-id).
+
+   i  For each cek in CE.[ + $crypto-key-type-choice ]; and each ect in
+      ECT.element-list.element-map.element-claims.intrep-keys.[ + typed-
+      crypto-key ]:
+
+      *copy*(cek, ect.key)
+
+      *set*( &(attest-key: 0), ect.key-type)
+
+   Step 4.  The signer of the envelope containing CE is copied to the
+            ECT.authority field.  For example, a CE may be wrapped by an
+            EAT token [I-D.ietf-rats-eat] or DICE certificate
+            [DICE.Attest].  The signer identity MUST be expressed using
+            $crypto-key-type-choice.  A profile or other arrangement is
+            used to coordinate which $crypto-key-type-choice is used for
+            both Evidence and Reference Values.
+
+   Step 5.  If CE has a profile, the profile is converted to a $profile-
+            type-choice then copied to the ECT.profile` field.
+
+   The completed ECT is added to the ae list.
+
+5.  Transforming SPDM Evidence
+
+   This section defines how Evidence from SPDM [SPDM] is transformed
+   into an internal representation that can be processed by Verifiers.
+
+   Verifiers supporting the SPDM Evidence format SHOULD implement this
+   transformation.
+
+   The SPDM measurements are converted to concise-evidence which has a
+   format that is similar to CoRIM triples-map (their semantics follows
+   the matching rules described above).  The TCG DICE Concise Evidence
+   Binding for SPDM specification [TCG.CE] describes a process for
+   converting the SPDM Measurement Block to Concise Evidence.
+   Subsequently the transformation steps defined in Section 4.
+
+6.  Security and Privacy Considerations
+
+   There are no security and privacy considerations.
+
+7.  IANA Considerations
+
+   There are no IANA considerations.
+
+8.  References
+
+8.1.  Normative References
+
+   [DICE.Attest]
+              Trusted Computing Group (TCG), "DICE Attestation
+              Architecture", Version 1.2, Revision 1 , January 2025,
+              <https://trustedcomputinggroup.org/wp-content/uploads/
+              DICE-Attestation-Architecture-Version-1.2-rc-
+              1_9January25.pdf>.
+
+   [DICE.CoRIM]
+              Trusted Computing Group (TCG), "DICE Endorsement
+              Architecture for Devices", Version 1.0, Revision 0.38 ,
+              November 2022, <https://trustedcomputinggroup.org/wp-
+              content/uploads/TCG-Endorsement-Architecture-for-Devices-
+              V1-R38_pub.pdf>.
+
+   [I-D.ietf-rats-corim]
+              Birkholz, H., Fossati, T., Deshpande, Y., Smith, N., and
+              W. Pan, "Concise Reference Integrity Manifest", Work in
+              Progress, Internet-Draft, draft-ietf-rats-corim-06, 18
+              October 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-rats-corim-06>.
+
+   [I-D.ietf-rats-endorsements]
+              Thaler, D., Birkholz, H., and T. Fossati, "RATS
+              Endorsements", Work in Progress, Internet-Draft, draft-
+              ietf-rats-endorsements-05, 8 November 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-rats-
+              endorsements-05>.
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+   [RFC9334]  Birkholz, H., Thaler, D., Richardson, M., Smith, N., and
+              W. Pan, "Remote ATtestation procedureS (RATS)
+              Architecture", RFC 9334, DOI 10.17487/RFC9334, January
+              2023, <https://www.rfc-editor.org/rfc/rfc9334>.
+
+   [SPDM]     Distributed Management Task Force, "Security Protocol and
+              Data Model (SPDM)", Version 1.3.0 , May 2023,
+              <https://www.dmtf.org/sites/default/files/standards/
+              documents/DSP0274_1.3.0.pdf>.
+
+   [TCG.CE]   Trusted Computing Group, "TCG DICE Concise Evidence
+              Binding for SPDM", Version 1.00, Revision 0.54 , January
+              2024, <https://trustedcomputinggroup.org/wp-
+              content/uploads/TCG-DICE-Concise-Evidence-Binding-for-
+              SPDM-Version-1.0-Revision-54_pub.pdf>.
+
+   [X.690]    International Telecommunications Union, "Information
+              technology — ASN.1 encoding rules: Specification of Basic
+              Encoding Rules (BER), Canonical Encoding Rules (CER) and
+              Distinguished Encoding Rules (DER)", ITU-T Recommendation
+              X.690, August 2015, <https://www.itu.int/rec/T-REC-X.690>.
+
+8.2.  Informative References
+
+   [DICE.Layer]
+              Trusted Computing Group, "DICE Layering Architecture",
+              Version 1.0, Revision 0.19 , July 2020,
+              <https://trustedcomputinggroup.org/wp-content/uploads/
+              DICE-Layering-Architecture-r19_pub.pdf>.
+
+   [I-D.ietf-rats-eat]
+              Lundblade, L., Mandyam, G., O'Donoghue, J., and C.
+              Wallace, "The Entity Attestation Token (EAT)", Work in
+              Progress, Internet-Draft, draft-ietf-rats-eat-31, 6
+              September 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-rats-eat-31>.
+
+   [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
+              Housley, R., and W. Polk, "Internet X.509 Public Key
+              Infrastructure Certificate and Certificate Revocation List
+              (CRL) Profile", RFC 5280, DOI 10.17487/RFC5280, May 2008,
+              <https://www.rfc-editor.org/rfc/rfc5280>.
+
+   [RFC7942]  Sheffer, Y. and A. Farrel, "Improving Awareness of Running
+              Code: The Implementation Status Section", BCP 205,
+              RFC 7942, DOI 10.17487/RFC7942, July 2016,
+              <https://www.rfc-editor.org/rfc/rfc7942>.
+
+   [RFC8610]  Birkholz, H., Vigano, C., and C. Bormann, "Concise Data
+              Definition Language (CDDL): A Notational Convention to
+              Express Concise Binary Object Representation (CBOR) and
+              JSON Data Structures", RFC 8610, DOI 10.17487/RFC8610,
+              June 2019, <https://www.rfc-editor.org/rfc/rfc8610>.
+
+   [RFC9090]  Bormann, C., "Concise Binary Object Representation (CBOR)
+              Tags for Object Identifiers", RFC 9090,
+              DOI 10.17487/RFC9090, July 2021,
+              <https://www.rfc-editor.org/rfc/rfc9090>.
+
+   [STD66]    Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
+              Resource Identifier (URI): Generic Syntax", STD 66,
+              RFC 3986, DOI 10.17487/RFC3986, January 2005,
+              <https://www.rfc-editor.org/rfc/rfc3986>.
+
+   [STD94]    Bormann, C. and P. Hoffman, "Concise Binary Object
+              Representation (CBOR)", STD 94, RFC 8949,
+              DOI 10.17487/RFC8949, December 2020,
+              <https://www.rfc-editor.org/rfc/rfc8949>.
+
+   [STD96]    Schaad, J., "CBOR Object Signing and Encryption (COSE):
+              Structures and Process", STD 96, RFC 9052,
+              DOI 10.17487/RFC9052, August 2022,
+              <https://www.rfc-editor.org/rfc/rfc9052>.
+
+Contributors
+
+   The authors would like to thank the following people for their
+   valuable contributions to the specification.
+
+   Henk Birkholz
+
+   Email: henk.birkholz@ietf.contact
+
+   Yogesh Deshpande
+
+   Email: yogesh.deshpande@arm.com
+
+   Thomas Fossati
+
+   Email: Thomas.Fossati@linaro.org
+
+   Dionna Glaze
+
+   Email: dionnaglaze@google.com
+
+Acknowledgments
+
+   The authors would like to thank James D.  Beaney, Francisco J.
+   Chinchilla, Vincent R.  Scarlata, and Piotr Zmijewski for review
+   feedback.
+
+Authors' Addresses
+
+   Andrew Draper
+   Altera
+   Email: andrew.draper@altera.com
+
+
+   Ned Smith
+   Intel
+   Email: ned.smith@intel.com
