@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-09T01:38:04.578862+00:00",
+  "timestamp": "2025-02-11T01:26:56.156270+00:00",
   "repo": "ietf-rats-wg/draft-smith-rats-evidence-trans",
   "labels": [
     {
@@ -94,7 +94,7 @@
       "labels": [],
       "body": "Which key should be put into the authority entry of DICE/SPDM generated evidence?\n\nIt needs to be something which the verifier can match against, so it must be a global key rather than a device specific key.\n\nI suggest that the certificate chain root key authorising the DICE/SPDM evidence is used for this. If there are multiple certificate chains available then all root keys \n\nIt might be worth adding a section describing this.",
       "createdAt": "2025-02-03T08:59:07Z",
-      "updatedAt": "2025-02-07T20:37:56Z",
+      "updatedAt": "2025-02-10T22:06:00Z",
       "closedAt": null,
       "comments": [
         {
@@ -110,6 +110,20 @@
           "body": "One way to address the use case is to populate the ECT authority field with all of the signers in the cert chain that signed the evidence. This would allow an authorized-by condition to be met for long-term authorities (aka Root CA / DeviceID) for evidence that was signed by SPDM/DICE alias keys. \n\nThe matching language in CoRIM doesn't need to change.\n\nThe processing / transformation section for populating authority would need to describe walking the cert path for the claims added to the ECT and adding a $crypto-key-type-choice value for each cert in the path. The form of $crypto-key-type-choice used should be consistent to avoid confusion when trying to author authorized-by conditions. Maybe a key thumbprint for space considerations but this may depend on a method for computing the thumbprint (I think CoRIM has an issue for doing this).",
           "createdAt": "2025-02-07T20:37:55Z",
           "updatedAt": "2025-02-07T20:37:55Z"
+        },
+        {
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I note that the TCG DICE Concise Evidence spec contains this text:\n\n> The authorized-by entry contains the public key identifier from a root or intermediate certificate in the certification\n> path of the certificate that issues the DeviceID Key[3]\n> \n> [3] Note that the DeviceID Key and keys derived from subsequent DICE layers are device specific, so there is no point in including\n> these keys in the authorized-by entry.\n\nI think text adding the keys required in the TCG DICE spec, and adding additional keys, is also compatible with this text.\n\nAdding thumbprints is a good idea for algorithms with large public keys, but that is not directly compatible with the text above I think.",
+          "createdAt": "2025-02-10T14:46:46Z",
+          "updatedAt": "2025-02-10T14:46:46Z"
+        },
+        {
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The CoRIM team determined that authorized-by in CoRIM statements should only apply to condition processing. The TCG spec has an additional semantic (which appears to affect corroboration behavior). Note that CoRIM says \n\n> \"If the ECTs match except for authority, the rv addition ECT authority is added to the ACS ECT authority.\"\n\n However, once corroboration is finalized, the original semantics of copying the direct signer of the evidence artifact into the ECT authority field isn't undone by the TCG spec. The TCG spec just defines criteria for accepting the RV artifact(s) not what the ending ECT should look like.\n\nThis spec needs to extend/modify the corroboration logic to include checking that the RV signer. \n\nIf the evidence (without authorized-by) directs the cert path keys be included in ECT authority. Then it is reasonable for CoRIM corroboration algorithm to say that: \"...the ECTs match if the Evidence ECT authority overlaps (at least by one entry) the RVP authority\". \n\nThe missing CoRIM peices needed to support `authorized-by` in Evidence include (a) some place in the ECT to put the delegate RVP authorities. It doesn't make sense to put them in the ECT.`authority` because the delegate RVP didn't sign any evidence. (b) the corroboration logic would need to check the rv.`authority` against the ECT.`delegate-rvp-authority` before concluding that corroboration is valid.\n\nWithout making modifications (a) and (b) to CoRIM. I don't see how the TCG concise-evidence authorized-by processing can be achieved. Maybe this spec should document the dependeny but in a non-normative way? Making it normative here would create a scenario for competing specs. It would fall back to the TCG  (or for a vendor profile) to document an alternative behavior IMO.",
+          "createdAt": "2025-02-10T19:08:46Z",
+          "updatedAt": "2025-02-10T22:06:00Z"
         }
       ]
     },
@@ -125,7 +139,7 @@
       "labels": [],
       "body": "If there are multiple attesters then the Verifier needs a way to separate evidence from them.\n\nThe instance field should be filled in with a value derived from the deviceid key to ensure that evidence from each verifier is kept separate.",
       "createdAt": "2025-02-03T09:04:10Z",
-      "updatedAt": "2025-02-07T20:23:35Z",
+      "updatedAt": "2025-02-10T22:26:24Z",
       "closedAt": null,
       "comments": [
         {
@@ -176,6 +190,20 @@
           "body": "> The instance field should be filled in with a value derived from the deviceid key to ensure that evidence from each verifier is kept separate.\n\nPopulating the `instance-id` with an identifier (whether its deviceID, tagged-ue-id-type, or other) is a reasonable convention for disambiguating different attesters.\n\nIn the case where a host is virtualized (TDX, SEV, CCA), an identifier that is unique to the TEE (vs. the device/platform) would have the appropriate tenant semantics.\n\nPopulating both class and instance IDs is possible in concise-evidence and apparently in EAT, but it doesn't appear to be possible in DiceTcbInfo and I'm not sure about SPDM (not using the EAT / Concise-evidence options). ",
           "createdAt": "2025-02-07T20:23:34Z",
           "updatedAt": "2025-02-07T20:23:34Z"
+        },
+        {
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> The DiceTcbInfo.type field is an OCTET STRING: \"type \u2013 a machine readable description of the measurement.\"\n\nWe have said that `DiceTcbInfo.type` maps to a class identifier, so I don't think that would work as an instance identifier.\n\nOne of the properties I think we need for an instance identifier is that the same instance identifier can be extracted from all of the containers which provide Evidence for a Target Environment.\n\nIn the SPDM Alias key model (which is used with DICE), the proof of liveness is the signature over the SPDM MEASUREMENTS message. The signing key for the transcript containing this message is provided by one or more certificate chains.\n\nIn the Alias key model, the certificate whose public key is the **device identity** is marked with the DICE extKeyUsage identityInit value and the SPDM hardwareIdentity value.\n\nThis key works well as an instance identifier, providing that all certificates in the chain, but might not work if the DICE certificate chain contains multiple identities (for example if part of the chain identifies a component which is used as part of the SPDM transport).\n\nTo avoid this issue, I suggest that the hardwareIdentity or IdentityInit key nearest the end of the chain (or its hash) should be used as the instance identifier.",
+          "createdAt": "2025-02-10T15:06:53Z",
+          "updatedAt": "2025-02-10T15:06:53Z"
+        },
+        {
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> > The DiceTcbInfo.type field is an OCTET STRING: \"type \u2013 a machine readable description of the measurement.\"\n> \n> We have said that `DiceTcbInfo.type` maps to a class identifier, so I don't think that would work as an instance identifier.\n\nDice also defines `TcgUeid` extension that asserts a unique enough identifier. It may be reasonable to use this to populate the `instance-id`.\n\nAlso, Dice `cmw` extension can be used to put a `concise-evidence` in a certificate where the `instance-id` can be populated directly. \n\nIf a DeviceID cert includes one of these, then it is reasonable for a conditional endorsement to look for an instance-id that is device specific. \n\nIf there is automated behavior that generates instance identifiers in ACSs then that creates a hurdle for entities that want privacy controls where they want ACSs to NOT contain instance information. ",
+          "createdAt": "2025-02-10T22:19:07Z",
+          "updatedAt": "2025-02-10T22:26:24Z"
         }
       ]
     },
@@ -189,9 +217,9 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
-      "body": "Evidence is asserted with the authority of the key that signed it and if Issue #5 is applied, it contains the set of cert path keys as transitively trusted entities. However, there isn't a way to use conditional endorsement to attribute claims to any of the entities in the cert path. For example, a deviceID certificate may have a device type classification, or have key quality properties. \n\nBut for conditional endorsement to be used, there needs to be an ECT entry already in the ACS. A reasonable way to achieve this is for the Evidence processing behavior to add ECT entries for cert path keys. A straight forward approach is the subjectPublicKeyInfo of the Issuer is placed in the ECT `authority` field and the subjectPublicKeyInfo of the Subject is placed in the `ECT.environment-map.instance-id` field. The `claims-list` portion need not be populated.\n\nA conditional endorsement that matches on instance-id can now add to `claims-list` subsequently.",
+      "body": "Evidence is asserted with the authority of the key that signed it and if Issue #5 is applied, it contains the set of cert path keys as transitively trusted entities. However, there isn't a way to use conditional endorsement to attribute claims to any of the entities in the cert path. For example, a deviceID certificate may have a device type classification, or have key quality properties. \n\nBut for conditional endorsement to be used, there needs to be an ECT entry already in the ACS. A reasonable way to achieve this is for the Evidence processing behavior to add ECT entries for cert path keys. A straight forward approach is the subjectPublicKeyInfo of the Issuer is placed in the ECT `authority` field and the subjectPublicKeyInfo of the Subject is placed in the `ECT.environment-map.instance-id` field. The `claims-list` portion need not be populated.\n\nA conditional endorsement that matches on instance-id can now add to `claims-list` subsequently.\n\nA risk of automated behavior that inserts instance identifiers is if an entity wants to manage privacy by NOT populating instance-id / other instance identifiers, the automation becomes a hurdle that must be overcome.",
       "createdAt": "2025-02-07T20:40:58Z",
-      "updatedAt": "2025-02-07T21:13:15Z",
+      "updatedAt": "2025-02-10T22:29:18Z",
       "closedAt": null,
       "comments": []
     }
@@ -286,7 +314,7 @@
       "id": "PR_kwDOMOnZXM6JrmuV",
       "title": "Update draft-smith-rats-evidence-trans.md",
       "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/pull/4",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "nedmsmith",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -295,19 +323,110 @@
       "labels": [],
       "body": "added content for sections on identity and attest key transformations. Updated acknowledgements section.",
       "createdAt": "2025-01-31T19:42:09Z",
-      "updatedAt": "2025-01-31T19:43:28Z",
+      "updatedAt": "2025-02-10T16:53:54Z",
       "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "6d1b9df291af2d0eca4691912522d387a124c39f",
       "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "headRefName": "key-trans",
       "headRefOid": "4e690b3535facc88909cb07d97f2ef3a5c4bc94c",
+      "closedAt": "2025-02-10T16:53:48Z",
+      "mergedAt": "2025-02-10T16:53:48Z",
+      "mergedBy": "nedmsmith",
+      "mergeCommit": {
+        "oid": "8143e68f5763ead8a611f7227c844dfe123fce78"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM6bPrti",
+          "commit": {
+            "abbreviatedOid": "4e690b3"
+          },
+          "author": "fchinchilla",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-10T02:28:25Z",
+          "updatedAt": "2025-02-10T02:28:25Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "id": "PR_kwDOMOnZXM6KqDzj",
+      "title": "Clarify which keys are present in ECT authority field",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/pull/8",
+      "state": "OPEN",
+      "author": "andrew-draper",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "andrew-draper"
+      ],
+      "labels": [],
+      "body": "Text to answer issue #5. This text sets the authority field to include global keys at/near the top of the certificate chain.",
+      "createdAt": "2025-02-10T14:48:56Z",
+      "updatedAt": "2025-02-10T18:49:53Z",
+      "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "6d1b9df291af2d0eca4691912522d387a124c39f",
+      "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "headRefName": "authority-key",
+      "headRefOid": "aa1a6147639b90b06cb408b648e0fdba000b400e",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM6bXQla",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "see comments",
+          "createdAt": "2025-02-10T16:58:16Z",
+          "updatedAt": "2025-02-10T17:01:39Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Does this spec assume the transformation is applied by the Verifier?\r\nCoRIM doesn't mandate a particular crypto-key-type-choice varient. The Evidence and Reference Value author(s) have to agree on which format will be used. This requirement would have the affect of requiring RV providers to use COSE_Key. \r\nIf the verifier does the format translation to COSE_Key, then it doesn't matter what format is used, the Verifier will anyway convert to whatever internal format it implements. This spec doesn't define an internal representation, hence the CoRIM spec would have to define COSE_Key as the internal representation and this spec would need to be compatible that CoRIM normative.",
+              "createdAt": "2025-02-10T16:58:16Z",
+              "updatedAt": "2025-02-10T18:38:14Z"
+            },
+            {
+              "originalPosition": 38,
+              "body": "I don't think this text is clear. All keys are global if they are secure. A key that exists on a device is device specific. If this simply references the sec-authority section wouldn't that be sufficient?",
+              "createdAt": "2025-02-10T17:01:11Z",
+              "updatedAt": "2025-02-10T17:01:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bYW7O",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-10T18:49:13Z",
+          "updatedAt": "2025-02-10T18:49:53Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "```suggestion\r\nHaving each authority in a certificate path in the ECT `authority` field lets conditional endorsement conditions  match multiple authorities within the same certificate path or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.\r\n```",
+              "createdAt": "2025-02-10T18:49:13Z",
+              "updatedAt": "2025-02-10T18:49:53Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
