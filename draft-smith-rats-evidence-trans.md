@@ -260,9 +260,9 @@ The ECT authority field is an array of `$crypto-keys-type-choice`s.
 When adding Evidence to the ACS, the Verifier SHALL add the public key representing the signer of the element (for example the DICE certificate or SPDM MEASUREMENTS response) to this array.
 The Verifier SHALL also add the signer of each certificate which has authorized (either directly or indirectly) the signer of the element.
 
-This lets conditional endorsers use a global key when creating endorsement conditions intended to match against evidence from multiple attestors of the same class.
+Having each authority in a certificate path in the ECT `authority` field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.
 
-Each signer identity MUST be expressed using the COSE_Key varient of `$crypto-key-type-choice`.
+Each signer authority MUST be expressed using the COSE_Key varient of `$crypto-key-type-choice`.
 
 # Transforming TCG Concise Evidence {#sec-ce-trans}
 
@@ -332,7 +332,7 @@ The SPDM measurements are converted to `concise-evidence` which has a format tha
 The TCG DICE Concise Evidence Binding for SPDM specification {{-ce}} describes a process for converting the SPDM Measurement Block to Concise Evidence.
 Subsequently the transformation steps defined in {{sec-ce-trans}}.
 
-The keys provided in the ECT.`authority` field should include global (not device-specific) keys which signed the SPDM MEASUREMENTS response carrying the Evidence as described in {{sec-authority}}.
+The keys provided in the ECT.`authority` field SHOULD include the key which signed the SPDM MEASUREMENTS response carrying the Evidence as described in {{sec-authority}}, the DeviceID key which authorized that key and keys which authorized the DeviceID key.```
 
 # Security and Privacy Considerations {#sec-sec}
 
