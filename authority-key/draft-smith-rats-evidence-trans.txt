@@ -5,8 +5,8 @@
 Remote ATtestation ProcedureS                                  A. Draper
 Internet-Draft                                                    Altera
 Intended status: Standards Track                                N. Smith
-Expires: 14 August 2025                                            Intel
-                                                        10 February 2025
+Expires: 16 August 2025                                            Intel
+                                                        12 February 2025
 
 
                         Evidence Transformations
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 August 2025.
+   This Internet-Draft will expire on 16 August 2025.
 
 Copyright Notice
 
@@ -294,11 +294,12 @@ Table of Contents
    Verifier SHALL also add the signer of each certificate which has
    authorized (either directly or indirectly) the signer of the element.
 
-   This lets conditional endorsers use a global key when creating
-   endorsement conditions intended to match against evidence from
-   multiple attestors of the same class.
+   Having each authority in a certificate path in the ECT authority
+   field lets conditional endorsement conditions match multiple
+   authorities or match an authority that is scoped more broadly than
+   the immediate signer of the Evidence artifact.
 
-   Each signer identity MUST be expressed using the COSE_Key varient of
+   Each signer authority MUST be expressed using the COSE_Key varient of
    $crypto-key-type-choice.
 
 4.  Transforming TCG Concise Evidence
@@ -388,9 +389,10 @@ Table of Contents
    converting the SPDM Measurement Block to Concise Evidence.
    Subsequently the transformation steps defined in Section 4.
 
-   The keys provided in the ECT.authority field should include global
-   (not device-specific) keys which signed the SPDM MEASUREMENTS
-   response carrying the Evidence as described in Section 3.1.
+   The keys provided in the ECT.authority field SHOULD include the key
+   which signed the SPDM MEASUREMENTS response carrying the Evidence as
+   described in Section 3.1, the DeviceID key which authorized that key
+   and keys which authorized the DeviceID key.```
 
 6.  Security and Privacy Considerations
 
