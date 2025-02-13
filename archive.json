@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-11T01:26:56.156270+00:00",
+  "timestamp": "2025-02-13T01:34:57.581552+00:00",
   "repo": "ietf-rats-wg/draft-smith-rats-evidence-trans",
   "labels": [
     {
@@ -367,13 +367,13 @@
       "labels": [],
       "body": "Text to answer issue #5. This text sets the authority field to include global keys at/near the top of the certificate chain.",
       "createdAt": "2025-02-10T14:48:56Z",
-      "updatedAt": "2025-02-10T18:49:53Z",
+      "updatedAt": "2025-02-12T15:18:29Z",
       "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "6d1b9df291af2d0eca4691912522d387a124c39f",
       "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "headRefName": "authority-key",
-      "headRefOid": "aa1a6147639b90b06cb408b648e0fdba000b400e",
+      "headRefOid": "4e2c205b801dd9133430d14480226a53c918d6d8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -423,6 +423,252 @@
               "body": "```suggestion\r\nHaving each authority in a certificate path in the ECT `authority` field lets conditional endorsement conditions  match multiple authorities within the same certificate path or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.\r\n```",
               "createdAt": "2025-02-10T18:49:13Z",
               "updatedAt": "2025-02-10T18:49:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bgdyP",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "henkbirkholz",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-11T14:43:35Z",
+          "updatedAt": "2025-02-11T14:43:35Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "certificate path -> certification path (or the deprecated term certificate chain)",
+              "createdAt": "2025-02-11T14:43:35Z",
+              "updatedAt": "2025-02-11T14:43:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bgfwP",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "henkbirkholz",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-11T14:46:09Z",
+          "updatedAt": "2025-02-11T14:46:10Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "In general, COSE_Key is a good choice, but as Ned said, the actual internal representation is nor prescribed and CoRIM does not prescribe COSE_Key in its current form.",
+              "createdAt": "2025-02-11T14:46:10Z",
+              "updatedAt": "2025-02-11T14:46:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bggc8",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "henkbirkholz",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-11T14:47:07Z",
+          "updatedAt": "2025-02-11T14:47:08Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Not sure what examples of directly or indirectly are.",
+              "createdAt": "2025-02-11T14:47:07Z",
+              "updatedAt": "2025-02-11T14:47:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bgifc",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "henkbirkholz",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-11T14:49:41Z",
+          "updatedAt": "2025-02-11T14:49:41Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "what was to problem to be prevented here by excluding \"device-specific keys\"?",
+              "createdAt": "2025-02-11T14:49:41Z",
+              "updatedAt": "2025-02-11T14:49:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bkfrv",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-11T21:02:16Z",
+          "updatedAt": "2025-02-11T21:02:16Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "[https://ietf-rats-wg.github.io/draft-ietf-rats-corim/draft-ietf-rats-corim.html#section-8.5.3](url) contains this text:\r\n\r\n> When comparing two $crypto-key-type-choice fields for equality, a Verifier SHALL treat them as equal if their deterministic CBOR encoding is binary equal.\r\n\r\nWhen we discussed that text, there was a general desire to simplify the Verifier matching algorithm by saying that they don't need to do format comparisons.\r\n\r\nI see the following options for making life easy for CoRIM authors:\r\n1. Prefer a particular format when inserting data into the evidence. Verifier will need to transform to that format during evidence import.\r\n2. Hope that all Verifiers will pick the same representation during evidence import and have the CoRIM author pick the format which their Verifier used\r\n3. Change the CoRIM spec to let verifiers perform certain supported transforms when matching authorities\r\nI chose option 1 but I think the other options could be made to work.\r\n\r\nWith option 1 as currently written, I don't think the CoRIM spec needs to mandate any transforms. Option 2 essentially requires transforms as otherwise it won't work when the evidence import in the verifier guesses incorrectly.\r\n\r\nI really don't like 2. I don't really have a preference for 1 or 3 - both require that the verifier does transforms, but at different points in the verification. I think 1 is simpler.",
+              "createdAt": "2025-02-11T21:02:16Z",
+              "updatedAt": "2025-02-11T21:02:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bkizW",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-11T21:08:50Z",
+          "updatedAt": "2025-02-11T21:08:50Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "What I mean by a global key is one which is not device-specific.\r\n\r\nThe reason I suggest omitting device-specific keys is because they aren't that useful for authority matches. DICE keys below the DeviceID key are random and device specific, so a CoRIM author can't match against them unless they have already seen that device with those measurements.\r\n\r\nSo not really a problem, but reduces work.\r\n\r\n```suggestion\r\nThe keys provided in the ECT.`authority` field SHOULD include the DeviceID key which authorized the SPDM MEASUREMENTS response carrying the Evidence as described in {{sec-authority}}, and keys which authorized the DeviceID key.\r\n```",
+              "createdAt": "2025-02-11T21:08:50Z",
+              "updatedAt": "2025-02-11T21:08:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bkkOo",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-11T21:11:50Z",
+          "updatedAt": "2025-02-11T21:11:50Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "I don't think there is a restriction on the multiple authorities being in the same certificate path. A SPDM responder may return multiple certificate chains to multiple authorities, and it would also be ok for a conditional endorser to match against the root of multiple chains.\r\n```suggestion\r\nHaving each authority in a certificate path in the ECT `authority` field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.\r\n```",
+              "createdAt": "2025-02-11T21:11:50Z",
+              "updatedAt": "2025-02-11T21:11:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bklfn",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-11T21:14:22Z",
+          "updatedAt": "2025-02-11T21:14:22Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "I am trying to distinguish between the signer of SPDM evidence, or the signer of a certificate which authorized a key which signed the SPDM evidence. I am sure this could be tightened up.",
+              "createdAt": "2025-02-11T21:14:22Z",
+              "updatedAt": "2025-02-11T21:14:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bk7Cq",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-11T21:58:34Z",
+          "updatedAt": "2025-02-12T00:07:04Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "```suggestion\r\nEach signer authority MUST be expressed using the COSE_Key varient of `$crypto-key-type-choice`.\r\n```",
+              "createdAt": "2025-02-11T21:58:34Z",
+              "updatedAt": "2025-02-12T00:07:04Z"
+            },
+            {
+              "originalPosition": 38,
+              "body": "> what was to problem to be prevented here by excluding \"device-specific keys\"?\r\n\r\nOne of the primary goals of the Verifier is to keep track of who (key) said what. If we omit the key that actually said the claim, then it seems a basic promise of the Verifier is not achieved. If we include other keys that are transitively related to the \"who\" key, then we're allowing more context in terms of the who. Not a problem unless there's a privacy consideration. \r\n\r\nA lose end thought is given an `authority` has multiple members, it is less clear which key signed Evidence, and which key signed which cert which cert in the cert path. That context gets stripped as part of building the ECT. Is that ok? I suppose its possible to reconstruct the cert path based on the keys and application of a path building routine. \r\n\r\nFrom the perspective of a conditional endorsement, only the keys that are known to outside world are useful for constructing conditions. But there's no downside to keeping the others around except for added  resource footprint. I don't know if the spec can predict what defines \"outside\" since in cases like TEEs the TEE key is what's relevant but it may be dynamically created. However, there is an orchestrator that dynamically updates workload status too.\r\n\r\nThe normative should say that the key that directly signed the claim MUST be included, and the keys in the cert path to the root CA SHOULD be included.",
+              "createdAt": "2025-02-11T22:31:41Z",
+              "updatedAt": "2025-02-12T00:37:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bmJ0Y",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-12T00:30:15Z",
+          "updatedAt": "2025-02-12T00:30:15Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "> In general, COSE_Key is a good choice, but as Ned said, the actual internal representation is nor prescribed and CoRIM does not prescribe COSE_Key in its current form.\r\n\r\nUnlike cases where `crypto-key-type-choice` is exposed as part of an external representation, the cert path keys are in whatever representation was used when certs were minted (e.g., ber). Since there isn't a crypto-key-type-choice for DER the verifier has to convert it to something or we should add DER to the list of possible formats. CoRIM policy is to let the author of the external representation pick. But that doesn't work here. However, if we pick COSE_Key there will be implementations using PQC that can't accommodate large key structures. Maybe they will want to use a keyid/fingerprint approach.  I don't think there is universal enough adoption of COSE that all implementations will agree to it. The CoRIM internal representation is only a suggestion, so justifying COSE based on the assumption that the intrep is CBOR won't hold up. My choice is option 4, which is add DER as a crypto-key-type-choice, and then document using DER (which is just a copy operation). It is still possible for implementations to do key translation as a way to improve robustness. But that seems pragmatically out of scope for CoRIM / evidence translation drafts at this point.",
+              "createdAt": "2025-02-12T00:30:15Z",
+              "updatedAt": "2025-02-12T01:40:59Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6bs-_J",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-12T15:06:48Z",
+          "updatedAt": "2025-02-12T15:06:48Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "I think your option 4 is similar to option 2, but with a slightly different format.\r\n\r\nI can change this line to remove the preference, and put that into an issue if that gets this moving.\r\n\r\n```suggestion\r\nEach signer identity MUST be expressed using `$crypto-key-type-choice`.\r\n```",
+              "createdAt": "2025-02-12T15:06:48Z",
+              "updatedAt": "2025-02-12T15:17:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6btHpP",
+          "commit": {
+            "abbreviatedOid": "aa1a614"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-12T15:17:03Z",
+          "updatedAt": "2025-02-12T15:17:04Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "For DICE/SPDM I don't think the Alias key (which signs the SPDM evidence) is very useful, but it is harmless to recommend that it be added.\r\n\r\n```suggestion\r\nThe keys provided in the ECT.`authority` field SHOULD include the key which signed the SPDM MEASUREMENTS response carrying the Evidence as described in {{sec-authority}}, the DeviceID key which authorized that key and keys which authorized the DeviceID key.```",
+              "createdAt": "2025-02-12T15:17:04Z",
+              "updatedAt": "2025-02-12T15:17:04Z"
             }
           ]
         }
