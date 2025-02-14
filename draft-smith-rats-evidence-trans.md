@@ -249,11 +249,20 @@ The binary representation of DTI.`type` MUST be equivalent to the binary represe
 > > If _m_.`notTcb` = 1 AND _f_.`notTcb` = 0; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-tcb` = TRUE).
 
 {: dtt-enum}
-* The signer of the certificate containing DTI is copied to the ECT.`authority` field.
-The signer identity MUST be expressed using `$crypto-key-type-choice`.
-A profile or other arrangement is used to coordinate which `$crypto-key-type-choice` is used for both Evidence and Reference Values.
+* The ECT.`authority` field is set up based on the signer of the certificate containing DTI as described in {{sec-authority}}.
 
 The completed ECT is added to the `ae` list.
+
+## Authority field in DICE/SPDM ECTs {#sec-authority}
+
+The ECT authority field is an array of `$crypto-keys-type-choice`s.
+
+When adding Evidence to the ACS, the Verifier SHALL add the public key representing the signer of that Evidence (for example the DICE certificate or SPDM MEASUREMENTS response) to the ECT authority field.
+The Verifier SHALL also add the signer of each certificate which has authorized the signer of the signing key.
+
+Having each authority in a certificate path in the ECT `authority` field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.
+
+Each signer authority value MUST be represented using `tagged-cose-key-type`.
 
 # Transforming TCG Concise Evidence {#sec-ce-trans}
 
@@ -300,7 +309,7 @@ For each `evidence-triple-record` an `ae` ECT is constructed.
 > > **copy**(ce.`mval`, ect`.`element-map`.`element-claims`)
 
 {: cet-enum}
-* The signer of the envelope containing CE is copied to the ECT.`authority` field.
+* The signer of the envelope containing CE is copied to the ECT.`authority` field as described in {{sec-authority}.
 For example, a CE may be wrapped by an EAT token {{-eat}} or DICE certificate {{-dice-attest}}.
 The signer identity MUST be expressed using `$crypto-key-type-choice`.
 A profile or other arrangement is used to coordinate which `$crypto-key-type-choice` is used for both Evidence and Reference Values.
@@ -400,6 +409,8 @@ Verifiers supporting the SPDM Evidence format SHOULD implement this transformati
 The SPDM measurements are converted to `concise-evidence` which has a format that is similar to CoRIM `triples-map` (their semantics follows the matching rules described above).
 The TCG DICE Concise Evidence Binding for SPDM specification {{-ce}} describes a process for converting the SPDM Measurement Block to Concise Evidence.
 Subsequently the transformation steps defined in {{sec-ce-trans}}.
+
+The keys provided in the ECT.`authority` field SHOULD include the key which signed the SPDM MEASUREMENTS response carrying the Evidence and keys which authorized that key as described in {{sec-authority}}.```
 
 # Security and Privacy Considerations {#sec-sec}
 
