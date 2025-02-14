@@ -255,11 +255,10 @@ The completed ECT is added to the `ae` list.
 
 ## Authority field in DICE/SPDM ECTs {#sec-authority}
 
-The ECT authority field is an array of `$crypto-keys-type-choice`s.
+The ECT authority field is an array of `$crypto-keys-type-choice` values.
 
 When adding Evidence to the ACS, the Verifier SHALL add the public key representing the signer of that Evidence (for example the DICE certificate or SPDM MEASUREMENTS response) to the ECT authority field.
-The Verifier SHALL also add the signer of each certificate which has authorized the signer of the signing key.
-
+The Verifier SHALL also add the authority of the signers of each certificate in the certificate path of the end entity signing key to the ECT `authority` list.
 Having each authority in a certificate path in the ECT `authority` field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.
 
 Each signer authority value MUST be represented using `tagged-cose-key-type`.
