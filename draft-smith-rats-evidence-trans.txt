@@ -152,9 +152,9 @@ Table of Contents
 
 3.1.  DiceTcbInfo Transformation
 
-   This section defines transformation methods for two DICE certificate
-   extensions DiceTcbInfo and DiceMultiTcbInfo.  These extensions are
-   identified by the following object identifiers:
+   This section defines transformation methods for DICE certificate
+   extensions DiceTcbInfo, DiceMultiTcbInfo, and DiceMultiTcbInfoComp.
+   These extensions are identified by the following object identifiers:
 
    *  tcg-dice-TcbInfo - "2.23.133.5.4.1"
 
