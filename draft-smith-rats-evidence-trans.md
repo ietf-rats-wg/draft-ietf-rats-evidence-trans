@@ -332,7 +332,7 @@ The SPDM measurements are converted to `concise-evidence` which has a format tha
 The TCG DICE Concise Evidence Binding for SPDM specification {{-ce}} describes a process for converting the SPDM Measurement Block to Concise Evidence.
 Subsequently the transformation steps defined in {{sec-ce-trans}}.
 
-The keys provided in the ECT.`authority` field SHOULD include the key which signed the SPDM MEASUREMENTS response carrying the Evidence as described in {{sec-authority}}, the DeviceID key which authorized that key and keys which authorized the DeviceID key.```
+The keys provided in the ECT.`authority` field SHOULD include the key which signed the SPDM MEASUREMENTS response carrying the Evidence and keys which authorized that key as described in {{sec-authority}}.```
 
 # Security and Privacy Considerations {#sec-sec}
 
