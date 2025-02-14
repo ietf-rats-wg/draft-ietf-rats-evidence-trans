@@ -262,7 +262,7 @@ The Verifier SHALL also add the signer of each certificate which has authorized 
 
 Having each authority in a certificate path in the ECT `authority` field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.
 
-Each signer authority MUST be expressed using the COSE_Key varient of `$crypto-key-type-choice`.
+Each signer authority value MUST be represented using `tagged-cose-key-type`.
 
 # Transforming TCG Concise Evidence {#sec-ce-trans}
 
