@@ -1585,7 +1585,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
         </h3>
 <p id="section-3.1-1">The ECT authority field is an array of <code>$crypto-keys-type-choice</code>s.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">When adding Evidence to the ACS, the Verifier SHALL add the public key representing the signer of the element (for example the DICE certificate or SPDM MEASUREMENTS response) to this array.
-The Verifier SHALL also add the signer of each certificate which has authorized (either directly or indirectly) the signer of the element.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+The Verifier SHALL also add the signer of each certificate which has authorized the signer of the element.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.1-3">Having each authority in a certificate path in the ECT <code>authority</code> field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.1-4">Each signer authority value MUST be represented using <code>tagged-cose-key-type</code>.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 </section>

@@ -292,7 +292,7 @@ Table of Contents
    key representing the signer of the element (for example the DICE
    certificate or SPDM MEASUREMENTS response) to this array.  The
    Verifier SHALL also add the signer of each certificate which has
-   authorized (either directly or indirectly) the signer of the element.
+   authorized the signer of the element.
 
    Having each authority in a certificate path in the ECT authority
    field lets conditional endorsement conditions match multiple
