@@ -145,7 +145,7 @@ Verifiers supporting the DICE certificate extension Evidence SHOULD implement th
 
 ## DiceTcbInfo Transformation {#sec-tcb-info}
 
-This section defines transformation methods for two DICE certificate extensions DiceTcbInfo and DiceMultiTcbInfo.
+This section defines transformation methods for DICE certificate extensions DiceTcbInfo, DiceMultiTcbInfo, and DiceMultiTcbInfoComp.
 These extensions are identified by the following object identifiers:
 
 * tcg-dice-TcbInfo - "2.23.133.5.4.1"
