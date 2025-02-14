@@ -258,7 +258,7 @@ The completed ECT is added to the `ae` list.
 The ECT authority field is an array of `$crypto-keys-type-choice`s.
 
 When adding Evidence to the ACS, the Verifier SHALL add the public key representing the signer of the element (for example the DICE certificate or SPDM MEASUREMENTS response) to this array.
-The Verifier SHALL also add the signer of each certificate which has authorized (either directly or indirectly) the signer of the element.
+The Verifier SHALL also add the signer of each certificate which has authorized the signer of the element.
 
 Having each authority in a certificate path in the ECT `authority` field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.
 
