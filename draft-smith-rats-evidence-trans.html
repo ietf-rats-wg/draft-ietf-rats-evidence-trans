@@ -1054,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Draper &amp; Smith</td>
-<td class="center">Expires 15 August 2025</td>
+<td class="center">Expires 18 August 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-smith-rats-evidence-trans-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-02-11" class="published">11 February 2025</time>
+<time datetime="2025-02-14" class="published">14 February 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-08-15">15 August 2025</time></dd>
+<dd class="expires"><time datetime="2025-08-18">18 August 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1115,7 +1115,7 @@ This document specifies Evidence transformation methods for DICE and SPDM format
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 15 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1157,6 +1157,11 @@ This document specifies Evidence transformation methods for DICE and SPDM format
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-transforming-dice-certifica" class="internal xref">Transforming DICE Certificate Extension Evidence</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-authority-field-in-dice-spd" class="internal xref">Authority field in DICE/SPDM ECTs</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-transforming-tcg-concise-ev" class="internal xref">Transforming TCG Concise Evidence</a></p>
@@ -1568,13 +1573,23 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <span class="break"></span><dl class="olPercent" id="section-3-39">
 <dt>Step 4.</dt>
 <dd id="section-3-39.1">
-          <p id="section-3-39.1.1">The signer of the certificate containing DTI is copied to the ECT.<code>authority</code> field.
-The signer identity MUST be expressed using <code>$crypto-key-type-choice</code>.
-A profile or other arrangement is used to coordinate which <code>$crypto-key-type-choice</code> is used for both Evidence and Reference Values.<a href="#section-3-39.1.1" class="pilcrow">¶</a></p>
+          <p id="section-3-39.1.1">The ECT.<code>authority</code> field is set up based on the signer of the certificate containing DTI as described in <a href="#sec-authority" class="auto internal xref">Section 3.1</a>.<a href="#section-3-39.1.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>
 <p id="section-3-40">The completed ECT is added to the <code>ae</code> list.<a href="#section-3-40" class="pilcrow">¶</a></p>
+<div id="sec-authority">
+<section id="section-3.1">
+        <h3 id="name-authority-field-in-dice-spd">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-authority-field-in-dice-spd" class="section-name selfRef">Authority field in DICE/SPDM ECTs</a>
+        </h3>
+<p id="section-3.1-1">The ECT authority field is an array of <code>$crypto-keys-type-choice</code>s.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">When adding Evidence to the ACS, the Verifier SHALL add the public key representing the signer of that Evidence (for example the DICE certificate or SPDM MEASUREMENTS response) to the ECT authority field.
+The Verifier SHALL also add the signer of each certificate which has authorized the signer of the signing key.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">Having each authority in a certificate path in the ECT <code>authority</code> field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">Each signer authority value MUST be represented using <code>tagged-cose-key-type</code>.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-ce-trans">
@@ -1670,7 +1685,7 @@ For each <code>evidence-triple-record</code> an <code>ae</code> ECT is construct
 <span class="break"></span><dl class="olPercent" id="section-4.1-7">
 <dt>Step 4.</dt>
 <dd id="section-4.1-7.1">
-            <p id="section-4.1-7.1.1">The signer of the envelope containing CE is copied to the ECT.<code>authority</code> field.
+            <p id="section-4.1-7.1.1">The signer of the envelope containing CE is copied to the ECT.<code>authority</code> field as described in <a href="#sec-authority" class="auto internal xref">Section 3.1</a>.
 For example, a CE may be wrapped by an EAT token <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span> or DICE certificate <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>.
 The signer identity MUST be expressed using <code>$crypto-key-type-choice</code>.
 A profile or other arrangement is used to coordinate which <code>$crypto-key-type-choice</code> is used for both Evidence and Reference Values.<a href="#section-4.1-7.1.1" class="pilcrow">¶</a></p>
@@ -1873,6 +1888,7 @@ A profile or other arrangement is used to coordinate which <code>$crypto-key-typ
 <p id="section-5-3">The SPDM measurements are converted to <code>concise-evidence</code> which has a format that is similar to CoRIM <code>triples-map</code> (their semantics follows the matching rules described above).
 The TCG DICE Concise Evidence Binding for SPDM specification <span>[<a href="#TCG.CE" class="cite xref">TCG.CE</a>]</span> describes a process for converting the SPDM Measurement Block to Concise Evidence.
 Subsequently the transformation steps defined in <a href="#sec-ce-trans" class="auto internal xref">Section 4</a>.<a href="#section-5-3" class="pilcrow">¶</a></p>
+<p id="section-5-4">The keys provided in the ECT.<code>authority</code> field SHOULD include the key which signed the SPDM MEASUREMENTS response carrying the Evidence and keys which authorized that key as described in <a href="#sec-authority" class="auto internal xref">Section 3.1</a>.```<a href="#section-5-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-sec">

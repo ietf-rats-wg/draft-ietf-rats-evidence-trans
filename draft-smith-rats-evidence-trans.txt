@@ -5,8 +5,8 @@
 Remote ATtestation ProcedureS                                  A. Draper
 Internet-Draft                                                    Altera
 Intended status: Standards Track                                N. Smith
-Expires: 15 August 2025                                            Intel
-                                                        11 February 2025
+Expires: 18 August 2025                                            Intel
+                                                        14 February 2025
 
 
                         Evidence Transformations
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 August 2025.
+   This Internet-Draft will expire on 18 August 2025.
 
 Copyright Notice
 
@@ -64,6 +64,7 @@ Table of Contents
      1.1.  Terminology
    2.  Verifier Reconciliation
    3.  Transforming DICE Certificate Extension Evidence
+     3.1.  Authority field in DICE/SPDM ECTs
    4.  Transforming TCG Concise Evidence
      4.1.  Transforming the ce.evidence-triples
      4.2.  Transforming the ce.identity-triples
@@ -278,13 +279,28 @@ Table of Contents
       If _m_.notTcb = 1 AND _f_.notTcb = 0; *set*(ECT.element-
          list.element-map.measurement-values-map.flags.is-tcb = TRUE).
 
-   Step 4.  The signer of the certificate containing DTI is copied to
-            the ECT.authority field.  The signer identity MUST be
-            expressed using $crypto-key-type-choice.  A profile or other
-            arrangement is used to coordinate which $crypto-key-type-
-            choice is used for both Evidence and Reference Values.
+   Step 4.  The ECT.authority field is set up based on the signer of the
+            certificate containing DTI as described in Section 3.1.
 
    The completed ECT is added to the ae list.
+
+3.1.  Authority field in DICE/SPDM ECTs
+
+   The ECT authority field is an array of $crypto-keys-type-choices.
+
+   When adding Evidence to the ACS, the Verifier SHALL add the public
+   key representing the signer of that Evidence (for example the DICE
+   certificate or SPDM MEASUREMENTS response) to the ECT authority
+   field.  The Verifier SHALL also add the signer of each certificate
+   which has authorized the signer of the signing key.
+
+   Having each authority in a certificate path in the ECT authority
+   field lets conditional endorsement conditions match multiple
+   authorities or match an authority that is scoped more broadly than
+   the immediate signer of the Evidence artifact.
+
+   Each signer authority value MUST be represented using tagged-cose-
+   key-type.
 
 4.  Transforming TCG Concise Evidence
 
@@ -340,12 +356,13 @@ Table of Contents
       *copy*(ce.mval, ect.element-map.element-claims`)
 
    Step 4.  The signer of the envelope containing CE is copied to the
-            ECT.authority field.  For example, a CE may be wrapped by an
-            EAT token [I-D.ietf-rats-eat] or DICE certificate
-            [DICE.Attest].  The signer identity MUST be expressed using
-            $crypto-key-type-choice.  A profile or other arrangement is
-            used to coordinate which $crypto-key-type-choice is used for
-            both Evidence and Reference Values.
+            ECT.authority field as described in Section 3.1.  For
+            example, a CE may be wrapped by an EAT token
+            [I-D.ietf-rats-eat] or DICE certificate [DICE.Attest].  The
+            signer identity MUST be expressed using $crypto-key-type-
+            choice.  A profile or other arrangement is used to
+            coordinate which $crypto-key-type-choice is used for both
+            Evidence and Reference Values.
 
    Step 5.  If CE has a profile, the profile is converted to a $profile-
             type-choice then copied to the ECT.profile` field.
@@ -454,6 +471,10 @@ Table of Contents
    Binding for SPDM specification [TCG.CE] describes a process for
    converting the SPDM Measurement Block to Concise Evidence.
    Subsequently the transformation steps defined in Section 4.
+
+   The keys provided in the ECT.authority field SHOULD include the key
+   which signed the SPDM MEASUREMENTS response carrying the Evidence and
+   keys which authorized that key as described in Section 3.1.```
 
 6.  Security and Privacy Considerations
 
