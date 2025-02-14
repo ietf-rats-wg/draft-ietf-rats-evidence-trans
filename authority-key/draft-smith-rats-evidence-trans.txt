@@ -5,8 +5,8 @@
 Remote ATtestation ProcedureS                                  A. Draper
 Internet-Draft                                                    Altera
 Intended status: Standards Track                                N. Smith
-Expires: 16 August 2025                                            Intel
-                                                        12 February 2025
+Expires: 18 August 2025                                            Intel
+                                                        14 February 2025
 
 
                         Evidence Transformations
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 August 2025.
+   This Internet-Draft will expire on 18 August 2025.
 
 Copyright Notice
 
@@ -299,8 +299,8 @@ Table of Contents
    authorities or match an authority that is scoped more broadly than
    the immediate signer of the Evidence artifact.
 
-   Each signer authority MUST be expressed using the COSE_Key varient of
-   $crypto-key-type-choice.
+   Each signer authority value MUST be represented using tagged-cose-
+   key-type.
 
 4.  Transforming TCG Concise Evidence
 
