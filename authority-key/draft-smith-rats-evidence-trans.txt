@@ -390,9 +390,8 @@ Table of Contents
    Subsequently the transformation steps defined in Section 4.
 
    The keys provided in the ECT.authority field SHOULD include the key
-   which signed the SPDM MEASUREMENTS response carrying the Evidence as
-   described in Section 3.1, the DeviceID key which authorized that key
-   and keys which authorized the DeviceID key.```
+   which signed the SPDM MEASUREMENTS response carrying the Evidence and
+   keys which authorized that key as described in Section 3.1.```
 
 6.  Security and Privacy Considerations
 
