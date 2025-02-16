@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-13T01:34:57.581552+00:00",
+  "timestamp": "2025-02-16T01:41:04.114412+00:00",
   "repo": "ietf-rats-wg/draft-smith-rats-evidence-trans",
   "labels": [
     {
@@ -71,31 +71,39 @@
       "id": "I_kwDOMOnZXM6XWB2O",
       "title": "Use of parens surrounding cross-references",
       "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/issues/2",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "nedmsmith",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "I believe it is a document convention to surround cross-references with parens: e.g.: \r\n```\r\n({{my-cross-reference}})\r\n```\r\n\r\nA cleanup task is needed that fixes all the instances that don't conform to the convention.",
       "createdAt": "2024-09-20T15:46:54Z",
-      "updatedAt": "2024-09-20T15:46:54Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-02-14T20:21:25Z",
+      "closedAt": "2025-02-14T20:21:21Z",
+      "comments": [
+        {
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This doesn't appear to be a problem.",
+          "createdAt": "2025-02-14T20:21:22Z",
+          "updatedAt": "2025-02-14T20:21:22Z"
+        }
+      ]
     },
     {
       "number": 5,
       "id": "I_kwDOMOnZXM6ofhQD",
       "title": "Which key should be the authority for evidence from DICE/SPDM",
       "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/issues/5",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "andrew-draper",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Which key should be put into the authority entry of DICE/SPDM generated evidence?\n\nIt needs to be something which the verifier can match against, so it must be a global key rather than a device specific key.\n\nI suggest that the certificate chain root key authorising the DICE/SPDM evidence is used for this. If there are multiple certificate chains available then all root keys \n\nIt might be worth adding a section describing this.",
       "createdAt": "2025-02-03T08:59:07Z",
-      "updatedAt": "2025-02-10T22:06:00Z",
-      "closedAt": null,
+      "updatedAt": "2025-02-14T18:43:18Z",
+      "closedAt": "2025-02-14T18:43:17Z",
       "comments": [
         {
           "author": "nedmsmith",
@@ -124,6 +132,13 @@
           "body": "The CoRIM team determined that authorized-by in CoRIM statements should only apply to condition processing. The TCG spec has an additional semantic (which appears to affect corroboration behavior). Note that CoRIM says \n\n> \"If the ECTs match except for authority, the rv addition ECT authority is added to the ACS ECT authority.\"\n\n However, once corroboration is finalized, the original semantics of copying the direct signer of the evidence artifact into the ECT authority field isn't undone by the TCG spec. The TCG spec just defines criteria for accepting the RV artifact(s) not what the ending ECT should look like.\n\nThis spec needs to extend/modify the corroboration logic to include checking that the RV signer. \n\nIf the evidence (without authorized-by) directs the cert path keys be included in ECT authority. Then it is reasonable for CoRIM corroboration algorithm to say that: \"...the ECTs match if the Evidence ECT authority overlaps (at least by one entry) the RVP authority\". \n\nThe missing CoRIM peices needed to support `authorized-by` in Evidence include (a) some place in the ECT to put the delegate RVP authorities. It doesn't make sense to put them in the ECT.`authority` because the delegate RVP didn't sign any evidence. (b) the corroboration logic would need to check the rv.`authority` against the ECT.`delegate-rvp-authority` before concluding that corroboration is valid.\n\nWithout making modifications (a) and (b) to CoRIM. I don't see how the TCG concise-evidence authorized-by processing can be achieved. Maybe this spec should document the dependeny but in a non-normative way? Making it normative here would create a scenario for competing specs. It would fall back to the TCG  (or for a vendor profile) to document an alternative behavior IMO.",
           "createdAt": "2025-02-10T19:08:46Z",
           "updatedAt": "2025-02-10T22:06:00Z"
+        },
+        {
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closed by PR #8 ",
+          "createdAt": "2025-02-14T18:43:17Z",
+          "updatedAt": "2025-02-14T18:43:17Z"
         }
       ]
     },
@@ -139,7 +154,7 @@
       "labels": [],
       "body": "If there are multiple attesters then the Verifier needs a way to separate evidence from them.\n\nThe instance field should be filled in with a value derived from the deviceid key to ensure that evidence from each verifier is kept separate.",
       "createdAt": "2025-02-03T09:04:10Z",
-      "updatedAt": "2025-02-10T22:26:24Z",
+      "updatedAt": "2025-02-14T18:58:11Z",
       "closedAt": null,
       "comments": [
         {
@@ -204,6 +219,13 @@
           "body": "> > The DiceTcbInfo.type field is an OCTET STRING: \"type \u2013 a machine readable description of the measurement.\"\n> \n> We have said that `DiceTcbInfo.type` maps to a class identifier, so I don't think that would work as an instance identifier.\n\nDice also defines `TcgUeid` extension that asserts a unique enough identifier. It may be reasonable to use this to populate the `instance-id`.\n\nAlso, Dice `cmw` extension can be used to put a `concise-evidence` in a certificate where the `instance-id` can be populated directly. \n\nIf a DeviceID cert includes one of these, then it is reasonable for a conditional endorsement to look for an instance-id that is device specific. \n\nIf there is automated behavior that generates instance identifiers in ACSs then that creates a hurdle for entities that want privacy controls where they want ACSs to NOT contain instance information. ",
           "createdAt": "2025-02-10T22:19:07Z",
           "updatedAt": "2025-02-10T22:26:24Z"
+        },
+        {
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Using the DICE UEID extension seems like a good solution to the problem. If noone disagrees then I'll put together a PR which says something like this:\n\n1. When adding evidence from a DICE certificate, if that certificate includes a ueid extension, then set ECT.environment.instance field to the contents of that Ueid extension.\n2. When adding evidence from SPDM, if the certificate whose subject key signed the evidence includes a Ueid extension, then set ECT.environment.instance field to the contents of that Ueid extension\n\nThis gives the Attester the choice of whether or not to include an instance field in the ECT, which should address privacy issues.\n\nIt also handles the case where the certificate chain branches, for example if an entity higher up in a certificate chain issues certificates for multiple entities of the same time lower down the chain (eg a VM manager authorizing chains for multiple VMS). In that case the issuing identity can ensure that it has a different UEID from the entities below it, and that different entities below it have distinct UEIDs.",
+          "createdAt": "2025-02-14T18:58:10Z",
+          "updatedAt": "2025-02-14T18:58:10Z"
         }
       ]
     },
@@ -358,7 +380,7 @@
       "id": "PR_kwDOMOnZXM6KqDzj",
       "title": "Clarify which keys are present in ECT authority field",
       "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/pull/8",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "andrew-draper",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -367,17 +389,19 @@
       "labels": [],
       "body": "Text to answer issue #5. This text sets the authority field to include global keys at/near the top of the certificate chain.",
       "createdAt": "2025-02-10T14:48:56Z",
-      "updatedAt": "2025-02-12T15:18:29Z",
+      "updatedAt": "2025-02-14T18:22:05Z",
       "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "6d1b9df291af2d0eca4691912522d387a124c39f",
       "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "headRefName": "authority-key",
-      "headRefOid": "4e2c205b801dd9133430d14480226a53c918d6d8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "2dfc2da53017abb117503e1fc6dbd2710fdb9f0e",
+      "closedAt": "2025-02-14T18:21:59Z",
+      "mergedAt": "2025-02-14T18:21:59Z",
+      "mergedBy": "andrew-draper",
+      "mergeCommit": {
+        "oid": "dedf4f8142ac7d1d944bc2e8192de041719f2bd7"
+      },
       "comments": [],
       "reviews": [
         {
@@ -671,8 +695,177 @@
               "updatedAt": "2025-02-12T15:17:04Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6b73Zq",
+          "commit": {
+            "abbreviatedOid": "4e2c205"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "See suggested change. Otherwise, I'm OK to approve.",
+          "createdAt": "2025-02-13T20:34:41Z",
+          "updatedAt": "2025-02-13T20:35:39Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "```suggestion\r\nEach signer authority value MUST be represented using `tagged-cose-key-type`.\r\n```\r\nThis wording allows for CoRIM to document key translation requirements while not overstepping into CoRIM normative.",
+              "createdAt": "2025-02-13T20:34:41Z",
+              "updatedAt": "2025-02-14T18:08:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6cEwQz",
+          "commit": {
+            "abbreviatedOid": "4e2c205"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-14T18:07:10Z",
+          "updatedAt": "2025-02-14T18:07:11Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nThe Verifier SHALL also add the signer of each certificate which has authorized the signer of the element.\r\n```",
+              "createdAt": "2025-02-14T18:07:10Z",
+              "updatedAt": "2025-02-14T18:07:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6cEw5i",
+          "commit": {
+            "abbreviatedOid": "4e2c205"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-14T18:08:09Z",
+          "updatedAt": "2025-02-14T18:08:09Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "```suggestion\r\nEach signer authority MUST be expressed using `$crypto-key-type-choice`.\r\n```",
+              "createdAt": "2025-02-14T18:08:09Z",
+              "updatedAt": "2025-02-14T18:08:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6cEzST",
+          "commit": {
+            "abbreviatedOid": "ad663c0"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "LGTM\r\n",
+          "createdAt": "2025-02-14T18:10:05Z",
+          "updatedAt": "2025-02-14T18:10:05Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6cE1Bq",
+          "commit": {
+            "abbreviatedOid": "ad663c0"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-14T18:14:06Z",
+          "updatedAt": "2025-02-14T18:14:07Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "```suggestion\r\nThe keys provided in the ECT.`authority` field SHOULD include the key which signed the SPDM MEASUREMENTS response carrying the Evidence and keys which authorized that key as described in {{sec-authority}}.```\r\n```",
+              "createdAt": "2025-02-14T18:14:06Z",
+              "updatedAt": "2025-02-14T18:14:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6cE3kK",
+          "commit": {
+            "abbreviatedOid": "ad663c0"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-14T18:20:19Z",
+          "updatedAt": "2025-02-14T18:20:20Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nWhen adding Evidence to the ACS, the Verifier SHALL add the public key representing the signer of that Evidence (for example the DICE certificate or SPDM MEASUREMENTS response) to the ECT authority field.\r\nThe Verifier SHALL also add the signer of each certificate which has authorized the signer of the signing key.\r\n```",
+              "createdAt": "2025-02-14T18:20:19Z",
+              "updatedAt": "2025-02-14T18:20:20Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 9,
+      "id": "PR_kwDOMOnZXM6LS36a",
+      "title": "Update draft-smith-rats-evidence-trans.md",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/pull/9",
+      "state": "MERGED",
+      "author": "nedmsmith",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "fix wording to include DiceMultiTcbInfoComp.",
+      "createdAt": "2025-02-14T20:12:46Z",
+      "updatedAt": "2025-02-14T20:13:32Z",
+      "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "bdb18623273d8309ddfdab353cac7c3269ba0380",
+      "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "headRefName": "ned-2",
+      "headRefOid": "3b5ad921ebcf40182203afee404aab7b45cb52fe",
+      "closedAt": "2025-02-14T20:13:27Z",
+      "mergedAt": "2025-02-14T20:13:27Z",
+      "mergedBy": "nedmsmith",
+      "mergeCommit": {
+        "oid": "a1ea311c373e7a81e74743ef8e5e56348522afaa"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 10,
+      "id": "PR_kwDOMOnZXM6LS-MK",
+      "title": "Added clearer wording for how the cert chain authority is processed",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/pull/10",
+      "state": "OPEN",
+      "author": "nedmsmith",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "nedmsmith"
+      ],
+      "labels": [],
+      "body": "Adding clearer wording for how the cert chain authority is processed.",
+      "createdAt": "2025-02-14T20:31:34Z",
+      "updatedAt": "2025-02-14T20:32:17Z",
+      "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "a1ea311c373e7a81e74743ef8e5e56348522afaa",
+      "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "headRefName": "mns-1",
+      "headRefOid": "99a00bfed5af36d6b4d79e8d8dbfcd5405a8ee9e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
