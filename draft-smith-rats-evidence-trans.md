@@ -49,18 +49,6 @@ normative:
     date: January 2025
     target: https://trustedcomputinggroup.org/wp-content/uploads/DICE-Attestation-Architecture-Version-1.2-rc-1_9January25.pdf
   RFC9334: rats-arch
-  X.690:
-    -: x690
-    title: >
-      Information technology — ASN.1 encoding rules:
-      Specification of Basic Encoding Rules (BER), Canonical Encoding
-      Rules (CER) and Distinguished Encoding Rules (DER)
-    author:
-      org: International Telecommunications Union
-    date: 2015-08
-    seriesinfo:
-      ITU-T: Recommendation X.690
-    target: https://www.itu.int/rec/T-REC-X.690
   SPDM:
     -: spdm
     title: Security Protocol and Data Model (SPDM)
@@ -81,24 +69,12 @@ normative:
 
 informative:
   RFC8610: cddl
-  RFC9090: cbor-oids
   STD96:
     -: cose
     =: RFC9052
   STD94:
     -: cbor
     =: RFC8949
-  STD66:
-    -: uri
-    =: RFC3986
-  RFC7942:
-  DICE.Layer:
-    title: DICE Layering Architecture
-    author:
-      org: Trusted Computing Group
-    seriesinfo: Version 1.0, Revision 0.19
-    date: July 2020
-    target: https://trustedcomputinggroup.org/wp-content/uploads/DICE-Layering-Architecture-r19_pub.pdf
   I-D.ietf-rats-eat: eat
   RFC5280: x509
 
@@ -136,7 +112,7 @@ In this document, an Evidence structure describes an external representation.
 There are many possible Evidence structures including {{-eat}} and {{-x509}}.
 The bytes composing the CoRIM data structure are the same either way.
 
-The terminology from CoRIM {{-corim}}, CBOR {{-cbor}}, CDDL {{-cddl}} and COSE {{-cose}} applies.
+The terminology from CoRIM {{-corim}}, {{-dice-corim}}, CBOR {{-cbor}}, CDDL {{-cddl}} and COSE {{-cose}} applies.
 
 {::boilerplate bcp14}
 
