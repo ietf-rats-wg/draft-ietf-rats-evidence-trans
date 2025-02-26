@@ -77,6 +77,7 @@ informative:
     =: RFC8949
   I-D.ietf-rats-eat: eat
   RFC5280: x509
+  RFC7942:
 
 entity:
   SELF: "RFCthis"
