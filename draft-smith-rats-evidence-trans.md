@@ -492,6 +492,10 @@ Henk Birkholz
 
 Email: henk.birkholz@ietf.contact
 
+Fabrizio D'Amato
+
+Email: fabrizio.damato@amd.com
+
 Yogesh Deshpande
 
 Email: yogesh.deshpande@arm.com
@@ -507,5 +511,5 @@ Email: dionnaglaze@google.com
 # Acknowledgments
 {:unnumbered}
 
-The authors would like to thank James D. Beaney, Francisco J. Chinchilla, Fabrizio D'Amato, Vincent R. Scarlata, and Piotr Zmijewski for review feedback.
+The authors would like to thank James D. Beaney, Francisco J. Chinchilla, Vincent R. Scarlata, and Piotr Zmijewski for review feedback.
 
