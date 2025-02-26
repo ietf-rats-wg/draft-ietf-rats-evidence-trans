@@ -738,8 +738,8 @@ Contributors
 Acknowledgments
 
    The authors would like to thank James D.  Beaney, Francisco J.
-   Chinchilla, Vincent R.  Scarlata, and Piotr Zmijewski for review
-   feedback.
+   Chinchilla, Fabrizio D'Amato, Vincent R.  Scarlata, and Piotr
+   Zmijewski for review feedback.
 
 Authors' Addresses
 
