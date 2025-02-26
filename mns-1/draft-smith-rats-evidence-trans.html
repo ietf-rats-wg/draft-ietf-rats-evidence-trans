@@ -8,12 +8,12 @@
 <meta content="Andrew Draper" name="author">
 <meta content="Ned Smith" name="author">
 <meta content="
-       Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester and therefore to decide whether to engage in secure interactions with it - or not.
-Evidence about trustworthiness can be rather complex and it is deemed unrealistic that every Relying Party is capable of the appraisal of Evidence.
-Therefore that burden is typically offloaded to a Verifier.
-In order to conduct Evidence appraisal, a Verifier requires fresh Evidence from an Attester.
-Before a Verifier can appraise Evidence it may require transformation to an internal representation.
-This document specifies Evidence transformation methods for DICE and SPDM formats to the CoRIM internal representation. 
+       Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo, concise evidence, and SPDM measurements block structures.
+These Evidence structures are converted to the CoRIM internal representation and follow CoRIM defined appraisal procedures. 
     " name="description">
 <meta content="xml2rfc 3.27.0" name="generator">
 <meta content="Evidence, RATS, attestation, verifier, supply chain, RIM, appraisal" name="keyword">
@@ -1089,12 +1089,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Evidence Transformations</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester and therefore to decide whether to engage in secure interactions with it - or not.
-Evidence about trustworthiness can be rather complex and it is deemed unrealistic that every Relying Party is capable of the appraisal of Evidence.
-Therefore that burden is typically offloaded to a Verifier.
-In order to conduct Evidence appraisal, a Verifier requires fresh Evidence from an Attester.
-Before a Verifier can appraise Evidence it may require transformation to an internal representation.
-This document specifies Evidence transformation methods for DICE and SPDM formats to the CoRIM internal representation.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo, concise evidence, and SPDM measurements block structures.
+These Evidence structures are converted to the CoRIM internal representation and follow CoRIM defined appraisal procedures.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
