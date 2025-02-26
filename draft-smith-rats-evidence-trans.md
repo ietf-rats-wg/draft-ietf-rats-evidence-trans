@@ -94,25 +94,26 @@ These Evidence structures are converted to the CoRIM internal representation and
 
 # Introduction {#sec-intro}
 
-Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester and therefore to decide whether to engage in secure interactions with it - or not.
-Evidence about trustworthiness can be rather complex and it is deemed unrealistic that every Relying Party is capable of the appraisal of Evidence.
-Therefore that burden is typically offloaded to a Verifier.
-In order to conduct Evidence appraisal, a Verifier requires fresh Evidence from an Attester.
-Before a Verifier can appraise Evidence it may require transformation to an internal representation.
-This document specifies Evidence transformation methods for DICE and SPDM formats to the CoRIM internal representation.
+Remote Attestation Procedures (RATS) {{-rats-arch}} enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo {{-dice-attest}}, concise evidence {{-ce}}, and SPDM measurements block {{-spdm}} structures.
+These Evidence structures are converted to the CoRIM internal representation (Section 2.1 {{-corim}}) and follow CoRIM defined appraisal procedures (Section 8 {{-corim}}).
 
 ## Terminology
 
 This document uses terms and concepts defined by the RATS architecture.
-For a complete glossary see {{Section 4 of -rats-arch}}.
-Addintional RATS architecture is found in {{-rats-endorsements}}.
+For a complete glossary. See {{Section 4 of -rats-arch}}.
+Addintional RATS architecture and terminology is found in {{-rats-endorsements}}.
 RATS architecture terms and concepts are always referenced as proper nouns, i.e., with Capital Letters.
+Additional terminology from CoRIM {{-corim}}, {{-dice-corim}}, CBOR {{-cbor}}, CDDL {{-cddl}} and COSE {{-cose}} may also apply.
 
-In this document, an Evidence structure describes an external representation.
-There are many possible Evidence structures including {{-eat}} and {{-x509}}.
-The bytes composing the CoRIM data structure are the same either way.
+In this document, Evidence structures define the "external representation".
+There are many possible Evidence structures including those mentioned above.
 
-The terminology from CoRIM {{-corim}}, {{-dice-corim}}, CBOR {{-cbor}}, CDDL {{-cddl}} and COSE {{-cose}} applies.
+The CoRIM specification defines an "internal representation" for Evidence (Section 8.2.1.3 {{-corim}}).
+This document defines mapping functions from external to internal representations also known as "transformation".
 
 {::boilerplate bcp14}
 
