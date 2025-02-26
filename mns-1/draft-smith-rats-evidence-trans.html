@@ -1215,25 +1215,26 @@ These Evidence structures are converted to the CoRIM internal representation and
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester and therefore to decide whether to engage in secure interactions with it - or not.
-Evidence about trustworthiness can be rather complex and it is deemed unrealistic that every Relying Party is capable of the appraisal of Evidence.
-Therefore that burden is typically offloaded to a Verifier.
-In order to conduct Evidence appraisal, a Verifier requires fresh Evidence from an Attester.
-Before a Verifier can appraise Evidence it may require transformation to an internal representation.
-This document specifies Evidence transformation methods for DICE and SPDM formats to the CoRIM internal representation.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">Remote Attestation Procedures (RATS) <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span> enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>, concise evidence <span>[<a href="#TCG.CE" class="cite xref">TCG.CE</a>]</span>, and SPDM measurements block <span>[<a href="#SPDM" class="cite xref">SPDM</a>]</span> structures.
+These Evidence structures are converted to the CoRIM internal representation (Section 2.1 <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) and follow CoRIM defined appraisal procedures (Section 8 <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).<a href="#section-1-1" class="pilcrow">¶</a></p>
 <div id="terminology">
 <section id="section-1.1">
         <h3 id="name-terminology">
 <a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
         </h3>
 <p id="section-1.1-1">This document uses terms and concepts defined by the RATS architecture.
-For a complete glossary see <span><a href="https://rfc-editor.org/rfc/rfc9334#section-4" class="relref">Section 4</a> of [<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>.
-Addintional RATS architecture is found in <span>[<a href="#I-D.ietf-rats-endorsements" class="cite xref">I-D.ietf-rats-endorsements</a>]</span>.
-RATS architecture terms and concepts are always referenced as proper nouns, i.e., with Capital Letters.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1-2">In this document, an Evidence structure describes an external representation.
-There are many possible Evidence structures including <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span> and <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.
-The bytes composing the CoRIM data structure are the same either way.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
-<p id="section-1.1-3">The terminology from CoRIM <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>, <span>[<a href="#DICE.CoRIM" class="cite xref">DICE.CoRIM</a>]</span>, CBOR <span>[<a href="#STD94" class="cite xref">STD94</a>]</span>, CDDL <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> and COSE <span>[<a href="#STD96" class="cite xref">STD96</a>]</span> applies.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+For a complete glossary. See <span><a href="https://rfc-editor.org/rfc/rfc9334#section-4" class="relref">Section 4</a> of [<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>.
+Addintional RATS architecture and terminology is found in <span>[<a href="#I-D.ietf-rats-endorsements" class="cite xref">I-D.ietf-rats-endorsements</a>]</span>.
+RATS architecture terms and concepts are always referenced as proper nouns, i.e., with Capital Letters.
+Additional terminology from CoRIM <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>, <span>[<a href="#DICE.CoRIM" class="cite xref">DICE.CoRIM</a>]</span>, CBOR <span>[<a href="#STD94" class="cite xref">STD94</a>]</span>, CDDL <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> and COSE <span>[<a href="#STD96" class="cite xref">STD96</a>]</span> may also apply.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">In this document, Evidence structures define the "external representation".
+There are many possible Evidence structures including those mentioned above.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<p id="section-1.1-3">The CoRIM specification defines an "internal representation" for Evidence (Section 8.2.1.3 <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).
+This document defines mapping functions from external to internal representations also known as "transformation".<a href="#section-1.1-3" class="pilcrow">¶</a></p>
 <p id="section-1.1-4">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
 NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
 "MAY", and "OPTIONAL" in this document are to be interpreted as

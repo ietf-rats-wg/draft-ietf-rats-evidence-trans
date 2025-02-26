@@ -81,34 +81,39 @@ Table of Contents
 
 1.  Introduction
 
-   Remote Attestation Procedures (RATS) enable Relying Parties to assess
-   the trustworthiness of a remote Attester and therefore to decide
-   whether to engage in secure interactions with it - or not.  Evidence
-   about trustworthiness can be rather complex and it is deemed
-   unrealistic that every Relying Party is capable of the appraisal of
-   Evidence.  Therefore that burden is typically offloaded to a
-   Verifier.  In order to conduct Evidence appraisal, a Verifier
-   requires fresh Evidence from an Attester.  Before a Verifier can
-   appraise Evidence it may require transformation to an internal
-   representation.  This document specifies Evidence transformation
-   methods for DICE and SPDM formats to the CoRIM internal
-   representation.
+   Remote Attestation Procedures (RATS) [RFC9334] enable Relying Parties
+   to assess the trustworthiness of a remote Attester to decide if
+   continued interaction is warrented.  Evidence structures can vary
+   making appraisals challenging for Verifiers.  Verifiers need to
+   understand Evidence encoding formats and some of the Evidence
+   semantics to appraise it.  Consequently, Evidence may require format
+   transformation to an internal representation that preserves original
+   semantics.  This document specifies Evidence transformation methods
+   for DiceTcbInfo [DICE.Attest], concise evidence [TCG.CE], and SPDM
+   measurements block [SPDM] structures.  These Evidence structures are
+   converted to the CoRIM internal representation (Section 2.1
+   [I-D.ietf-rats-corim]) and follow CoRIM defined appraisal procedures
+   (Section 8 [I-D.ietf-rats-corim]).
 
 1.1.  Terminology
 
    This document uses terms and concepts defined by the RATS
-   architecture.  For a complete glossary see Section 4 of [RFC9334].
-   Addintional RATS architecture is found in
+   architecture.  For a complete glossary.  See Section 4 of [RFC9334].
+   Addintional RATS architecture and terminology is found in
    [I-D.ietf-rats-endorsements].  RATS architecture terms and concepts
    are always referenced as proper nouns, i.e., with Capital Letters.
+   Additional terminology from CoRIM [I-D.ietf-rats-corim],
+   [DICE.CoRIM], CBOR [STD94], CDDL [RFC8610] and COSE [STD96] may also
+   apply.
 
-   In this document, an Evidence structure describes an external
-   representation.  There are many possible Evidence structures
-   including [I-D.ietf-rats-eat] and [RFC5280].  The bytes composing the
-   CoRIM data structure are the same either way.
+   In this document, Evidence structures define the "external
+   representation".  There are many possible Evidence structures
+   including those mentioned above.
 
-   The terminology from CoRIM [I-D.ietf-rats-corim], [DICE.CoRIM], CBOR
-   [STD94], CDDL [RFC8610] and COSE [STD96] applies.
+   The CoRIM specification defines an "internal representation" for
+   Evidence (Section 8.2.1.3 [I-D.ietf-rats-corim]).  This document
+   defines mapping functions from external to internal representations
+   also known as "transformation".
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
