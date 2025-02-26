@@ -129,7 +129,7 @@ Table of Contents
 2.  Verifier Reconciliation
 
    This document assumes the reader is familiar with Verifier
-   Reconsiliation as described in Section 2 of [I-D.ietf-rats-corim].
+   reconciliation as described in Section 2 of [I-D.ietf-rats-corim].
    It describes how a Verifier should process the CoRIM to enable CoRIM
    authors to convey their intended meaning and how a Verifier
    reconciles its various inputs.  Evidence is one of its inputs.  The
