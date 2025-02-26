@@ -135,16 +135,22 @@ This section defines how Evidence from an X.509 certificate {{-x509}} containing
 
 Verifiers supporting the DICE certificate Evidence extensions SHOULD implement this transformation.
 
-This document defines transformation methods for two DICE certificate extensions DiceTcbInfo and DiceMultiTcbInfo.
+## DiceTcbInfo Transformation {#sec-tcb-info}
+
+This section defines transformation methods for DICE certificate extensions DiceTcbInfo, DiceMultiTcbInfo, and DiceMultiTcbInfoComp.
+
 These extensions are identified by the following object identifiers:
 
 * tcg-dice-TcbInfo - "2.23.133.5.4.1"
 
 * tcg-dice-MultiTcbInfo - "2.23.133.5.4.5"
 
+* tcg-dice-MultiTcbInfoComp - "2.23.133.5.4.8"
+
 Each DiceTcbInfo entry in a MultiTcbInfo is converted to a CoRIM ECT (see {{Section 8.2.1 of -corim}}) using the transformation steps in this section.
 Each DiceMultiTcbInfo entry is independent of the others such that each is transformed to a separate ECT entry.
 A list of Evidence ECTs (i.e., `ae = [ + ECT]`) is constructed using CoRIM attestation evidence internal representation (see {{Section 8.2.1.1 of -corim}}).
+Each DiceMultiTcbInfoComp entry is converted to a DiceMultiTcbInfo entry then processed as a DiceMultiTcbInfo.
 
 For each DiceTcbInfo (DTI) entry in a DiceMultiTcbInfo allocate an ECT structure.
 
@@ -226,9 +232,42 @@ The binary representation of DTI.`type` MUST be equivalent to the binary represe
 > > If _m_.`notTcb` = 1 AND _f_.`notTcb` = 0; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-tcb` = TRUE).
 
 {: dtt-enum}
+
 * The ECT.`authority` field is set up based on the signer of the certificate containing DTI as described in {{sec-authority}}.
 
 The completed ECT is added to the `ae` list.
+
+## DiceUeid Transformation {#sec-ueid}
+
+This section defines the transformation method for the DiceUeid certificate extension.
+This extension is identified by the following object identifier:
+
+* tcg-dice-Ueid - "2.23.133.5.4.4"
+
+{:ueid-enum: counter="ueid" style="format Step %d."}
+
+{: ueid-enum}
+* An `ae` entry is allocated.
+
+* The `cmtype` of the ECT is set to `evidence`.
+
+* The DiceUeid entry populates the `ae` ECT `environment-map`.`instance-id`.`tagged-ueid-type`.
+The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to `ae`.`environment-map`.`instance-id`.
+
+* The ECT.`authority` field is set up based on the signer of the certificate containing DiceUeid as described in {{sec-authority}}.
+
+The completed ECT is added to the `ae` list.
+
+## DiceConceptualMessageWrapper Transformation {#sec-cmw}
+
+This section defines the transformation method for the DiceConceptualMessageWrapper certificate extension.
+This extension is identified by the following object identifier:
+
+* tcg-dice-Ueid - "2.23.133.5.4.9"
+
+The DiceConceptualMessageWrapper entry OCTET STRING may contain a CBOR array, JSON array, or CBOR tagged value.
+If the entry contains a CBOR tag value of #6.571 or #6.1668557429, or a Content ID of 10571, or a Media Type of "application/ce+cbor",
+the contents are transformed according to {{sec-ce-trans}}.
 
 ## Authority field in DICE/SPDM ECTs {#sec-authority}
 
@@ -388,9 +427,53 @@ Subsequently the transformation steps defined in {{sec-ce-trans}}.
 
 The keys provided in the ECT.`authority` field SHOULD include the key which signed the SPDM MEASUREMENTS response carrying the Evidence and keys which authorized that key as described in {{sec-authority}}.```
 
+# Implementation Status
+
+This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft,
+and is based on a proposal described in {{RFC7942}}.
+The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs.
+Please note that the listing of any individual implementation here does not imply endorsement by the IETF.
+Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors.
+This is not intended as, and must not be construed to be, a catalogue of available implementations or their features.
+Readers are advised to note that other implementations may exist.
+
+According to {{RFC7942}}, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code,
+which may serve as Evidence of valuable experimentation and feedback that have made the implemented protocols more mature.
+It is up to the individual working groups to use this information as they see fit".
+
 # Security and Privacy Considerations {#sec-sec}
 
-There are no security and privacy considerations.
+Evidence appraisal is at the core of any RATS protocol flow, mediating all interactions between Attesters and their Relying Parties.
+The Verifier is effectively part of the Attesters' and Relying Parties' trusted computing base (TCB).
+Any mistake in the appraisal process could have security implications.
+For instance, it could lead to the subversion of an access control function, which creates a chance for privilege escalation.
+
+Therefore, the Verifier’s code and configuration, especially those of the CoRIM processor, are primary security assets that must be built and maintained as securely as possible.
+
+The protection of both the Attester and Verifier systems should be considered throughout their entire lifecycle, from design to operation.
+This includes the following aspects:
+
+- Minimizing implementation complexity (see also {{Section 6.1 of -rats-endorsements}});
+- Using memory-safe programming languages;
+- Using secure defaults;
+- Minimizing the attack surface by avoiding unnecessary features that could be exploited by attackers;
+- Applying the principle of least privilege to the system's users;
+- Minimizing the potential impact of security breaches by implementing separation of duties in both the software and operational architecture;
+- Conducting regular, automated audits and reviews of the system, such as ensuring that users' privileges are correctly configured and that any new code has been audited and approved by independent parties;
+- Failing securely in the event of errors to avoid compromising the security of the system.
+
+The appraisal process should be auditable and reproducible.
+The integrity of the code and data during execution should be made an explicit objective, for example ensuring that the appraisal functions are computed in an attestable trusted execution environment (TEE).
+
+The integrity of public and private key material and the secrecy of private key material must be ensured at all times.
+This includes key material carried in attestation key triples and key material used to assert or verify the authority of triples (such as public keys that identify trusted supply chain actors).
+For more detailed information on protecting Trust Anchors, refer to {{Section 12.4 of -rats-arch}}.
+
+The Verifier should use cryptographically protected, mutually authenticated secure channels to all its trusted input sources (i.e., Attesters, Endorsers, RVPs, Verifier Owners).
+The Attester should use cryptographically protected, mutually authenticated secure channels to all its trusted input sources (i.e., Verifiers, Relying Parties).
+These links must reach as deep as possible - possibly terminating within the Attesting Environment of an Attester or within the appraisal session context of a Verifier - to avoid man-in-the-middle attacks.
+Also consider minimizing the use of intermediaries: each intermediary becomes another party that needs to be trusted and therefore factored in the Attesters and Relying Parties' TCBs.
+Refer to {{Section 12.2 of -rats-arch}} for information on Conceptual Messages protection.
 
 # IANA Considerations {#sec-iana-cons}
 
