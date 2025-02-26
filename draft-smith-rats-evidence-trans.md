@@ -507,5 +507,5 @@ Email: dionnaglaze@google.com
 # Acknowledgments
 {:unnumbered}
 
-The authors would like to thank James D. Beaney, Francisco J. Chinchilla, Vincent R. Scarlata, and Piotr Zmijewski for review feedback.
+The authors would like to thank James D. Beaney, Francisco J. Chinchilla, Fabrizio D'Amato, Vincent R. Scarlata, and Piotr Zmijewski for review feedback.
 
