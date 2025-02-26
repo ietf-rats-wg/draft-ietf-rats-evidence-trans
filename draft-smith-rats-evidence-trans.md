@@ -131,9 +131,9 @@ Other internal representations are possible but out of scope for this document.
 
 # Transforming DICE Certificate Extension Evidence {#sec-dice-trans}
 
-This section defines how Evidence from an X.509 certificate containing a DICE certificate extension {{-dice-attest}} is transformed into an internal representation that can be processed by Verifiers.
+This section defines how Evidence from an X.509 certificate {{-x509}} containing a DICE certificate extension {{-dice-attest}} is transformed into an internal representation that can be processed by Verifiers.
 
-Verifiers supporting the DICE certificate extension Evidence SHOULD implement this transformation.
+Verifiers supporting the DICE certificate Evidence extensions SHOULD implement this transformation.
 
 This document defines transformation methods for two DICE certificate extensions DiceTcbInfo and DiceMultiTcbInfo.
 These extensions are identified by the following object identifiers:
