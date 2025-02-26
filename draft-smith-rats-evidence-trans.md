@@ -110,11 +110,12 @@ Addintional RATS architecture and terminology is found in {{-rats-endorsements}}
 RATS architecture terms and concepts are always referenced as proper nouns, i.e., with Capital Letters.
 Additional terminology from CoRIM {{-corim}}, {{-dice-corim}}, CBOR {{-cbor}}, CDDL {{-cddl}} and COSE {{-cose}} may also apply.
 
-In this document, Evidence structures define the "external representation".
+In this document, Evidence structures are expressed in their respective "external representations".
 There are many possible Evidence structures including those mentioned above.
 
 The CoRIM specification defines an "internal representation" for Evidence (Section 8.2.1.3 {{-corim}}).
-This document defines mapping functions from external to internal representations also known as "transformation".
+This document defines mapping operations that convert from an external representation to an internal representation.
+The conversion steps are also known as "transformation".
 
 {::boilerplate bcp14}
 
