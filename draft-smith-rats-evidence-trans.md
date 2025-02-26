@@ -119,15 +119,15 @@ This document defines mapping functions from external to internal representation
 
 # Verifier Reconciliation {#sec-verifier-rec}
 
-This specification assumes the reader is familiar with Verifier Reconsiliation as described in {{Section 2 of -corim}}.
+This document assumes the reader is familiar with Verifier Reconsiliation as described in {{Section 2 of -corim}}.
 It describes how a Verifier should process the CoRIM to enable CoRIM authors to convey their intended meaning and how a Verifier reconciles its various inputs.
 Evidence is one of its inputs.
 The Verifier is expected to create an internal representation from an external representation.
 By using an internal representation, the Verifier processes Evidence inputs such that they can be appraised consistently.
 
-This specification defines format transformations for Evidence in DICE {{-dice-attest}}, SPDM {{-spdm}}, and concise evidence {{-ce}} formats that are transformed into a Verifier's internal representation.
-This specification uses the CoMID internal representation ({{Section 8.2.1 of -corim}}) as the transformation target.
-Other internal representations are possible but out of scope for this specification.
+This document defines format transformations for Evidence in DICE {{-dice-attest}}, SPDM {{-spdm}}, and concise evidence {{-ce}} formats that are transformed into a Verifier's internal representation.
+This document uses the CoMID internal representation ({{Section 8.2.1 of -corim}}) as the transformation target.
+Other internal representations are possible but out of scope for this document.
 
 # Transforming DICE Certificate Extension Evidence {#sec-dice-trans}
 
@@ -135,7 +135,7 @@ This section defines how Evidence from an X.509 certificate containing a DICE ce
 
 Verifiers supporting the DICE certificate extension Evidence SHOULD implement this transformation.
 
-This specification defines transformation methods for two DICE certificate extensions DiceTcbInfo and DiceMultiTcbInfo.
+This document defines transformation methods for two DICE certificate extensions DiceTcbInfo and DiceMultiTcbInfo.
 These extensions are identified by the following object identifiers:
 
 * tcg-dice-TcbInfo - "2.23.133.5.4.1"
