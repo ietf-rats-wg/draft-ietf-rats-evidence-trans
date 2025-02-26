@@ -110,14 +110,15 @@ Table of Contents
    [DICE.CoRIM], CBOR [STD94], CDDL [RFC8610] and COSE [STD96] may also
    apply.
 
-   In this document, Evidence structures define the "external
-   representation".  There are many possible Evidence structures
-   including those mentioned above.
+   In this document, Evidence structures are expressed in their
+   respective "external representations".  There are many possible
+   Evidence structures including those mentioned above.
 
    The CoRIM specification defines an "internal representation" for
    Evidence (Section 8.2.1.3 [I-D.ietf-rats-corim]).  This document
-   defines mapping functions from external to internal representations
-   also known as "transformation".
+   defines mapping operations that convert from an external
+   representation to an internal representation.  The conversion steps
+   are also known as "transformation".
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
