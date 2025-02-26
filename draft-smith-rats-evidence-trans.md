@@ -121,7 +121,7 @@ The conversion steps are also known as "transformation".
 
 # Verifier Reconciliation {#sec-verifier-rec}
 
-This document assumes the reader is familiar with Verifier Reconsiliation as described in {{Section 2 of -corim}}.
+This document assumes the reader is familiar with Verifier reconciliation as described in {{Section 2 of -corim}}.
 It describes how a Verifier should process the CoRIM to enable CoRIM authors to convey their intended meaning and how a Verifier reconciles its various inputs.
 Evidence is one of its inputs.
 The Verifier is expected to create an internal representation from an external representation.
