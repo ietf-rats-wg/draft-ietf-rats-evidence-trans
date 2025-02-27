@@ -476,7 +476,7 @@ SVH for Concise Evidence Manifest Block:
 
 - ID          = 0xA (IANA CBOR)
 - VendorIdLen = 2
-- VendorId    = 0x570 #6.IANA-TBA(spdm-toc-map)
+- VendorId    = 0x570 #6.570(spdm-toc-map)
 
 Structured Manifest Block Definition for Concise Evidence:
 
@@ -501,7 +501,7 @@ SVH for CBor Web Token (CWT):
 
 - ID          = 0xA (IANA CBOR)
 - VendorIdLen = 2
-- VendorId    = 0x18 #6.IANA-COSE_Sign1
+- VendorId    = 0x18 #6.18
 
 Structured Manifest Block Definition for CBor Web Token (CWT):
 
