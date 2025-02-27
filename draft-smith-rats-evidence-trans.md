@@ -428,8 +428,17 @@ The completed ECT is added to the `ae` list.
 This section defines how Evidence from SPDM {{-spdm}} is transformed into an internal representation that can be processed by Verifiers.
 
 Verifiers supporting the SPDM Evidence format SHOULD implement this transformation.
+SPDM Responders SHALL support a minimum version of 1.2
 
-The SPDM measurements are converted to `concise-evidence` which has a format that is similar to CoRIM `triples-map` (their semantics follows the matching rules described above).
+Theory of Operations:
+  - The SPDM Requestor SHALL retrieve the measurement Manifest at Block 0xFD (Manifest Block) and send its payload to the Verifier
+  - The Verifier SHALL decode the payload as a tagged-spdm-toc CBOR tag.
+  - The Verifier SHALL extract the tagged-concise-evidence CBOR TAG from the tagged-spdm-toc CBOR tag
+
+The`concise-evidence` has a format that is similar to CoRIM `triples-map` (their semantics follows the matching rules described above).
+  - For every `spdm-indirect` measurement the Verifier shall ask the SPDM Requestor to retrieve the measurement block indicated by the index
+     - [TODO: Add Transformation for raw_value / digest] if the index is in range [0x1 - 0xEF]
+     - [TODO: Add Transformation for RATS EAT CWT] if the index is in rage [0xF0 - 0xFC]
 The TCG DICE Concise Evidence Binding for SPDM specification {{-ce}} describes a process for converting the SPDM Measurement Block to Concise Evidence.
 Subsequently the transformation steps defined in {{sec-ce-trans}}.
 
