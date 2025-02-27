@@ -425,7 +425,7 @@ DMTF Measurement Block Definition:
 
 - Byte Offset 0: DMTFSpecMeasurementValueType
   - Bit 7     = 0b Digest / 1b Raw bit stream
-  - Bit [6:0] = Indicate what is measured
+  - Bit \[6:0\] = Indicate what is measured
     - 0x0 Immutable Rom
     - 0x1 Mutable FW
     - 0x2 HW Config
@@ -504,20 +504,29 @@ Structured Manifest Block Definition for CBor Web Token (CWT):
 
 # Transforming SPDM Measurement Block Digest
 
-if DMTFSpecMeasurementValueType is in range [0x80 - 0x83]:
+{:mbk-enum: counter="mbk" style="format Step %d."}
+
+{: mbk-enum}
+* if DMTFSpecMeasurementValueType is in range \[0x80 - 0x83\]:
+
    > **copy**(SPDM.`MeasurementBlock`.DMTFSpecMeasurementValue , ECT.`environment`.`measurement-map`.`mval`.`digests`).
 
-if DMTFSpecMeasurementValueType is in range [0x88]:
+* if DMTFSpecMeasurementValueType is in range \[0x88\]:
+
    > **copy**(SPDM.`MeasurementBlock`.DMTFSpecMeasurementValue , ECT.`environment`.`measurement-map`.`mval`.`integrity-registers`).
 
 # Transforming SPDM Measurement Block Raw Value
 
-if DMTFSpecMeasurementValueType is in range [0x7]:
+{:mbrv-enum: counter="mbrv" style="format Step %d."}
+
+{: mbrv-enum}
+* if DMTFSpecMeasurementValueType is in range \[0x7\]:
+
    > **copy**(SPDM.`MeasurementBlock`.DMTFSpecMeasurementValue , ECT.`environment`.`measurement-map`.`mval`.`svn`).
 
 # Transforming SPDM RATS EAT CWT
 
-The RATS EAT CWT shall be reported in any of the assigned Measurement Blocks range [0xF0 - 0xFC]
+The RATS EAT CWT shall be reported in any of the assigned Measurement Blocks range \[0xF0 - 0xFC\]
 The Concise Evidence CBOR Tag is serialized inside eat-measurements (273) claim ($measurements-body-cbor /= bytes .cbor concise-evidence-map)
 Subsequently the transformation steps defined in {{sec-ce-trans}}.
 
@@ -537,8 +546,8 @@ Theory of Operations:
 The`concise-evidence` has a format that is similar to CoRIM `triples-map` (their semantics follows the matching rules described above).
 
 - For every `spdm-indirect` measurement the Verifier shall ask the SPDM Requestor to retrieve the measurement block indicated by the index
-  - if the index is in range [0x1 - 0xEF] (refer to #Transforming SPDM Measurement Block Digest)
-  - if the index is in range [0xF0 - 0xFC] (refer to #Transforming SPDM RATS EAT CWT] )
+  - if the index is in range \[0x1 - 0xEF\] (refer to #Transforming SPDM Measurement Block Digest)
+  - if the index is in range \[0xF0 - 0xFC\] (refer to #Transforming SPDM RATS EAT CWT] )
 
 The TCG DICE Concise Evidence Binding for SPDM specification {{-ce}} describes a process for converting the SPDM Measurement Block to Concise Evidence.
 Subsequently the transformation steps defined in {{sec-ce-trans}}.
