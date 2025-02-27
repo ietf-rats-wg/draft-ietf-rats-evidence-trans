@@ -5,6 +5,7 @@
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
 <title>Evidence Transformations</title>
+<meta content="Fabrizio D'Amato" name="author">
 <meta content="Andrew Draper" name="author">
 <meta content="Ned Smith" name="author">
 <meta content="
@@ -1053,7 +1054,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <td class="right">February 2025</td>
 </tr></thead>
 <tfoot><tr>
-<td class="left">Draper &amp; Smith</td>
+<td class="left">D'Amato, et al.</td>
 <td class="center">Expires 31 August 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
@@ -1075,6 +1076,10 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="expires"><time datetime="2025-08-31">31 August 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
+<div class="author">
+      <div class="author-name">F. D'Amato</div>
+<div class="org">AMD</div>
+</div>
 <div class="author">
       <div class="author-name">A. Draper</div>
 <div class="org">Altera</div>
@@ -2151,10 +2156,28 @@ A profile or other arrangement is used to coordinate which <code>$crypto-key-typ
       <h2 id="name-transforming-spdm-measureme">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-transforming-spdm-measureme" class="section-name selfRef">Transforming SPDM Measurement Block Digest</a>
       </h2>
-<p id="section-6-1">if DMTFSpecMeasurementValueType is in range [0x80 - 0x83]:
-   &gt; <strong>copy</strong>(SPDM.<code>MeasurementBlock</code>.DMTFSpecMeasurementValue , ECT.<code>environment</code>.<code>measurement-map</code>.<code>mval</code>.<code>digests</code>).<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">if DMTFSpecMeasurementValueType is in range [0x88]:
-   &gt; <strong>copy</strong>(SPDM.<code>MeasurementBlock</code>.DMTFSpecMeasurementValue , ECT.<code>environment</code>.<code>measurement-map</code>.<code>mval</code>.<code>integrity-registers</code>).<a href="#section-6-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="olPercent" id="section-6-1">
+<dt>Step 1.</dt>
+<dd id="section-6-1.1">
+          <p id="section-6-1.1.1">if DMTFSpecMeasurementValueType is in range [0x80 - 0x83]:<a href="#section-6-1.1.1" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-6-1.1.2.1">
+              <p id="section-6-1.1.2.1.1"><strong>copy</strong>(SPDM.<code>MeasurementBlock</code>.DMTFSpecMeasurementValue , ECT.<code>environment</code>.<code>measurement-map</code>.<code>mval</code>.<code>digests</code>).<a href="#section-6-1.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</dd>
+        <dd class="break"></dd>
+<dt>Step 2.</dt>
+<dd id="section-6-1.2">
+          <p id="section-6-1.2.1">if DMTFSpecMeasurementValueType is in range [0x88]:<a href="#section-6-1.2.1" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-6-1.2.2.1">
+              <p id="section-6-1.2.2.1.1"><strong>copy</strong>(SPDM.<code>MeasurementBlock</code>.DMTFSpecMeasurementValue , ECT.<code>environment</code>.<code>measurement-map</code>.<code>mval</code>.<code>integrity-registers</code>).<a href="#section-6-1.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</dd>
+      <dd class="break"></dd>
+</dl>
 </section>
 </div>
 <div id="transforming-spdm-measurement-block-raw-value">
@@ -2162,8 +2185,18 @@ A profile or other arrangement is used to coordinate which <code>$crypto-key-typ
       <h2 id="name-transforming-spdm-measuremen">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-transforming-spdm-measuremen" class="section-name selfRef">Transforming SPDM Measurement Block Raw Value</a>
       </h2>
-<p id="section-7-1">if DMTFSpecMeasurementValueType is in range [0x7]:
-   &gt; <strong>copy</strong>(SPDM.<code>MeasurementBlock</code>.DMTFSpecMeasurementValue , ECT.<code>environment</code>.<code>measurement-map</code>.<code>mval</code>.<code>svn</code>).<a href="#section-7-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="olPercent" id="section-7-1">
+<dt>Step 1.</dt>
+<dd id="section-7-1.1">
+          <p id="section-7-1.1.1">if DMTFSpecMeasurementValueType is in range [0x7]:<a href="#section-7-1.1.1" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-7-1.1.2.1">
+              <p id="section-7-1.1.2.1.1"><strong>copy</strong>(SPDM.<code>MeasurementBlock</code>.DMTFSpecMeasurementValue , ECT.<code>environment</code>.<code>measurement-map</code>.<code>mval</code>.<code>svn</code>).<a href="#section-7-1.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</dd>
+      <dd class="break"></dd>
+</dl>
 </section>
 </div>
 <div id="transforming-spdm-rats-eat-cwt">
@@ -2385,14 +2418,12 @@ Refer to <span><a href="https://rfc-editor.org/rfc/rfc9334#section-12.2" class="
 <p id="appendix-A-1">The authors would like to thank the following people for their valuable contributions to the specification.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <p id="appendix-A-2">Henk Birkholz<a href="#appendix-A-2" class="pilcrow">¶</a></p>
 <p id="appendix-A-3">Email: henk.birkholz@ietf.contact<a href="#appendix-A-3" class="pilcrow">¶</a></p>
-<p id="appendix-A-4">Fabrizio D'Amato<a href="#appendix-A-4" class="pilcrow">¶</a></p>
-<p id="appendix-A-5">Email: fabrizio.damato@amd.com<a href="#appendix-A-5" class="pilcrow">¶</a></p>
-<p id="appendix-A-6">Yogesh Deshpande<a href="#appendix-A-6" class="pilcrow">¶</a></p>
-<p id="appendix-A-7">Email: yogesh.deshpande@arm.com<a href="#appendix-A-7" class="pilcrow">¶</a></p>
-<p id="appendix-A-8">Thomas Fossati<a href="#appendix-A-8" class="pilcrow">¶</a></p>
-<p id="appendix-A-9">Email: Thomas.Fossati@linaro.org<a href="#appendix-A-9" class="pilcrow">¶</a></p>
-<p id="appendix-A-10">Dionna Glaze<a href="#appendix-A-10" class="pilcrow">¶</a></p>
-<p id="appendix-A-11">Email: dionnaglaze@google.com<a href="#appendix-A-11" class="pilcrow">¶</a></p>
+<p id="appendix-A-4">Yogesh Deshpande<a href="#appendix-A-4" class="pilcrow">¶</a></p>
+<p id="appendix-A-5">Email: yogesh.deshpande@arm.com<a href="#appendix-A-5" class="pilcrow">¶</a></p>
+<p id="appendix-A-6">Thomas Fossati<a href="#appendix-A-6" class="pilcrow">¶</a></p>
+<p id="appendix-A-7">Email: Thomas.Fossati@linaro.org<a href="#appendix-A-7" class="pilcrow">¶</a></p>
+<p id="appendix-A-8">Dionna Glaze<a href="#appendix-A-8" class="pilcrow">¶</a></p>
+<p id="appendix-A-9">Email: dionnaglaze@google.com<a href="#appendix-A-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="acknowledgments">
@@ -2408,6 +2439,14 @@ Refer to <span><a href="https://rfc-editor.org/rfc/rfc9334#section-12.2" class="
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Fabrizio D'Amato</span></div>
+<div dir="auto" class="left"><span class="org">AMD</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:fabrizio.damato@amd.com" class="email">fabrizio.damato@amd.com</a>
+</div>
+</address>
 <address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Andrew Draper</span></div>
 <div dir="auto" class="left"><span class="org">Altera</span></div>

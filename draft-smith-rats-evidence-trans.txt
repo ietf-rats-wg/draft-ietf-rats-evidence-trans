@@ -2,10 +2,12 @@
 
 
 
-Remote ATtestation ProcedureS                                  A. Draper
-Internet-Draft                                                    Altera
-Intended status: Standards Track                                N. Smith
-Expires: 31 August 2025                                            Intel
+Remote ATtestation ProcedureS                                 F. D'Amato
+Internet-Draft                                                       AMD
+Intended status: Standards Track                               A. Draper
+Expires: 31 August 2025                                           Altera
+                                                                N. Smith
+                                                                   Intel
                                                         27 February 2025
 
 
@@ -635,19 +637,23 @@ Table of Contents
 
 6.  Transforming SPDM Measurement Block Digest
 
-   if DMTFSpecMeasurementValueType is in range [0x80 - 0x83]: >
-   *copy*(SPDM.MeasurementBlock.DMTFSpecMeasurementValue ,
-   ECT.environment.measurement-map.mval.digests).
+   Step 1.  if DMTFSpecMeasurementValueType is in range [0x80 - 0x83]:
 
-   if DMTFSpecMeasurementValueType is in range [0x88]: >
-   *copy*(SPDM.MeasurementBlock.DMTFSpecMeasurementValue ,
-   ECT.environment.measurement-map.mval.integrity-registers).
+               *copy*(SPDM.MeasurementBlock.DMTFSpecMeasurementValue ,
+               ECT.environment.measurement-map.mval.digests).
+
+   Step 2.  if DMTFSpecMeasurementValueType is in range [0x88]:
+
+               *copy*(SPDM.MeasurementBlock.DMTFSpecMeasurementValue ,
+               ECT.environment.measurement-map.mval.integrity-
+               registers).
 
 7.  Transforming SPDM Measurement Block Raw Value
 
-   if DMTFSpecMeasurementValueType is in range [0x7]: >
-   *copy*(SPDM.MeasurementBlock.DMTFSpecMeasurementValue ,
-   ECT.environment.measurement-map.mval.svn).
+   Step 1.  if DMTFSpecMeasurementValueType is in range [0x7]:
+
+               *copy*(SPDM.MeasurementBlock.DMTFSpecMeasurementValue ,
+               ECT.environment.measurement-map.mval.svn).
 
 8.  Transforming SPDM RATS EAT CWT
 
@@ -895,10 +901,6 @@ Contributors
 
    Email: henk.birkholz@ietf.contact
 
-   Fabrizio D'Amato
-
-   Email: fabrizio.damato@amd.com
-
    Yogesh Deshpande
 
    Email: yogesh.deshpande@arm.com
@@ -918,6 +920,11 @@ Acknowledgments
    feedback.
 
 Authors' Addresses
+
+   Fabrizio D'Amato
+   AMD
+   Email: fabrizio.damato@amd.com
+
 
    Andrew Draper
    Altera
