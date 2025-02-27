@@ -2,10 +2,12 @@
 
 
 
-Remote ATtestation ProcedureS                                  A. Draper
-Internet-Draft                                                    Altera
-Intended status: Standards Track                                N. Smith
-Expires: 31 August 2025                                            Intel
+Remote ATtestation ProcedureS                                 F. D'Amato
+Internet-Draft                                                       AMD
+Intended status: Standards Track                               A. Draper
+Expires: 31 August 2025                                           Altera
+                                                                N. Smith
+                                                                   Intel
                                                         27 February 2025
 
 
@@ -899,10 +901,6 @@ Contributors
 
    Email: henk.birkholz@ietf.contact
 
-   Fabrizio D'Amato
-
-   Email: fabrizio.damato@amd.com
-
    Yogesh Deshpande
 
    Email: yogesh.deshpande@arm.com
@@ -922,6 +920,11 @@ Acknowledgments
    feedback.
 
 Authors' Addresses
+
+   Fabrizio D'Amato
+   AMD
+   Email: fabrizio.damato@amd.com
+
 
    Andrew Draper
    Altera
