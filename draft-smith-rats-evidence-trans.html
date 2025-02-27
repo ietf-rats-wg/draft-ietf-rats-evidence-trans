@@ -8,12 +8,12 @@
 <meta content="Andrew Draper" name="author">
 <meta content="Ned Smith" name="author">
 <meta content="
-       Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester and therefore to decide whether to engage in secure interactions with it - or not.
-Evidence about trustworthiness can be rather complex and it is deemed unrealistic that every Relying Party is capable of the appraisal of Evidence.
-Therefore that burden is typically offloaded to a Verifier.
-In order to conduct Evidence appraisal, a Verifier requires fresh Evidence from an Attester.
-Before a Verifier can appraise Evidence it may require transformation to an internal representation.
-This document specifies Evidence transformation methods for DICE and SPDM formats to the CoRIM internal representation. 
+       Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo, concise evidence, and SPDM measurements block structures.
+These Evidence structures are converted to the CoRIM internal representation and follow CoRIM defined appraisal procedures. 
     " name="description">
 <meta content="xml2rfc 3.27.0" name="generator">
 <meta content="Evidence, RATS, attestation, verifier, supply chain, RIM, appraisal" name="keyword">
@@ -1089,12 +1089,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Evidence Transformations</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester and therefore to decide whether to engage in secure interactions with it - or not.
-Evidence about trustworthiness can be rather complex and it is deemed unrealistic that every Relying Party is capable of the appraisal of Evidence.
-Therefore that burden is typically offloaded to a Verifier.
-In order to conduct Evidence appraisal, a Verifier requires fresh Evidence from an Attester.
-Before a Verifier can appraise Evidence it may require transformation to an internal representation.
-This document specifies Evidence transformation methods for DICE and SPDM formats to the CoRIM internal representation.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo, concise evidence, and SPDM measurements block structures.
+These Evidence structures are converted to the CoRIM internal representation and follow CoRIM defined appraisal procedures.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1239,25 +1239,27 @@ This document specifies Evidence transformation methods for DICE and SPDM format
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester and therefore to decide whether to engage in secure interactions with it - or not.
-Evidence about trustworthiness can be rather complex and it is deemed unrealistic that every Relying Party is capable of the appraisal of Evidence.
-Therefore that burden is typically offloaded to a Verifier.
-In order to conduct Evidence appraisal, a Verifier requires fresh Evidence from an Attester.
-Before a Verifier can appraise Evidence it may require transformation to an internal representation.
-This document specifies Evidence transformation methods for DICE and SPDM formats to the CoRIM internal representation.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">Remote Attestation Procedures (RATS) <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span> enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>, concise evidence <span>[<a href="#TCG.CE" class="cite xref">TCG.CE</a>]</span>, and SPDM measurements block <span>[<a href="#SPDM" class="cite xref">SPDM</a>]</span> structures.
+These Evidence structures are converted to the CoRIM internal representation (Section 2.1 <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) and follow CoRIM defined appraisal procedures (Section 8 <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).<a href="#section-1-1" class="pilcrow">¶</a></p>
 <div id="terminology">
 <section id="section-1.1">
         <h3 id="name-terminology">
 <a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
         </h3>
 <p id="section-1.1-1">This document uses terms and concepts defined by the RATS architecture.
-For a complete glossary see <span><a href="https://rfc-editor.org/rfc/rfc9334#section-4" class="relref">Section 4</a> of [<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>.
-Addintional RATS architecture is found in <span>[<a href="#I-D.ietf-rats-endorsements" class="cite xref">I-D.ietf-rats-endorsements</a>]</span>.
-RATS architecture terms and concepts are always referenced as proper nouns, i.e., with Capital Letters.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1-2">In this document, an Evidence structure describes an external representation.
-There are many possible Evidence structures including <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span> and <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.
-The bytes composing the CoRIM data structure are the same either way.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
-<p id="section-1.1-3">The terminology from CoRIM <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span> <span>[<a href="#DICE.CoRIM" class="cite xref">DICE.CoRIM</a>]</span>, DICE <span>[<a href="#DICE.Layer" class="cite xref">DICE.Layer</a>]</span> <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>, CBOR <span>[<a href="#STD94" class="cite xref">STD94</a>]</span>, CDDL <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> and COSE <span>[<a href="#STD96" class="cite xref">STD96</a>]</span> applies.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+For a complete glossary. See <span><a href="https://rfc-editor.org/rfc/rfc9334#section-4" class="relref">Section 4</a> of [<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>.
+Addintional RATS architecture and terminology is found in <span>[<a href="#I-D.ietf-rats-endorsements" class="cite xref">I-D.ietf-rats-endorsements</a>]</span>.
+RATS architecture terms and concepts are always referenced as proper nouns, i.e., with Capital Letters.
+Additional terminology from CoRIM <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>, <span>[<a href="#DICE.CoRIM" class="cite xref">DICE.CoRIM</a>]</span>, CBOR <span>[<a href="#STD94" class="cite xref">STD94</a>]</span>, CDDL <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> and COSE <span>[<a href="#STD96" class="cite xref">STD96</a>]</span> may also apply.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">In this document, Evidence structures are expressed in their respective "external representations".
+There are many possible Evidence structures including those mentioned above.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<p id="section-1.1-3">The CoRIM specification defines an "internal representation" for Evidence (Section 8.2.1.3 <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).
+This document defines mapping operations that convert from an external representation to an internal representation.
+The conversion steps are also known as "transformation".<a href="#section-1.1-3" class="pilcrow">¶</a></p>
 <p id="section-1.1-4">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
 NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
 "MAY", and "OPTIONAL" in this document are to be interpreted as
@@ -1272,14 +1274,14 @@ appear in all capitals, as shown here.<a href="#section-1.1-4" class="pilcrow">�
       <h2 id="name-verifier-reconciliation">
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-verifier-reconciliation" class="section-name selfRef">Verifier Reconciliation</a>
       </h2>
-<p id="section-2-1">This specification assumes the reader is familiar with Verifier Reconsiliation as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-06#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>.
+<p id="section-2-1">This document assumes the reader is familiar with Verifier reconciliation as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-06#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>.
 It describes how a Verifier should process the CoRIM to enable CoRIM authors to convey their intended meaning and how a Verifier reconciles its various inputs.
 Evidence is one of its inputs.
 The Verifier is expected to create an internal representation from an external representation.
 By using an internal representation, the Verifier processes Evidence inputs such that they can be appraised consistently.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">This specification defines format transformations for Evidence in DICE <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>, SPDM <span>[<a href="#SPDM" class="cite xref">SPDM</a>]</span>, and concise evidence <span>[<a href="#TCG.CE" class="cite xref">TCG.CE</a>]</span> formats that are transformed into a Verifier's internal representation.
-This specification uses the CoMID internal representation (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-06#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) as the transformation target.
-Other internal representations are possible but out of scope for this specification.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-2">This document defines format transformations for Evidence in DICE <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>, SPDM <span>[<a href="#SPDM" class="cite xref">SPDM</a>]</span>, and concise evidence <span>[<a href="#TCG.CE" class="cite xref">TCG.CE</a>]</span> formats that are transformed into a Verifier's internal representation.
+This document uses the CoMID internal representation (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-06#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) as the transformation target.
+Other internal representations are possible but out of scope for this document.<a href="#section-2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-dice-trans">
@@ -1287,70 +1289,61 @@ Other internal representations are possible but out of scope for this specificat
       <h2 id="name-transforming-dice-certifica">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-transforming-dice-certifica" class="section-name selfRef">Transforming DICE Certificate Extension Evidence</a>
       </h2>
-<p id="section-3-1">This section defines how Evidence from an X.509 certificate containing a DICE certificate extension <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span> is transformed into an internal representation that can be processed by Verifiers.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">Verifiers supporting the DICE certificate extension Evidence SHOULD implement this transformation.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-1">This section defines how Evidence from an X.509 certificate <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> containing a DICE certificate extension <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span> is transformed into an internal representation that can be processed by Verifiers.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">Verifiers supporting the DICE certificate Evidence extensions SHOULD implement this transformation.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <div id="sec-tcb-info">
 <section id="section-3.1">
         <h3 id="name-dicetcbinfo-transformation">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-dicetcbinfo-transformation" class="section-name selfRef">DiceTcbInfo Transformation</a>
         </h3>
-<p id="section-3.1-1">This section defines transformation methods for DICE certificate extensions DiceTcbInfo, DiceMultiTcbInfo, and DiceMultiTcbInfoComp.
-These extensions are identified by the following object identifiers:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-1">This section defines transformation methods for DICE certificate extensions DiceTcbInfo, DiceMultiTcbInfo, and DiceMultiTcbInfoComp.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">These extensions are identified by the following object identifiers:<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.1-2.1">
-            <p id="section-3.1-2.1.1">tcg-dice-TcbInfo - "2.23.133.5.4.1"<a href="#section-3.1-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.1-3.1">
+            <p id="section-3.1-3.1.1">tcg-dice-TcbInfo - "2.23.133.5.4.1"<a href="#section-3.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.1-2.2">
-            <p id="section-3.1-2.2.1">tcg-dice-MultiTcbInfo - "2.23.133.5.4.5"<a href="#section-3.1-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.1-3.2">
+            <p id="section-3.1-3.2.1">tcg-dice-MultiTcbInfo - "2.23.133.5.4.5"<a href="#section-3.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.1-2.3">
-            <p id="section-3.1-2.3.1">tcg-dice-MultiTcbInfoComp - "2.23.133.5.4.8"<a href="#section-3.1-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.1-3.3">
+            <p id="section-3.1-3.3.1">tcg-dice-MultiTcbInfoComp - "2.23.133.5.4.8"<a href="#section-3.1-3.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.1-3">Each DiceTcbInfo entry in a MultiTcbInfo is converted to a CoRIM ECT (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-06#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) using the transformation steps in this section.
+<p id="section-3.1-4">Each DiceTcbInfo entry in a MultiTcbInfo is converted to a CoRIM ECT (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-06#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) using the transformation steps in this section.
 Each DiceMultiTcbInfo entry is independent of the others such that each is transformed to a separate ECT entry.
 A list of Evidence ECTs (i.e., <code>ae = [ + ECT]</code>) is constructed using CoRIM attestation evidence internal representation (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-06#section-8.2.1.1" class="relref">Section 8.2.1.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).
-Each DiceMultiTcbInfoComp entry is converted to a DiceMultiTcbInfo entry then processed as a DiceMultiTcbInfo.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">For each DiceTcbInfo (DTI) entry in a DiceMultiTcbInfo allocate an ECT structure.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="olPercent" id="section-3.1-5">
+Each DiceMultiTcbInfoComp entry is converted to a DiceMultiTcbInfo entry then processed as a DiceMultiTcbInfo.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1-5">For each DiceTcbInfo (DTI) entry in a DiceMultiTcbInfo allocate an ECT structure.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="olPercent" id="section-3.1-6">
 <dt>Step 1.</dt>
-<dd id="section-3.1-5.1">
-            <p id="section-3.1-5.1.1">An <code>ae</code> entry is allocated.<a href="#section-3.1-5.1.1" class="pilcrow">¶</a></p>
+<dd id="section-3.1-6.1">
+            <p id="section-3.1-6.1.1">An <code>ae</code> entry is allocated.<a href="#section-3.1-6.1.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt>Step 2.</dt>
-<dd id="section-3.1-5.2">
-            <p id="section-3.1-5.2.1">The <code>cmtype</code> of the ECT is set to <code>evidence</code>.<a href="#section-3.1-5.2.1" class="pilcrow">¶</a></p>
+<dd id="section-3.1-6.2">
+            <p id="section-3.1-6.2.1">The <code>cmtype</code> of the ECT is set to <code>evidence</code>.<a href="#section-3.1-6.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt>Step 3.</dt>
-<dd id="section-3.1-5.3">
-            <p id="section-3.1-5.3.1">The DiceTcbInfo (DTI) entry populates the <code>ae</code> ECT.<a href="#section-3.1-5.3.1" class="pilcrow">¶</a></p>
+<dd id="section-3.1-6.3">
+            <p id="section-3.1-6.3.1">The DiceTcbInfo (DTI) entry populates the <code>ae</code> ECT.<a href="#section-3.1-6.3.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<span class="break"></span><dl class="olPercent" id="section-3.1-6">
+<span class="break"></span><dl class="olPercent" id="section-3.1-7">
 <dt>i</dt>
-<dd id="section-3.1-6.1">
-            <p id="section-3.1-6.1.1">The DTI entry populates the <code>ae</code> ECT <code>environment-map</code><a href="#section-3.1-6.1.1" class="pilcrow">¶</a></p>
+<dd id="section-3.1-7.1">
+            <p id="section-3.1-7.1.1">The DTI entry populates the <code>ae</code> ECT <code>environment-map</code><a href="#section-3.1-7.1.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.1-7.1">
-            <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.1-7.1.1.1">
-                <p id="section-3.1-7.1.1.1.1"><strong>copy</strong>(DTI.<code>type</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>class-id</code>).
-The binary representation of DTI.<code>type</code> MUST be equivalent to the binary representation of <code>class-id</code> without the CBOR tag.<a href="#section-3.1-7.1.1.1.1" class="pilcrow">¶</a></p>
-</li>
-            </ul>
-</li>
-        </ul>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-8.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-8.1.1.1">
-                <p id="section-3.1-8.1.1.1.1"><strong>copy</strong>(DTI.<code>vendor</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>vendor</code>).<a href="#section-3.1-8.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-8.1.1.1.1"><strong>copy</strong>(DTI.<code>type</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>class-id</code>).
+The binary representation of DTI.<code>type</code> MUST be equivalent to the binary representation of <code>class-id</code> without the CBOR tag.<a href="#section-3.1-8.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1359,7 +1352,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-9.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-9.1.1.1">
-                <p id="section-3.1-9.1.1.1.1"><strong>copy</strong>(DTI.<code>model</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>model</code>).<a href="#section-3.1-9.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-9.1.1.1.1"><strong>copy</strong>(DTI.<code>vendor</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>vendor</code>).<a href="#section-3.1-9.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1368,7 +1361,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-10.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-10.1.1.1">
-                <p id="section-3.1-10.1.1.1.1"><strong>copy</strong>(DTI.<code>layer</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>layer</code>).<a href="#section-3.1-10.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-10.1.1.1.1"><strong>copy</strong>(DTI.<code>model</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>model</code>).<a href="#section-3.1-10.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1377,32 +1370,32 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-11.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-11.1.1.1">
-                <p id="section-3.1-11.1.1.1.1"><strong>copy</strong>(DTI.<code>index</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>index</code>).<a href="#section-3.1-11.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-11.1.1.1.1"><strong>copy</strong>(DTI.<code>layer</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>layer</code>).<a href="#section-3.1-11.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
         </ul>
-<span class="break"></span><dl class="olPercent" id="section-3.1-12">
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-12.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-12.1.1.1">
+                <p id="section-3.1-12.1.1.1.1"><strong>copy</strong>(DTI.<code>index</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>index</code>).<a href="#section-3.1-12.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-3.1-13">
 <dt>ii</dt>
-<dd id="section-3.1-12.1">
-            <p id="section-3.1-12.1.1">The DTI entry populates the <code>ae</code> ECT <code>elemenet-list</code>.<a href="#section-3.1-12.1.1" class="pilcrow">¶</a></p>
+<dd id="section-3.1-13.1">
+            <p id="section-3.1-13.1.1">The DTI entry populates the <code>ae</code> ECT <code>elemenet-list</code>.<a href="#section-3.1-13.1.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.1-13.1">
-            <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.1-13.1.1.1">
-                <p id="section-3.1-13.1.1.1.1"><strong>copy</strong>(DTI.<code>version</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>version-map</code>.<code>version</code>).<a href="#section-3.1-13.1.1.1.1" class="pilcrow">¶</a></p>
-</li>
-            </ul>
-</li>
-        </ul>
-<ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-14.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-14.1.1.1">
-                <p id="section-3.1-14.1.1.1.1"><strong>copy</strong>(DTI.<code>svn</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>svn</code>).<a href="#section-3.1-14.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-14.1.1.1.1"><strong>copy</strong>(DTI.<code>version</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>version-map</code>.<code>version</code>).<a href="#section-3.1-14.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1411,7 +1404,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-15.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-15.1.1.1">
-                <p id="section-3.1-15.1.1.1.1"><strong>copy</strong>(DTI.<code>vendorInfo</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>raw-value</code>).<a href="#section-3.1-15.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-15.1.1.1.1"><strong>copy</strong>(DTI.<code>svn</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>svn</code>).<a href="#section-3.1-15.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1420,7 +1413,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-16.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-16.1.1.1">
-                <p id="section-3.1-16.1.1.1.1">Foreach FWID in FWIDLIST: <strong>copy</strong>(DTI.<code>FWID</code>.<code>digest</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>digests</code>.<code>digest</code>.<code>val</code>).<a href="#section-3.1-16.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-16.1.1.1.1"><strong>copy</strong>(DTI.<code>vendorInfo</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>raw-value</code>).<a href="#section-3.1-16.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1429,32 +1422,32 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-17.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-17.1.1.1">
-                <p id="section-3.1-17.1.1.1.1">Foreach FWID in FWIDLIST: <strong>copy</strong>(DTI.<code>FWID</code>.<code>hashAlg</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>digests</code>.<code>digest</code>.<code>alg</code>).<a href="#section-3.1-17.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-17.1.1.1.1">Foreach FWID in FWIDLIST: <strong>copy</strong>(DTI.<code>FWID</code>.<code>digest</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>digests</code>.<code>digest</code>.<code>val</code>).<a href="#section-3.1-17.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
         </ul>
-<span class="break"></span><dl class="olPercent" id="section-3.1-18">
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-18.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-18.1.1.1">
+                <p id="section-3.1-18.1.1.1.1">Foreach FWID in FWIDLIST: <strong>copy</strong>(DTI.<code>FWID</code>.<code>hashAlg</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>digests</code>.<code>digest</code>.<code>alg</code>).<a href="#section-3.1-18.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-3.1-19">
 <dt>iii</dt>
-<dd id="section-3.1-18.1">
-            <p id="section-3.1-18.1.1">The DTI entry populates the <code>ae</code> ECT <code>elemenet-list</code>.<code>flags</code>. Foreach <em>f</em> in DTI.<code>OperationalFlags</code> and each <em>m</em> in DTI.<code>OperationalFlagsMask</code>:<a href="#section-3.1-18.1.1" class="pilcrow">¶</a></p>
+<dd id="section-3.1-19.1">
+            <p id="section-3.1-19.1.1">The DTI entry populates the <code>ae</code> ECT <code>elemenet-list</code>.<code>flags</code>. Foreach <em>f</em> in DTI.<code>OperationalFlags</code> and each <em>m</em> in DTI.<code>OperationalFlagsMask</code>:<a href="#section-3.1-19.1.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.1-19.1">
-            <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.1-19.1.1.1">
-                <p id="section-3.1-19.1.1.1.1">If <em>m</em>.<code>notConfigured</code> = 1 AND <em>f</em>.<code>notConfigured</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-configured</code> = FALSE).<a href="#section-3.1-19.1.1.1.1" class="pilcrow">¶</a></p>
-</li>
-            </ul>
-</li>
-        </ul>
-<ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-20.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-20.1.1.1">
-                <p id="section-3.1-20.1.1.1.1">If <em>m</em>.<code>notConfigured</code> = 1 AND <em>f</em>.<code>notConfigured</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-configured</code> = TRUE).<a href="#section-3.1-20.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-20.1.1.1.1">If <em>m</em>.<code>notConfigured</code> = 1 AND <em>f</em>.<code>notConfigured</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-configured</code> = FALSE).<a href="#section-3.1-20.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1463,7 +1456,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-21.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-21.1.1.1">
-                <p id="section-3.1-21.1.1.1.1">If <em>m</em>.<code>notSecure</code> = 1 AND <em>f</em>.<code>notSecure</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-secure</code> = FALSE).<a href="#section-3.1-21.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-21.1.1.1.1">If <em>m</em>.<code>notConfigured</code> = 1 AND <em>f</em>.<code>notConfigured</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-configured</code> = TRUE).<a href="#section-3.1-21.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1472,7 +1465,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-22.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-22.1.1.1">
-                <p id="section-3.1-22.1.1.1.1">If <em>m</em>.<code>notSecure</code> = 1 AND <em>f</em>.<code>notSecure</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-secure</code> = TRUE).<a href="#section-3.1-22.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-22.1.1.1.1">If <em>m</em>.<code>notSecure</code> = 1 AND <em>f</em>.<code>notSecure</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-secure</code> = FALSE).<a href="#section-3.1-22.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1481,7 +1474,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-23.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-23.1.1.1">
-                <p id="section-3.1-23.1.1.1.1">If <em>m</em>.<code>recovery</code> = 1 AND <em>f</em>.<code>recovery</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-recovery</code> = FALSE).<a href="#section-3.1-23.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-23.1.1.1.1">If <em>m</em>.<code>notSecure</code> = 1 AND <em>f</em>.<code>notSecure</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-secure</code> = TRUE).<a href="#section-3.1-23.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1490,7 +1483,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-24.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-24.1.1.1">
-                <p id="section-3.1-24.1.1.1.1">If <em>m</em>.<code>recovery</code> = 1 AND <em>f</em>.<code>recovery</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-recovery</code> = TRUE).<a href="#section-3.1-24.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-24.1.1.1.1">If <em>m</em>.<code>recovery</code> = 1 AND <em>f</em>.<code>recovery</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-recovery</code> = FALSE).<a href="#section-3.1-24.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1499,7 +1492,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-25.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-25.1.1.1">
-                <p id="section-3.1-25.1.1.1.1">If <em>m</em>.<code>debug</code> = 1 AND <em>f</em>.<code>debug</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-debug</code> = FALSE).<a href="#section-3.1-25.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-25.1.1.1.1">If <em>m</em>.<code>recovery</code> = 1 AND <em>f</em>.<code>recovery</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-recovery</code> = TRUE).<a href="#section-3.1-25.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1508,7 +1501,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-26.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-26.1.1.1">
-                <p id="section-3.1-26.1.1.1.1">If <em>m</em>.<code>debug</code> = 1 AND <em>f</em>.<code>debug</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-debug</code> = TRUE).<a href="#section-3.1-26.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-26.1.1.1.1">If <em>m</em>.<code>debug</code> = 1 AND <em>f</em>.<code>debug</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-debug</code> = FALSE).<a href="#section-3.1-26.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1517,7 +1510,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-27.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-27.1.1.1">
-                <p id="section-3.1-27.1.1.1.1">If <em>m</em>.<code>notReplayProtected</code> = 1 AND <em>f</em>.<code>notReplayProtected</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-replay-protected</code> = FALSE).<a href="#section-3.1-27.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-27.1.1.1.1">If <em>m</em>.<code>debug</code> = 1 AND <em>f</em>.<code>debug</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-debug</code> = TRUE).<a href="#section-3.1-27.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1526,7 +1519,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-28.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-28.1.1.1">
-                <p id="section-3.1-28.1.1.1.1">If <em>m</em>.<code>notReplayProtected</code> = 1 AND <em>f</em>.<code>notReplayProtected</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-replay-protected</code> = TRUE).<a href="#section-3.1-28.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-28.1.1.1.1">If <em>m</em>.<code>notReplayProtected</code> = 1 AND <em>f</em>.<code>notReplayProtected</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-replay-protected</code> = FALSE).<a href="#section-3.1-28.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1535,7 +1528,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-29.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-29.1.1.1">
-                <p id="section-3.1-29.1.1.1.1">If <em>m</em>.<code>notIntegrityProtected</code> = 1 AND <em>f</em>.<code>notIntegrityProtected</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-integrity-proteccted</code> = FALSE).<a href="#section-3.1-29.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-29.1.1.1.1">If <em>m</em>.<code>notReplayProtected</code> = 1 AND <em>f</em>.<code>notReplayProtected</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-replay-protected</code> = TRUE).<a href="#section-3.1-29.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1544,7 +1537,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-30.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-30.1.1.1">
-                <p id="section-3.1-30.1.1.1.1">If <em>m</em>.<code>notIntegrityProtected</code> = 1 AND <em>f</em>.<code>notIntegrityProtected</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-integrity-proteccted</code> = TRUE).<a href="#section-3.1-30.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-30.1.1.1.1">If <em>m</em>.<code>notIntegrityProtected</code> = 1 AND <em>f</em>.<code>notIntegrityProtected</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-integrity-proteccted</code> = FALSE).<a href="#section-3.1-30.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1553,7 +1546,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-31.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-31.1.1.1">
-                <p id="section-3.1-31.1.1.1.1">If <em>m</em>.<code>notRuntimeMeasured</code> = 1 AND <em>f</em>.<code>notRuntimeMeasured</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-runtime-meas</code> = FALSE).<a href="#section-3.1-31.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-31.1.1.1.1">If <em>m</em>.<code>notIntegrityProtected</code> = 1 AND <em>f</em>.<code>notIntegrityProtected</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-integrity-proteccted</code> = TRUE).<a href="#section-3.1-31.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1562,7 +1555,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-32.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-32.1.1.1">
-                <p id="section-3.1-32.1.1.1.1">If <em>m</em>.<code>notRuntimeMeasured</code> = 1 AND <em>f</em>.<code>notRuntimeMeasured</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-runtime-meas</code> = TRUE).<a href="#section-3.1-32.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-32.1.1.1.1">If <em>m</em>.<code>notRuntimeMeasured</code> = 1 AND <em>f</em>.<code>notRuntimeMeasured</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-runtime-meas</code> = FALSE).<a href="#section-3.1-32.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1571,7 +1564,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-33.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-33.1.1.1">
-                <p id="section-3.1-33.1.1.1.1">If <em>m</em>.<code>notImmutable</code> = 1 AND <em>f</em>.<code>notImmutable</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-immutable</code> = FALSE).<a href="#section-3.1-33.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-33.1.1.1.1">If <em>m</em>.<code>notRuntimeMeasured</code> = 1 AND <em>f</em>.<code>notRuntimeMeasured</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-runtime-meas</code> = TRUE).<a href="#section-3.1-33.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1580,7 +1573,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-34.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-34.1.1.1">
-                <p id="section-3.1-34.1.1.1.1">If <em>m</em>.<code>notImmutable</code> = 1 AND <em>f</em>.<code>notImmutable</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-immutable</code> = TRUE).<a href="#section-3.1-34.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-34.1.1.1.1">If <em>m</em>.<code>notImmutable</code> = 1 AND <em>f</em>.<code>notImmutable</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-immutable</code> = FALSE).<a href="#section-3.1-34.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1589,7 +1582,7 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-35.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-35.1.1.1">
-                <p id="section-3.1-35.1.1.1.1">If <em>m</em>.<code>notTcb</code> = 1 AND <em>f</em>.<code>notTcb</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-tcb</code> = FALSE).<a href="#section-3.1-35.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-35.1.1.1.1">If <em>m</em>.<code>notImmutable</code> = 1 AND <em>f</em>.<code>notImmutable</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-immutable</code> = TRUE).<a href="#section-3.1-35.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1598,19 +1591,28 @@ The binary representation of DTI.<code>type</code> MUST be equivalent to the bin
 <li class="normal ulEmpty" id="section-3.1-36.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.1-36.1.1.1">
-                <p id="section-3.1-36.1.1.1.1">If <em>m</em>.<code>notTcb</code> = 1 AND <em>f</em>.<code>notTcb</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-tcb</code> = TRUE).<a href="#section-3.1-36.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.1-36.1.1.1.1">If <em>m</em>.<code>notTcb</code> = 1 AND <em>f</em>.<code>notTcb</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-tcb</code> = FALSE).<a href="#section-3.1-36.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
         </ul>
-<span class="break"></span><dl class="olPercent" id="section-3.1-37">
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-37.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-37.1.1.1">
+                <p id="section-3.1-37.1.1.1.1">If <em>m</em>.<code>notTcb</code> = 1 AND <em>f</em>.<code>notTcb</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-tcb</code> = TRUE).<a href="#section-3.1-37.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-3.1-38">
 <dt>Step 4.</dt>
-<dd id="section-3.1-37.1">
-            <p id="section-3.1-37.1.1">The ECT.<code>authority</code> field is set up based on the signer of the certificate containing DTI as described in <a href="#sec-authority" class="auto internal xref">Section 3.4</a>.<a href="#section-3.1-37.1.1" class="pilcrow">¶</a></p>
+<dd id="section-3.1-38.1">
+            <p id="section-3.1-38.1.1">The ECT.<code>authority</code> field is set up based on the signer of the certificate containing DTI as described in <a href="#sec-authority" class="auto internal xref">Section 3.4</a>.<a href="#section-3.1-38.1.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-3.1-38">The completed ECT is added to the <code>ae</code> list.<a href="#section-3.1-38" class="pilcrow">¶</a></p>
+<p id="section-3.1-39">The completed ECT is added to the <code>ae</code> list.<a href="#section-3.1-39" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-ueid">
@@ -1673,11 +1675,11 @@ the contents are transformed according to <a href="#sec-ce-trans" class="auto in
         <h3 id="name-authority-field-in-dice-spd">
 <a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-authority-field-in-dice-spd" class="section-name selfRef">Authority field in DICE/SPDM ECTs</a>
         </h3>
-<p id="section-3.4-1">The ECT authority field is an array of <code>$crypto-keys-type-choice</code>s.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-1">The ECT authority field is an array of <code>$crypto-keys-type-choice</code> values.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 <p id="section-3.4-2">When adding Evidence to the ACS, the Verifier SHALL add the public key representing the signer of that Evidence (for example the DICE certificate or SPDM MEASUREMENTS response) to the ECT authority field.
-The Verifier SHALL also add the signer of each certificate which has authorized the signer of the signing key.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3">Having each authority in a certificate path in the ECT <code>authority</code> field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
-<p id="section-3.4-4">Each signer authority value MUST be represented using <code>tagged-cose-key-type</code>.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
+The Verifier SHALL add the authority of the signers of each certificate in the certificate path of the end-entity signing key to the ECT <code>authority</code> list.
+Having each authority in a certificate path in the ECT <code>authority</code> field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">Each signer authority value MUST be represented using <code>tagged-cose-key-type</code>.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2346,10 +2348,6 @@ Refer to <span><a href="https://rfc-editor.org/rfc/rfc9334#section-12.2" class="
 <a href="#section-13.2" class="section-number selfRef">13.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
-<dt id="DICE.Layer">[DICE.Layer]</dt>
-        <dd>
-<span class="refAuthor">Trusted Computing Group</span>, <span class="refTitle">"DICE Layering Architecture"</span>, <span class="seriesInfo">Version 1.0, Revision 0.19 </span>, <time datetime="2020-07" class="refDate">July 2020</time>, <span>&lt;<a href="https://trustedcomputinggroup.org/wp-content/uploads/DICE-Layering-Architecture-r19_pub.pdf">https://trustedcomputinggroup.org/wp-content/uploads/DICE-Layering-Architecture-r19_pub.pdf</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="I-D.ietf-rats-eat">[I-D.ietf-rats-eat]</dt>
         <dd>
 <span class="refAuthor">Lundblade, L.</span>, <span class="refAuthor">Mandyam, G.</span>, <span class="refAuthor">O'Donoghue, J.</span>, and <span class="refAuthor">C. Wallace</span>, <span class="refTitle">"The Entity Attestation Token (EAT)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rats-eat-31</span>, <time datetime="2024-09-06" class="refDate">6 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-eat-31">https://datatracker.ietf.org/doc/html/draft-ietf-rats-eat-31</a>&gt;</span>. </dd>
@@ -2387,12 +2385,14 @@ Refer to <span><a href="https://rfc-editor.org/rfc/rfc9334#section-12.2" class="
 <p id="appendix-A-1">The authors would like to thank the following people for their valuable contributions to the specification.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <p id="appendix-A-2">Henk Birkholz<a href="#appendix-A-2" class="pilcrow">¶</a></p>
 <p id="appendix-A-3">Email: henk.birkholz@ietf.contact<a href="#appendix-A-3" class="pilcrow">¶</a></p>
-<p id="appendix-A-4">Yogesh Deshpande<a href="#appendix-A-4" class="pilcrow">¶</a></p>
-<p id="appendix-A-5">Email: yogesh.deshpande@arm.com<a href="#appendix-A-5" class="pilcrow">¶</a></p>
-<p id="appendix-A-6">Thomas Fossati<a href="#appendix-A-6" class="pilcrow">¶</a></p>
-<p id="appendix-A-7">Email: Thomas.Fossati@linaro.org<a href="#appendix-A-7" class="pilcrow">¶</a></p>
-<p id="appendix-A-8">Dionna Glaze<a href="#appendix-A-8" class="pilcrow">¶</a></p>
-<p id="appendix-A-9">Email: dionnaglaze@google.com<a href="#appendix-A-9" class="pilcrow">¶</a></p>
+<p id="appendix-A-4">Fabrizio D'Amato<a href="#appendix-A-4" class="pilcrow">¶</a></p>
+<p id="appendix-A-5">Email: fabrizio.damato@amd.com<a href="#appendix-A-5" class="pilcrow">¶</a></p>
+<p id="appendix-A-6">Yogesh Deshpande<a href="#appendix-A-6" class="pilcrow">¶</a></p>
+<p id="appendix-A-7">Email: yogesh.deshpande@arm.com<a href="#appendix-A-7" class="pilcrow">¶</a></p>
+<p id="appendix-A-8">Thomas Fossati<a href="#appendix-A-8" class="pilcrow">¶</a></p>
+<p id="appendix-A-9">Email: Thomas.Fossati@linaro.org<a href="#appendix-A-9" class="pilcrow">¶</a></p>
+<p id="appendix-A-10">Dionna Glaze<a href="#appendix-A-10" class="pilcrow">¶</a></p>
+<p id="appendix-A-11">Email: dionnaglaze@google.com<a href="#appendix-A-11" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="acknowledgments">
