@@ -21,6 +21,10 @@ pi:
   tocdepth: 6
 
 author:
+- ins: F. D'Amato
+  name: Fabrizio D'Amato
+  org: AMD
+  email: fabrizio.damato@amd.com
 - ins: A. Draper
   name: Andrew Draper
   org: Altera
@@ -617,10 +621,6 @@ The authors would like to thank the following people for their valuable contribu
 Henk Birkholz
 
 Email: henk.birkholz@ietf.contact
-
-Fabrizio D'Amato
-
-Email: fabrizio.damato@amd.com
 
 Yogesh Deshpande
 
