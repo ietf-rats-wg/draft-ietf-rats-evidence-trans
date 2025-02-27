@@ -423,6 +423,110 @@ A profile or other arrangement is used to coordinate which `$crypto-key-type-cho
 
 The completed ECT is added to the `ae` list.
 
+# DMTF SPDM Structure Definitons
+
+This section defines how a Verifier shall parse a DMTF Measurement Block.
+
+DMTF Measurement Block Definition:
+
+- Byte Offset 0: DMTFSpecMeasurementValueType
+  - Bit 7     = 0b Digest / 1b Raw bit stream
+  - Bit [6:0] = Indicate what is measured
+    - 0x0 Immutable Rom
+    - 0x1 Mutable FW
+    - 0x2 HW Config
+    - 0x3 FW config
+    - 0x4 Freeform Manifest
+    - 0x5 Structured Representation of debug and device mode
+    - 0x6 Mutable FW Version Number
+    - 0x7 Mutable FW Secure Version Number
+    - 0x8 Hash-Extend Measurement (new in SPDM 1.3)
+    - 0x9 Informational (new in SPDM 1.3)
+    - 0xA Structured Measurement Manifest (new in SPDM 1.3)
+- Byte Offset 1: DMTFSpecMeasurementValueSize
+- Byte Offset 3: DMTFSpecMeasurementValue
+
+Structured Manifest Block Definition (only for >=SPDM 1.3):
+
+- Byte Offset 0: Standard Body or Vendor Defined Header (SVH)
+- Byte Offset 2 + VendorIdLen: Manifest
+
+Standard Body or Vendor Defined Header (SVH) Definition (only for >=SPDM 1.3):
+
+- Byte Offset 0: ID
+- Byte Offset 1: VendorIdLen
+- Byte Offset 2: VendorId
+
+
+DMTF Header for Concise Evidence Manifest Block:
+
+If SPDM Version 1.2:
+
+- DMTFSpecMeasurementValueType = 0x84 (Raw Bit / Freeform Manifest)
+- DMTFSpecMeasurementValueSize = Size of tagged-spdm-toc CBOR Tag
+- DMTFSpecMeasurementValue     = tagged-spdm-toc CBOR Tag
+
+if SPDM >=Version 1.3:
+
+- DMTFSpecMeasurementValueType = 0x8A (Raw Bit / Structured Manifest)
+- DMTFSpecMeasurementValueSize = Size of Structured Manifest
+- DMTFSpecMeasurementValue     = Structured Manifest
+
+SVH for Concise Evidence Manifest Block:
+
+- ID          = 0xA (IANA CBOR)
+- VendorIdLen = 2
+- VendorId    = 0x570 #6.IANA-TBA(spdm-toc-map)
+
+Structured Manifest Block Definition for Concise Evidence:
+
+- SVH      =  SVH for Concise Evidence Manifest Block
+- Manifest = tagged-spdm-toc CBOR Tag Payload
+
+DMTF Header for CBor Web Token (CWT):
+
+If SPDM Version 1.2:
+
+- DMTFSpecMeasurementValueType = 0x84 (Raw Bit / Freeform Manifest)
+- DMTFSpecMeasurementValueSize = Size of CWT
+- DMTFSpecMeasurementValue     = CWT # COSE_Sign1
+
+if SPDM = Version 1.3:
+
+- DMTFSpecMeasurementValueType = 0x8A (Raw Bit / Structured Manifest)
+- DMTFSpecMeasurementValueSize = Size of Structured Manifest
+- DMTFSpecMeasurementValue     = Structured Manifest
+
+SVH for CBor Web Token (CWT):
+
+- ID          = 0xA (IANA CBOR)
+- VendorIdLen = 2
+- VendorId    = 0x18 #6.IANA-COSE_Sign1
+
+Structured Manifest Block Definition for CBor Web Token (CWT):
+
+- SVH      =  SVH for CBor Web Token (CWT)
+- Manifest = COSE_Sign1 Payload
+
+# Transforming SPDM Measurement Block Digest
+
+if DMTFSpecMeasurementValueType is in range [0x80 - 0x83]:
+   > **copy**(SPDM.`MeasurementBlock`.DMTFSpecMeasurementValue , ECT.`environment`.`measurement-map`.`mval`.`digests`).
+
+if DMTFSpecMeasurementValueType is in range [0x88]:
+   > **copy**(SPDM.`MeasurementBlock`.DMTFSpecMeasurementValue , ECT.`environment`.`measurement-map`.`mval`.`integrity-registers`).
+
+# Transforming SPDM Measurement Block Raw Value
+
+if DMTFSpecMeasurementValueType is in range [0x7]:
+   > **copy**(SPDM.`MeasurementBlock`.DMTFSpecMeasurementValue , ECT.`environment`.`measurement-map`.`mval`.`svn`).
+
+# Transforming SPDM RATS EAT CWT
+
+The RATS EAT CWT shall be reported in any of the assigned Measurement Blocks range [0xF0 - 0xFC]
+The Concise Evidence CBOR Tag is serialized inside eat-measurements (273) claim ($measurements-body-cbor /= bytes .cbor concise-evidence-map)
+Subsequently the transformation steps defined in {{sec-ce-trans}}.
+
 # Transforming SPDM Evidence {#sec-spdm-trans}
 
 This section defines how Evidence from SPDM {{-spdm}} is transformed into an internal representation that can be processed by Verifiers.
@@ -431,14 +535,17 @@ Verifiers supporting the SPDM Evidence format SHOULD implement this transformati
 SPDM Responders SHALL support a minimum version of 1.2
 
 Theory of Operations:
-  - The SPDM Requestor SHALL retrieve the measurement Manifest at Block 0xFD (Manifest Block) and send its payload to the Verifier
+
+- The SPDM Requestor SHALL retrieve the measurement Manifest at Block 0xFD (Manifest Block) and send its payload to the Verifier
   - The Verifier SHALL decode the payload as a tagged-spdm-toc CBOR tag.
   - The Verifier SHALL extract the tagged-concise-evidence CBOR TAG from the tagged-spdm-toc CBOR tag
 
 The`concise-evidence` has a format that is similar to CoRIM `triples-map` (their semantics follows the matching rules described above).
-  - For every `spdm-indirect` measurement the Verifier shall ask the SPDM Requestor to retrieve the measurement block indicated by the index
-     - [TODO: Add Transformation for raw_value / digest] if the index is in range [0x1 - 0xEF]
-     - [TODO: Add Transformation for RATS EAT CWT] if the index is in rage [0xF0 - 0xFC]
+
+- For every `spdm-indirect` measurement the Verifier shall ask the SPDM Requestor to retrieve the measurement block indicated by the index
+  - if the index is in range [0x1 - 0xEF] (refer to #Transforming SPDM Measurement Block Digest)
+  - if the index is in rage [0xF0 - 0xFC] (refer to #Transforming SPDM RATS EAT CWT] )
+
 The TCG DICE Concise Evidence Binding for SPDM specification {{-ce}} describes a process for converting the SPDM Measurement Block to Concise Evidence.
 Subsequently the transformation steps defined in {{sec-ce-trans}}.
 
