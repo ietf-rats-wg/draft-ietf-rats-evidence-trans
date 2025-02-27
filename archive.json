@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-25T01:38:00.535507+00:00",
+  "timestamp": "2025-02-27T01:37:49.139919+00:00",
   "repo": "ietf-rats-wg/draft-smith-rats-evidence-trans",
   "labels": [
     {
@@ -853,13 +853,99 @@
       "labels": [],
       "body": "Adding clearer wording for how the cert chain authority is processed.",
       "createdAt": "2025-02-14T20:31:34Z",
-      "updatedAt": "2025-02-14T20:32:17Z",
+      "updatedAt": "2025-02-26T23:29:18Z",
       "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "a1ea311c373e7a81e74743ef8e5e56348522afaa",
       "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "headRefName": "mns-1",
-      "headRefOid": "99a00bfed5af36d6b4d79e8d8dbfcd5405a8ee9e",
+      "headRefOid": "de4a3890f4be0a4e1802c06237999cb95a2175c9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM6duIgf",
+          "commit": {
+            "abbreviatedOid": "3a3a987"
+          },
+          "author": "fdamato",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-26T22:40:27Z",
+          "updatedAt": "2025-02-26T22:40:27Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6duJZJ",
+          "commit": {
+            "abbreviatedOid": "3a3a987"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-26T22:42:58Z",
+          "updatedAt": "2025-02-26T22:42:58Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "```suggestion\r\nThis document assumes the reader is familiar with Verifier reconciliation as described in {{Section 2 of -corim}}.\r\n```",
+              "createdAt": "2025-02-26T22:42:58Z",
+              "updatedAt": "2025-02-26T22:42:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6duJyG",
+          "commit": {
+            "abbreviatedOid": "3a3a987"
+          },
+          "author": "yogeshbdeshpande",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Just some minor nits but LGTM otherwise",
+          "createdAt": "2025-02-26T22:44:10Z",
+          "updatedAt": "2025-02-26T22:44:10Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6duafm",
+          "commit": {
+            "abbreviatedOid": "de4a389"
+          },
+          "author": "fdamato",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-26T23:29:18Z",
+          "updatedAt": "2025-02-26T23:29:18Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "id": "PR_kwDOMOnZXM6MudaD",
+      "title": "Update SPDM Evidence Transformation",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/pull/11",
+      "state": "OPEN",
+      "author": "fdamato",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-02-27T01:04:18Z",
+      "updatedAt": "2025-02-27T01:04:18Z",
+      "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "a1ea311c373e7a81e74743ef8e5e56348522afaa",
+      "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "headRefName": "fadamato/spdm_evidence",
+      "headRefOid": "1b8cf33254183b330893362a855a1cc881382bce",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
