@@ -75,77 +75,72 @@ informative:
   STD94:
     -: cbor
     =: RFC8949
-  RFC7942:
-  DICE.Layer:
-    -: dice-layer
-    title: DICE Layering Architecture
-    author:
-      org: Trusted Computing Group
-    seriesinfo: Version 1.0, Revision 0.19
-    date: July 2020
-    target: https://trustedcomputinggroup.org/wp-content/uploads/DICE-Layering-Architecture-r19_pub.pdf
   I-D.ietf-rats-eat: eat
   RFC5280: x509
+  RFC7942:
 
 entity:
   SELF: "RFCthis"
 
 --- abstract
 
-Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester and therefore to decide whether to engage in secure interactions with it - or not.
-Evidence about trustworthiness can be rather complex and it is deemed unrealistic that every Relying Party is capable of the appraisal of Evidence.
-Therefore that burden is typically offloaded to a Verifier.
-In order to conduct Evidence appraisal, a Verifier requires fresh Evidence from an Attester.
-Before a Verifier can appraise Evidence it may require transformation to an internal representation.
-This document specifies Evidence transformation methods for DICE and SPDM formats to the CoRIM internal representation.
+Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo, concise evidence, and SPDM measurements block structures.
+These Evidence structures are converted to the CoRIM internal representation and follow CoRIM defined appraisal procedures.
 
 --- middle
 
 # Introduction {#sec-intro}
 
-Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester and therefore to decide whether to engage in secure interactions with it - or not.
-Evidence about trustworthiness can be rather complex and it is deemed unrealistic that every Relying Party is capable of the appraisal of Evidence.
-Therefore that burden is typically offloaded to a Verifier.
-In order to conduct Evidence appraisal, a Verifier requires fresh Evidence from an Attester.
-Before a Verifier can appraise Evidence it may require transformation to an internal representation.
-This document specifies Evidence transformation methods for DICE and SPDM formats to the CoRIM internal representation.
+Remote Attestation Procedures (RATS) {{-rats-arch}} enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo {{-dice-attest}}, concise evidence {{-ce}}, and SPDM measurements block {{-spdm}} structures.
+These Evidence structures are converted to the CoRIM internal representation (Section 2.1 {{-corim}}) and follow CoRIM defined appraisal procedures (Section 8 {{-corim}}).
 
 ## Terminology
 
 This document uses terms and concepts defined by the RATS architecture.
-For a complete glossary see {{Section 4 of -rats-arch}}.
-Addintional RATS architecture is found in {{-rats-endorsements}}.
+For a complete glossary. See {{Section 4 of -rats-arch}}.
+Addintional RATS architecture and terminology is found in {{-rats-endorsements}}.
 RATS architecture terms and concepts are always referenced as proper nouns, i.e., with Capital Letters.
+Additional terminology from CoRIM {{-corim}}, {{-dice-corim}}, CBOR {{-cbor}}, CDDL {{-cddl}} and COSE {{-cose}} may also apply.
 
-In this document, an Evidence structure describes an external representation.
-There are many possible Evidence structures including {{-eat}} and {{-x509}}.
-The bytes composing the CoRIM data structure are the same either way.
+In this document, Evidence structures are expressed in their respective "external representations".
+There are many possible Evidence structures including those mentioned above.
 
-The terminology from CoRIM {{-corim}} {{-dice-corim}}, DICE {{-dice-layer}} {{-dice-attest}}, CBOR {{-cbor}}, CDDL {{-cddl}} and COSE {{-cose}} applies.
+The CoRIM specification defines an "internal representation" for Evidence (Section 8.2.1.3 {{-corim}}).
+This document defines mapping operations that convert from an external representation to an internal representation.
+The conversion steps are also known as "transformation".
 
 {::boilerplate bcp14}
 
 # Verifier Reconciliation {#sec-verifier-rec}
 
-This specification assumes the reader is familiar with Verifier Reconsiliation as described in {{Section 2 of -corim}}.
+This document assumes the reader is familiar with Verifier reconciliation as described in {{Section 2 of -corim}}.
 It describes how a Verifier should process the CoRIM to enable CoRIM authors to convey their intended meaning and how a Verifier reconciles its various inputs.
 Evidence is one of its inputs.
 The Verifier is expected to create an internal representation from an external representation.
 By using an internal representation, the Verifier processes Evidence inputs such that they can be appraised consistently.
 
-This specification defines format transformations for Evidence in DICE {{-dice-attest}}, SPDM {{-spdm}}, and concise evidence {{-ce}} formats that are transformed into a Verifier's internal representation.
-This specification uses the CoMID internal representation ({{Section 8.2.1 of -corim}}) as the transformation target.
-Other internal representations are possible but out of scope for this specification.
+This document defines format transformations for Evidence in DICE {{-dice-attest}}, SPDM {{-spdm}}, and concise evidence {{-ce}} formats that are transformed into a Verifier's internal representation.
+This document uses the CoMID internal representation ({{Section 8.2.1 of -corim}}) as the transformation target.
+Other internal representations are possible but out of scope for this document.
 
 # Transforming DICE Certificate Extension Evidence {#sec-dice-trans}
 
-This section defines how Evidence from an X.509 certificate containing a DICE certificate extension {{-dice-attest}} is transformed into an internal representation that can be processed by Verifiers.
+This section defines how Evidence from an X.509 certificate {{-x509}} containing a DICE certificate extension {{-dice-attest}} is transformed into an internal representation that can be processed by Verifiers.
 
-Verifiers supporting the DICE certificate extension Evidence SHOULD implement this transformation.
+Verifiers supporting the DICE certificate Evidence extensions SHOULD implement this transformation.
 
 ## DiceTcbInfo Transformation {#sec-tcb-info}
 
 This section defines transformation methods for DICE certificate extensions DiceTcbInfo, DiceMultiTcbInfo, and DiceMultiTcbInfoComp.
+
 These extensions are identified by the following object identifiers:
 
 * tcg-dice-TcbInfo - "2.23.133.5.4.1"
@@ -278,11 +273,10 @@ the contents are transformed according to {{sec-ce-trans}}.
 
 ## Authority field in DICE/SPDM ECTs {#sec-authority}
 
-The ECT authority field is an array of `$crypto-keys-type-choice`s.
+The ECT authority field is an array of `$crypto-keys-type-choice` values.
 
 When adding Evidence to the ACS, the Verifier SHALL add the public key representing the signer of that Evidence (for example the DICE certificate or SPDM MEASUREMENTS response) to the ECT authority field.
-The Verifier SHALL also add the signer of each certificate which has authorized the signer of the signing key.
-
+The Verifier SHALL add the authority of the signers of each certificate in the certificate path of the end-entity signing key to the ECT `authority` list.
 Having each authority in a certificate path in the ECT `authority` field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.
 
 Each signer authority value MUST be represented using `tagged-cose-key-type`.
@@ -614,6 +608,10 @@ The authors would like to thank the following people for their valuable contribu
 Henk Birkholz
 
 Email: henk.birkholz@ietf.contact
+
+Fabrizio D'Amato
+
+Email: fabrizio.damato@amd.com
 
 Yogesh Deshpande
 
