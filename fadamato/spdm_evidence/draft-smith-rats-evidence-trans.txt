@@ -682,7 +682,7 @@ Table of Contents
       -  if the index is in range [0x1 - 0xEF] (refer to #Transforming
          SPDM Measurement Block Digest)
 
-      -  if the index is in rage [0xF0 - 0xFC] (refer to #Transforming
+      -  if the index is in range [0xF0 - 0xFC] (refer to #Transforming
          SPDM RATS EAT CWT] )
 
    The TCG DICE Concise Evidence Binding for SPDM specification [TCG.CE]
