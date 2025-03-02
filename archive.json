@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-27T01:37:49.139919+00:00",
+  "timestamp": "2025-03-02T01:42:11.047453+00:00",
   "repo": "ietf-rats-wg/draft-smith-rats-evidence-trans",
   "labels": [
     {
@@ -844,7 +844,7 @@
       "id": "PR_kwDOMOnZXM6LS-MK",
       "title": "Added clearer wording for how the cert chain authority is processed",
       "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/pull/10",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "nedmsmith",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -853,17 +853,19 @@
       "labels": [],
       "body": "Adding clearer wording for how the cert chain authority is processed.",
       "createdAt": "2025-02-14T20:31:34Z",
-      "updatedAt": "2025-02-26T23:29:18Z",
+      "updatedAt": "2025-02-27T17:52:41Z",
       "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "a1ea311c373e7a81e74743ef8e5e56348522afaa",
       "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "headRefName": "mns-1",
       "headRefOid": "de4a3890f4be0a4e1802c06237999cb95a2175c9",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-02-27T17:52:17Z",
+      "mergedAt": "2025-02-27T17:52:17Z",
+      "mergedBy": "nedmsmith",
+      "mergeCommit": {
+        "oid": "3403ff274e3feb4a6d05cb87c77f557add109739"
+      },
       "comments": [],
       "reviews": [
         {
@@ -932,26 +934,178 @@
       "id": "PR_kwDOMOnZXM6MudaD",
       "title": "Update SPDM Evidence Transformation",
       "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/pull/11",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "fdamato",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-02-27T01:04:18Z",
-      "updatedAt": "2025-02-27T01:04:18Z",
+      "updatedAt": "2025-02-27T17:47:28Z",
       "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "a1ea311c373e7a81e74743ef8e5e56348522afaa",
       "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
       "headRefName": "fadamato/spdm_evidence",
-      "headRefOid": "1b8cf33254183b330893362a855a1cc881382bce",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "e31ecf27eedb52f686f69b2d2b512757009af073",
+      "closedAt": "2025-02-27T17:47:28Z",
+      "mergedAt": "2025-02-27T17:47:27Z",
+      "mergedBy": "fdamato",
+      "mergeCommit": {
+        "oid": "edf8a811e0bc7b5bc8b85e2dd8eda648fed19af1"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM6d3bto",
+          "commit": {
+            "abbreviatedOid": "f078f56"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "See commenets.",
+          "createdAt": "2025-02-27T17:27:35Z",
+          "updatedAt": "2025-02-27T17:32:07Z",
+          "comments": [
+            {
+              "originalPosition": 57,
+              "body": "```suggestion\r\n- VendorId    = 0x570 #6.570(spdm-toc-map)\r\n```\r\nI believe this has been assigned already as #6.570",
+              "createdAt": "2025-02-27T17:27:35Z",
+              "updatedAt": "2025-02-27T17:32:07Z"
+            },
+            {
+              "originalPosition": 82,
+              "body": "```suggestion\r\n- VendorId    = 0x18 #6.18\r\n```\r\nI believe this is already #6.18",
+              "createdAt": "2025-02-27T17:28:41Z",
+              "updatedAt": "2025-02-27T17:32:07Z"
+            },
+            {
+              "originalPosition": 100,
+              "body": "Does the DMTFSpecMeasurementValue contents contain the CBOR tagged SVN value?",
+              "createdAt": "2025-02-27T17:31:16Z",
+              "updatedAt": "2025-02-27T17:32:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6d3e8S",
+          "commit": {
+            "abbreviatedOid": "f078f56"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-27T17:32:26Z",
+          "updatedAt": "2025-02-27T17:32:26Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6d3jX-",
+          "commit": {
+            "abbreviatedOid": "f078f56"
+          },
+          "author": "fdamato",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-27T17:39:41Z",
+          "updatedAt": "2025-02-27T17:39:41Z",
+          "comments": [
+            {
+              "originalPosition": 100,
+              "body": "In case of the DMTFSpecMeasurementValueType is 0x7, yes\r\n\r\n>  [6:0]=07h . Mutable firmware's security version number, which should be\r\n   formatted as an 8-byte unsigned integer",
+              "createdAt": "2025-02-27T17:39:41Z",
+              "updatedAt": "2025-02-27T17:39:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6d3j6i",
+          "commit": {
+            "abbreviatedOid": "f078f56"
+          },
+          "author": "fdamato",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-27T17:40:41Z",
+          "updatedAt": "2025-02-27T17:40:42Z",
+          "comments": [
+            {
+              "originalPosition": 82,
+              "body": "done",
+              "createdAt": "2025-02-27T17:40:41Z",
+              "updatedAt": "2025-02-27T17:40:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6d3j9j",
+          "commit": {
+            "abbreviatedOid": "f078f56"
+          },
+          "author": "fdamato",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-27T17:40:46Z",
+          "updatedAt": "2025-02-27T17:40:47Z",
+          "comments": [
+            {
+              "originalPosition": 57,
+              "body": "done",
+              "createdAt": "2025-02-27T17:40:46Z",
+              "updatedAt": "2025-02-27T17:40:47Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "id": "PR_kwDOMOnZXM6M1lgQ",
+      "title": "Update draft-smith-rats-evidence-trans.md",
+      "url": "https://github.com/ietf-rats-wg/draft-smith-rats-evidence-trans/pull/12",
+      "state": "MERGED",
+      "author": "nedmsmith",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "nedmsmith"
+      ],
+      "labels": [],
+      "body": "Formatting cleanup and added Fabrizio as an author.",
+      "createdAt": "2025-02-27T18:10:23Z",
+      "updatedAt": "2025-02-27T19:47:08Z",
+      "baseRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "3403ff274e3feb4a6d05cb87c77f557add109739",
+      "headRepository": "ietf-rats-wg/draft-smith-rats-evidence-trans",
+      "headRefName": "nms/formatting",
+      "headRefOid": "d15b7a53205a80f03d945b72b9586ec4ffc3bbde",
+      "closedAt": "2025-02-27T19:47:08Z",
+      "mergedAt": "2025-02-27T19:47:08Z",
+      "mergedBy": "nedmsmith",
+      "mergeCommit": {
+        "oid": "89f1cefe5cbd78519234bf2d024c45dbaf7a68fb"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM6d4vwr",
+          "commit": {
+            "abbreviatedOid": "d15b7a5"
+          },
+          "author": "fdamato",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-02-27T19:37:05Z",
+          "updatedAt": "2025-02-27T19:37:05Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
