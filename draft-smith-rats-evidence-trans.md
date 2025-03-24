@@ -183,7 +183,7 @@ The binary representation of DTI.`type` MUST be equivalent to the binary represe
 
 > > **copy**(DTI.`layer`, ECT.`environment`.`environment-map`.`class-map`.`layer`).
 
-> > **copy**(DTI.`index`, ECT.`environment`.`environment-map`.`class-map`.`index`).
+> > Note: use of ECT.`environment`.`environment-map`.`class-map`.`index` as an environment attribute is overloaded with ECT.`element-list`.`element-map`.`measured-element-type-choice`.`mkey`.  The values of `index` are chosen using the `mkey` design constraints for integers.
 
 {: dtt2-enum}
 * The DTI entry populates the `ae` ECT `elemenet-list`.
@@ -197,6 +197,8 @@ The binary representation of DTI.`type` MUST be equivalent to the binary represe
 > > Foreach FWID in FWIDLIST: **copy**(DTI.`FWID`.`digest`, ECT.`element-list`.`element-map`.`measurement-values-map`.`digests`.`digest`.`val`).
 
 > > Foreach FWID in FWIDLIST: **copy**(DTI.`FWID`.`hashAlg`, ECT.`element-list`.`element-map`.`measurement-values-map`.`digests`.`digest`.`alg`).
+
+> > **copy**(DTI.`index`, ECT.`element-list`.`element-map`.`measured-element-type-choice`.`mkey`).
 
 {: dtt2-enum}
 * The DTI entry populates the `ae` ECT `elemenet-list`.`flags`. Foreach _f_ in DTI.`OperationalFlags` and each _m_ in DTI.`OperationalFlagsMask`:
