@@ -183,6 +183,7 @@ The binary representation of DTI.`type` MUST be equivalent to the binary represe
 
 > > **copy**(DTI.`layer`, ECT.`environment`.`environment-map`.`class-map`.`layer`).
 
+> > Note: use of ECT.`environment`.`environment-map`.`class-map`.`index` as an environment attribute is overloaded with ECT.`element-list`.`element-map`.`measured-element-type-choice`.`mkey`.  The values of `index` are chosen using the `mkey` design constraints for integers. 
 
 {: dtt2-enum}
 * The DTI entry populates the `ae` ECT `elemenet-list`.
