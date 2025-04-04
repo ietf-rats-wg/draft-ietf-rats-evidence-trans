@@ -3,7 +3,7 @@ v: 3
 
 title: Evidence Transformations
 abbref: EvTrans
-docname: draft-smith-rats-evidence-trans-latest
+docname: draft-ietf-rats-evidence-trans-latest
 category: std
 consensus: true
 submissiontype: IETF
@@ -31,7 +31,7 @@ author:
   email: andrew.draper@altera.com
 - ins: N. Smith
   name: Ned Smith
-  org: Intel
+  org: Intel Corporation
   email: ned.smith@intel.com
 
 normative:
@@ -330,7 +330,7 @@ For each `evidence-triple-record` an `ae` ECT is constructed.
 > > **copy**(ce.`mval`, ect`.`element-map`.`element-claims`)
 
 {: cet-enum}
-* The signer of the envelope containing CE is copied to the ECT.`authority` field as described in {{sec-authority}.
+* The signer of the envelope containing CE is copied to the ECT.`authority` field as described in {{sec-authority}}.
 For example, a CE may be wrapped by an EAT token {{-eat}} or DICE certificate {{-dice-attest}}.
 The signer identity MUST be expressed using `$crypto-key-type-choice`.
 A profile or other arrangement is used to coordinate which `$crypto-key-type-choice` is used for both Evidence and Reference Values.
