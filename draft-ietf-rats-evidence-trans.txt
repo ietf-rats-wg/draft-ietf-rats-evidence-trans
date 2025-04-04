@@ -5,14 +5,14 @@
 Remote ATtestation ProcedureS                                 F. D'Amato
 Internet-Draft                                                       AMD
 Intended status: Standards Track                               A. Draper
-Expires: 31 August 2025                                           Altera
+Expires: 6 October 2025                                           Altera
                                                                 N. Smith
-                                                                   Intel
-                                                        27 February 2025
+                                                       Intel Corporation
+                                                            4 April 2025
 
 
                         Evidence Transformations
-                 draft-smith-rats-evidence-trans-latest
+                 draft-ietf-rats-evidence-trans-latest
 
 Abstract
 
@@ -44,7 +44,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 August 2025.
+   This Internet-Draft will expire on 6 October 2025.
 
 Copyright Notice
 
@@ -820,16 +820,16 @@ Table of Contents
    [I-D.ietf-rats-corim]
               Birkholz, H., Fossati, T., Deshpande, Y., Smith, N., and
               W. Pan, "Concise Reference Integrity Manifest", Work in
-              Progress, Internet-Draft, draft-ietf-rats-corim-06, 18
-              October 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-rats-corim-06>.
+              Progress, Internet-Draft, draft-ietf-rats-corim-07, 3
+              March 2025, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-rats-corim-07>.
 
    [I-D.ietf-rats-endorsements]
               Thaler, D., Birkholz, H., and T. Fossati, "RATS
               Endorsements", Work in Progress, Internet-Draft, draft-
-              ietf-rats-endorsements-05, 8 November 2024,
+              ietf-rats-endorsements-06, 3 March 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-rats-
-              endorsements-05>.
+              endorsements-06>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -932,5 +932,5 @@ Authors' Addresses
 
 
    Ned Smith
-   Intel
+   Intel Corporation
    Email: ned.smith@intel.com
