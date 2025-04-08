@@ -4,6 +4,7 @@ v: 3
 title: Evidence Transformations
 abbref: EvTrans
 docname: draft-ietf-rats-evidence-trans-latest
+replaces: draft-smith-rats-evidence-trans-01
 category: std
 consensus: true
 submissiontype: IETF
