@@ -5,14 +5,14 @@
 Remote ATtestation ProcedureS                                 F. D'Amato
 Internet-Draft                                                       AMD
 Intended status: Standards Track                               A. Draper
-Expires: 6 October 2025                                           Altera
+Expires: 10 October 2025                                          Altera
                                                                 N. Smith
-                                                                   Intel
-                                                            4 April 2025
+                                                       Intel Corporation
+                                                            8 April 2025
 
 
                         Evidence Transformations
-                 draft-smith-rats-evidence-trans-latest
+                 draft-ietf-rats-evidence-trans-latest
 
 Abstract
 
@@ -44,7 +44,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 October 2025.
+   This Internet-Draft will expire on 10 October 2025.
 
 Copyright Notice
 
@@ -932,5 +932,5 @@ Authors' Addresses
 
 
    Ned Smith
-   Intel
+   Intel Corporation
    Email: ned.smith@intel.com
