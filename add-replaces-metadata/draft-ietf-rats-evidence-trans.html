@@ -1,0 +1,2477 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>Evidence Transformations</title>
+<meta content="Fabrizio D'Amato" name="author">
+<meta content="Andrew Draper" name="author">
+<meta content="Ned Smith" name="author">
+<meta content="
+       Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo, concise evidence, and SPDM measurements block structures.
+These Evidence structures are converted to the CoRIM internal representation and follow CoRIM defined appraisal procedures. 
+    " name="description">
+<meta content="xml2rfc 3.28.1" name="generator">
+<meta content="Evidence, RATS, attestation, verifier, supply chain, RIM, appraisal" name="keyword">
+<meta content="draft-ietf-rats-evidence-trans-latest" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.28.1
+    Python 3.12.9
+    ConfigArgParse 1.7
+    google-i18n-address 3.1.1
+    intervaltree 3.1.0
+    Jinja2 3.1.6
+    lxml 5.3.0
+    platformdirs 4.3.7
+    pycountry 24.6.1
+    PyYAML 6.0.2
+    requests 2.32.3
+    setuptools 70.3.0
+    wcwidth 0.2.13
+-->
+<link href="draft-ietf-rats-evidence-trans.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Lora SemiBold'), local('Lora-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light dark;
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --pilcrow-weak: #ddd;
+  --pilcrow-strong: #bbb;
+  --small-font-size: 14.5px;
+  --font-mono: 'Oxygen Mono', monospace;
+  --font-title: "Sofia Sans Semi Condensed", sans-serif;
+  scrollbar-color: #bbb #eee;
+}
+body {
+  max-width: 600px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+section {
+  clear: both;
+}
+.section-number {
+  padding-right: 0.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  font-weight: 680;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+h1#title {
+  font-size: 32px;
+  line-height: 40px;
+  clear: both;
+}
+h1#title, h1#rfcnum {
+  margin: 1.5em 0 0.2em;
+}
+h1#rfcnum + h1#title {
+  margin: 0.2em 0;
+}
+
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 27px;
+}
+h4, h5, h6 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+#abstract+p {
+  font-size: 18px;
+  line-height: 24px;
+}
+#abstract+p code, #abstract+p samp, #abstract+p tt {
+  font-size: 16px;
+  line-height: 0;
+}
+
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+/* font-family isn't space-separated, but =~ will have to do */
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 0.5em 2em;
+  & :is(ol, ul) {
+    margin-left: 1em;
+  }
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+  & li {
+    margin-top: 0.5em;
+  }
+}
+:is(ul, ol).compact, .ulCompact, .olCompact {
+  margin: 0 0 0 2em;
+  & li {
+    margin: 0;
+    & :first-child { margin-top: 0; }
+    & :last-child { margin-bottom: 0; }
+  }
+}
+
+/* definition lists */
+dl {
+  clear: left;
+  --indent: 3ch;
+  /* --indent: attr(indent ch); not supported in any browser, but we can dream */
+  &.olPercent {
+    --indent: 5ch;
+    & > dt {
+      min-width: calc(var(--indent) - 2ch);
+    }
+  }
+  &.olPercent > dt {
+    float: none;
+  }
+
+  dl > dd > & {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
+}
+dl:not(.dlNewline) > dt {
+  float: left;
+  margin-right: 2ch;
+  min-width: 8ch;
+}
+dl > dd {
+  margin-bottom: .8em;
+  margin-left: var(--indent) !important; /* stupid element overrides */
+  min-height: 2ex;
+}
+:is(dl.compact, .dlCompact) > dd {
+  margin-bottom: 0;
+  & > :is(:first-child, .break:first-child + *) {
+    margin-top: 0;
+  }
+  & > :is(:last-child) {
+    margin-bottom: 0;
+  }
+}
+:is(dd, span).break {
+  display: none;
+}
+
+/* links */
+a, a[href].selfRef:hover {
+  text-decoration: none;
+}
+a[href] {
+  color: var(--link-color);
+}
+a[href].selfRef, .iref + a[href].internal {
+  color: var(--text-color);
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+a[href].selfRef:hover {
+  background-color: var(--highlight-color);
+}
+a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px var(--font-mono);
+}
+tt, code {
+  /* changing the font for inline elements leads to different ascender
+     and descender heights; as we want to retain baseline alignment,
+     remove leading to avoid altering the final height of lines
+     note: this fails if these blocks take an entire line,
+     a different solution would be great */
+  line-height: 0;
+}
+:is(h1, h2, h3, h4, h5, h6) :is(tt, code) {
+  font-size: 84%;
+}
+pre {
+  border: 1px solid var(--line-color);
+  font-size: 13.5px;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+  padding: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+  caption-side: bottom;
+}
+@media screen {
+  /* Auto-collapse boilerplate. */
+  :is(#status-of-memo, #copyright) p {
+    margin: -2px 0;
+    max-height: 0;
+    transition: max-height 2s ease, margin 0.5s ease 0.5s;
+    overflow: hidden;
+  }
+  :is(#status-of-memo, #copyright):hover p,
+  :is(#status-of-memo, #copyright) h2:target ~ p {
+    margin: 0.5em 0;
+    max-height: 500px;
+    overflow: auto;
+  }
+  pre, svg {
+    display: inline-block;
+    /* In the horizontal direction, sometimes people make over-sized figures.
+       Scrollbars for those is therefore necessary: auto adds them as necessary..
+       In the vertical direction, the line-height can combine with the font
+       asender/descender height to produce scrollbars: hidden avoids that. */
+    overflow: auto hidden;
+  }
+  pre {
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  svg {
+    max-width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  :is(pre, svg) + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: auto;
+  max-width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+}
+table.right {
+  margin-left: auto;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+table.left {
+  margin-right: auto;
+}
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
+thead, tbody {
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+th {
+  background-color: var(--line-color);
+}
+:is(tr:nth-child(2n), thead+tbody > tr:nth-child(2n+1)) > td {
+  background-color: var(--background-color);
+}
+:is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
+  background-color: var(--highlight-color);
+}
+table caption {
+  margin: 0;
+  padding: 3px 0 3px 1em;
+}
+table p {
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  opacity: 0.2;
+  user-select: none;
+  &[href] {
+    color: var(--pilcrow-weak);
+    &:hover { text-decoration: none; }
+  }
+}
+@media not print {
+  :hover > a.pilcrow {
+    opacity: 1;
+  }
+  a.pilcrow[href]:hover {
+    color: var(--pilcrow-strong);
+    background-color: transparent;
+  }
+}
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: 600;
+  font-size: var(--small-font-size);
+}
+.role {
+  font-variant: all-small-caps;
+}
+sub, sup {
+  line-height: 1;
+  font-size: 80%;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 15ch;
+  & dt {
+    width: var(--identifier-width);
+    min-width: var(--identifier-width);
+    clear: left;
+    float: left;
+    text-align: right;
+    margin-right: 1ch;
+  }
+  & dd {
+    margin: 0;
+    margin-left: calc(1em + var(--identifier-width)) !important;
+    min-width: 5em;
+  }
+  & .authors {
+    & .author {
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+    & .org {
+      font-style: italic;
+    }
+  }
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+
+  & nav {
+    & ul {
+      margin: 0 0.5em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    & li {
+      line-height: 1.3em;
+      margin: 2px 0;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+  }
+  & a.xref {
+    white-space: normal;
+  }
+}
+
+.references {
+  & > dt {
+    text-align: right;
+    font-weight: bold;
+    min-width: 10ch;
+    margin-right: 1.5ch;
+    &:target::before {
+      content: "⇒";
+      margin: 0 10px 0 -25px;
+    }
+  }
+  & > dd {
+    margin-left: 12ch !important;
+    overflow: visible;
+    & .refInstance {
+      margin-bottom: 0.8em;
+    }
+    & .ascii {
+      margin-bottom: 0.25em;
+    }
+  }
+}
+
+#rfc\.index\.index + ul {
+  margin-left: 0;
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  max-width: 20em;
+  margin: 1em auto 1em 0;
+
+  & .nameRole {
+    font-weight: 700;
+    margin-left: 0;
+  }
+  & .label {
+    margin: 0.5em 0;
+  }
+  & .type {
+    display: none;
+  }
+  & .alternative-contact {
+    margin: 0.5em 0 0.25em 0;
+  }
+  & .non-ascii {
+    margin: 0 0 0 2em;
+  }
+  & div.left {
+    text-align: left;
+  }
+  & div.right {
+    text-align: right;
+  }
+}
+
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 500px) {
+  #authors-addresses > section {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  #authors-addresses > section > h2 {
+    column-span: all;
+  }
+  /* hack for break-inside: avoid-column */
+  #authors-addresses address {
+    display: inline-block;
+    break-inside: avoid-column;
+  }
+}
+
+/* Comments */
+.rfcEditorRemove p:first-of-type {
+  font-style: italic;
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+
+@media screen {
+  #toc nav {
+    font-family: var(--font-title);
+    font-weight: 360;
+    & > ul { margin-bottom: 2em; }
+    & ul {
+      margin: 0 0 0 4px;
+      & :is(p, li) {
+        margin: 2px 0;
+      }
+    }
+  }
+  #toc a.toplink {
+    float: right;
+  }
+}
+@media not screen {
+  #toc a.toplink {
+    display: none;
+  }
+}
+
+
+/* TOC layout for smaller screens */
+@media screen and (max-width: 929px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 1px 0 0 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 2px 0 2px 6px;
+    padding-right: 1em;
+    font-size: 18px;
+    line-height: 24px;
+    min-width: 190px;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+    &::before { /* css hamburger */
+      float: right;
+      position: relative;
+      width: 1em;
+      height: 1px;
+      left: -164px;
+      margin: 8px 0 0 0;
+      background: white none repeat scroll 0 0;
+      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+      content: "";
+    }
+  }
+  #toc nav {
+    display: none;
+    background-color: var(--background-color);
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+  #toc.active {
+    opacity: 1;
+    & nav { display: block; }
+  }
+  /* Make the collapsed ToC header render white on gray also when it's a link */
+  #toc h2 a,
+  #toc h2 a:is(:link, :focus, :hover),
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+  #toc a.toplink {
+    margin: 2px 0.5em 0;
+  }
+}
+
+/* TOC layout for wide screens */
+@media screen and (min-width: 930px) {
+  body {
+    padding-right: 360px;
+    padding-right: calc(min(180px + 20%, 500px));
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+  #toc a.toplink {
+    margin: 8px 0.5em 0;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre, .vcard {
+    page-break-inside: avoid;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  :is(h2, h3, h4, h5, h6)+*, dd {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Dark mode. */
+@media (prefers-color-scheme: dark) {
+:root {
+  --background-color: #121212;
+  --text-color: #f0f0f0;
+  --title-color: #fff;
+  --link-color: #4da4f0;
+  --highlight-color: #282828;
+  --line-color: #444;
+  --pilcrow-weak: #444;
+  --pilcrow-strong: #666;
+  scrollbar-color: #777 #333;
+}
+}
+
+/* SVG Trick: a prefix match works because only black and white are allowed */
+svg :is([stroke="black"], [stroke^="#000"]) {
+  stroke: var(--text-color);
+}
+svg :is([stroke="white"], [stroke^="#fff"]) {
+  stroke: var(--background-color);
+}
+svg :is([fill="black"], [fill^="#000"], :not([fill])) {
+  fill: var(--text-color);
+}
+svg :is([fill="white"], [fill^="#fff"]) {
+  fill: var(--background-color);
+}
+</style>
+
+</head>
+<body class="xml2rfc">
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">Evidence Transformations</td>
+<td class="right">April 2025</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">D'Amato, et al.</td>
+<td class="center">Expires 10 October 2025</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">Remote ATtestation ProcedureS</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-ietf-rats-evidence-trans-latest</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2025-04-08" class="published">8 April 2025</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Standards Track</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2025-10-10">10 October 2025</time></dd>
+<dt class="label-authors">Authors:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">F. D'Amato</div>
+<div class="org">AMD</div>
+</div>
+<div class="author">
+      <div class="author-name">A. Draper</div>
+<div class="org">Altera</div>
+</div>
+<div class="author">
+      <div class="author-name">N. Smith</div>
+<div class="org">Intel Corporation</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">Evidence Transformations</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">Remote Attestation Procedures (RATS) enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo, concise evidence, and SPDM measurements block structures.
+These Evidence structures are converted to the CoRIM internal representation and follow CoRIM defined appraisal procedures.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 10 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2025 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Revised BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Revised BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-verifier-reconciliation" class="internal xref">Verifier Reconciliation</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-transforming-dice-certifica" class="internal xref">Transforming DICE Certificate Extension Evidence</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-dicetcbinfo-transformation" class="internal xref">DiceTcbInfo Transformation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-diceueid-transformation" class="internal xref">DiceUeid Transformation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-diceconceptualmessagewrappe" class="internal xref">DiceConceptualMessageWrapper Transformation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-authority-field-in-dice-spd" class="internal xref">Authority field in DICE/SPDM ECTs</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-transforming-tcg-concise-ev" class="internal xref">Transforming TCG Concise Evidence</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-transforming-the-ceevidence" class="internal xref">Transforming the ce.evidence-triples</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-transforming-the-ceidentity" class="internal xref">Transforming the ce.identity-triples</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-transforming-the-ceattest-k" class="internal xref">Transforming the ce.attest-key-triples</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-dmtf-spdm-structure-definit" class="internal xref">DMTF SPDM Structure Definitons</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-transforming-spdm-measureme" class="internal xref">Transforming SPDM Measurement Block Digest</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-transforming-spdm-measuremen" class="internal xref">Transforming SPDM Measurement Block Raw Value</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-transforming-spdm-rats-eat-" class="internal xref">Transforming SPDM RATS EAT CWT</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-transforming-spdm-evidence" class="internal xref">Transforming SPDM Evidence</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-implementation-status" class="internal xref">Implementation Status</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-security-and-privacy-consid" class="internal xref">Security and Privacy Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#section-13" class="auto internal xref">13</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
+                <p id="section-toc.1-1.13.2.1.1"><a href="#section-13.1" class="auto internal xref">13.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
+                <p id="section-toc.1-1.13.2.2.1"><a href="#section-13.2" class="auto internal xref">13.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-contributors" class="internal xref">Contributors</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
+            <p id="section-toc.1-1.16.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="sec-intro">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">Remote Attestation Procedures (RATS) <span>[<a href="#RFC9334" class="cite xref">RFC9334</a>]</span> enable Relying Parties to assess the trustworthiness of a remote Attester to decide if continued interaction is warrented.
+Evidence structures can vary making appraisals challenging for Verifiers.
+Verifiers need to understand Evidence encoding formats and some of the Evidence semantics to appraise it.
+Consequently, Evidence may require format transformation to an internal representation that preserves original semantics.
+This document specifies Evidence transformation methods for DiceTcbInfo <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>, concise evidence <span>[<a href="#TCG.CE" class="cite xref">TCG.CE</a>]</span>, and SPDM measurements block <span>[<a href="#SPDM" class="cite xref">SPDM</a>]</span> structures.
+These Evidence structures are converted to the CoRIM internal representation (Section 2.1 <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) and follow CoRIM defined appraisal procedures (Section 8 <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).<a href="#section-1-1" class="pilcrow">¶</a></p>
+<div id="terminology">
+<section id="section-1.1">
+        <h3 id="name-terminology">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+        </h3>
+<p id="section-1.1-1">This document uses terms and concepts defined by the RATS architecture.
+For a complete glossary. See <span><a href="https://rfc-editor.org/rfc/rfc9334#section-4" class="relref">Section 4</a> of [<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>.
+Addintional RATS architecture and terminology is found in <span>[<a href="#I-D.ietf-rats-endorsements" class="cite xref">I-D.ietf-rats-endorsements</a>]</span>.
+RATS architecture terms and concepts are always referenced as proper nouns, i.e., with Capital Letters.
+Additional terminology from CoRIM <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>, <span>[<a href="#DICE.CoRIM" class="cite xref">DICE.CoRIM</a>]</span>, CBOR <span>[<a href="#STD94" class="cite xref">STD94</a>]</span>, CDDL <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> and COSE <span>[<a href="#STD96" class="cite xref">STD96</a>]</span> may also apply.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">In this document, Evidence structures are expressed in their respective "external representations".
+There are many possible Evidence structures including those mentioned above.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<p id="section-1.1-3">The CoRIM specification defines an "internal representation" for Evidence (Section 8.2.1.3 <span>[<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).
+This document defines mapping operations that convert from an external representation to an internal representation.
+The conversion steps are also known as "transformation".<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+<p id="section-1.1-4">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
+"MAY", and "OPTIONAL" in this document are to be interpreted as
+described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
+appear in all capitals, as shown here.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="sec-verifier-rec">
+<section id="section-2">
+      <h2 id="name-verifier-reconciliation">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-verifier-reconciliation" class="section-name selfRef">Verifier Reconciliation</a>
+      </h2>
+<p id="section-2-1">This document assumes the reader is familiar with Verifier reconciliation as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>.
+It describes how a Verifier should process the CoRIM to enable CoRIM authors to convey their intended meaning and how a Verifier reconciles its various inputs.
+Evidence is one of its inputs.
+The Verifier is expected to create an internal representation from an external representation.
+By using an internal representation, the Verifier processes Evidence inputs such that they can be appraised consistently.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">This document defines format transformations for Evidence in DICE <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>, SPDM <span>[<a href="#SPDM" class="cite xref">SPDM</a>]</span>, and concise evidence <span>[<a href="#TCG.CE" class="cite xref">TCG.CE</a>]</span> formats that are transformed into a Verifier's internal representation.
+This document uses the CoMID internal representation (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) as the transformation target.
+Other internal representations are possible but out of scope for this document.<a href="#section-2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-dice-trans">
+<section id="section-3">
+      <h2 id="name-transforming-dice-certifica">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-transforming-dice-certifica" class="section-name selfRef">Transforming DICE Certificate Extension Evidence</a>
+      </h2>
+<p id="section-3-1">This section defines how Evidence from an X.509 certificate <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> containing a DICE certificate extension <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span> is transformed into an internal representation that can be processed by Verifiers.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">Verifiers supporting the DICE certificate Evidence extensions SHOULD implement this transformation.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<div id="sec-tcb-info">
+<section id="section-3.1">
+        <h3 id="name-dicetcbinfo-transformation">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-dicetcbinfo-transformation" class="section-name selfRef">DiceTcbInfo Transformation</a>
+        </h3>
+<p id="section-3.1-1">This section defines transformation methods for DICE certificate extensions DiceTcbInfo, DiceMultiTcbInfo, and DiceMultiTcbInfoComp.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">These extensions are identified by the following object identifiers:<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.1-3.1">
+            <p id="section-3.1-3.1.1">tcg-dice-TcbInfo - "2.23.133.5.4.1"<a href="#section-3.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.1-3.2">
+            <p id="section-3.1-3.2.1">tcg-dice-MultiTcbInfo - "2.23.133.5.4.5"<a href="#section-3.1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.1-3.3">
+            <p id="section-3.1-3.3.1">tcg-dice-MultiTcbInfoComp - "2.23.133.5.4.8"<a href="#section-3.1-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-3.1-4">Each DiceTcbInfo entry in a MultiTcbInfo is converted to a CoRIM ECT (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) using the transformation steps in this section.
+Each DiceMultiTcbInfo entry is independent of the others such that each is transformed to a separate ECT entry.
+A list of Evidence ECTs (i.e., <code>ae = [ + ECT]</code>) is constructed using CoRIM attestation evidence internal representation (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-8.2.1.1" class="relref">Section 8.2.1.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).
+Each DiceMultiTcbInfoComp entry is converted to a DiceMultiTcbInfo entry then processed as a DiceMultiTcbInfo.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1-5">For each DiceTcbInfo (DTI) entry in a DiceMultiTcbInfo allocate an ECT structure.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="olPercent" id="section-3.1-6">
+<dt>Step 1.</dt>
+<dd id="section-3.1-6.1">
+            <p id="section-3.1-6.1.1">An <code>ae</code> entry is allocated.<a href="#section-3.1-6.1.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 2.</dt>
+<dd id="section-3.1-6.2">
+            <p id="section-3.1-6.2.1">The <code>cmtype</code> of the ECT is set to <code>evidence</code>.<a href="#section-3.1-6.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 3.</dt>
+<dd id="section-3.1-6.3">
+            <p id="section-3.1-6.3.1">The DiceTcbInfo (DTI) entry populates the <code>ae</code> ECT.<a href="#section-3.1-6.3.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<span class="break"></span><dl class="olPercent" id="section-3.1-7">
+<dt>i</dt>
+<dd id="section-3.1-7.1">
+            <p id="section-3.1-7.1.1">The DTI entry populates the <code>ae</code> ECT <code>environment-map</code><a href="#section-3.1-7.1.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-8.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-8.1.1.1">
+                <p id="section-3.1-8.1.1.1.1"><strong>copy</strong>(DTI.<code>type</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>class-id</code>).
+The binary representation of DTI.<code>type</code> MUST be equivalent to the binary representation of <code>class-id</code> without the CBOR tag.<a href="#section-3.1-8.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-9.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-9.1.1.1">
+                <p id="section-3.1-9.1.1.1.1"><strong>copy</strong>(DTI.<code>vendor</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>vendor</code>).<a href="#section-3.1-9.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-10.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-10.1.1.1">
+                <p id="section-3.1-10.1.1.1.1"><strong>copy</strong>(DTI.<code>model</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>model</code>).<a href="#section-3.1-10.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-11.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-11.1.1.1">
+                <p id="section-3.1-11.1.1.1.1"><strong>copy</strong>(DTI.<code>layer</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>layer</code>).<a href="#section-3.1-11.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-12.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-12.1.1.1">
+                <p id="section-3.1-12.1.1.1.1"><strong>copy</strong>(DTI.<code>index</code>, ECT.<code>environment</code>.<code>environment-map</code>.<code>class-map</code>.<code>index</code>).<a href="#section-3.1-12.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-3.1-13">
+<dt>ii</dt>
+<dd id="section-3.1-13.1">
+            <p id="section-3.1-13.1.1">The DTI entry populates the <code>ae</code> ECT <code>elemenet-list</code>.<a href="#section-3.1-13.1.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-14.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-14.1.1.1">
+                <p id="section-3.1-14.1.1.1.1"><strong>copy</strong>(DTI.<code>version</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>version-map</code>.<code>version</code>).<a href="#section-3.1-14.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-15.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-15.1.1.1">
+                <p id="section-3.1-15.1.1.1.1"><strong>copy</strong>(DTI.<code>svn</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>svn</code>).<a href="#section-3.1-15.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-16.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-16.1.1.1">
+                <p id="section-3.1-16.1.1.1.1"><strong>copy</strong>(DTI.<code>vendorInfo</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>raw-value</code>).<a href="#section-3.1-16.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-17.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-17.1.1.1">
+                <p id="section-3.1-17.1.1.1.1">Foreach FWID in FWIDLIST: <strong>copy</strong>(DTI.<code>FWID</code>.<code>digest</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>digests</code>.<code>digest</code>.<code>val</code>).<a href="#section-3.1-17.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-18.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-18.1.1.1">
+                <p id="section-3.1-18.1.1.1.1">Foreach FWID in FWIDLIST: <strong>copy</strong>(DTI.<code>FWID</code>.<code>hashAlg</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>digests</code>.<code>digest</code>.<code>alg</code>).<a href="#section-3.1-18.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-3.1-19">
+<dt>iii</dt>
+<dd id="section-3.1-19.1">
+            <p id="section-3.1-19.1.1">The DTI entry populates the <code>ae</code> ECT <code>elemenet-list</code>.<code>flags</code>. Foreach <em>f</em> in DTI.<code>OperationalFlags</code> and each <em>m</em> in DTI.<code>OperationalFlagsMask</code>:<a href="#section-3.1-19.1.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-20.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-20.1.1.1">
+                <p id="section-3.1-20.1.1.1.1">If <em>m</em>.<code>notConfigured</code> = 1 AND <em>f</em>.<code>notConfigured</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-configured</code> = FALSE).<a href="#section-3.1-20.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-21.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-21.1.1.1">
+                <p id="section-3.1-21.1.1.1.1">If <em>m</em>.<code>notConfigured</code> = 1 AND <em>f</em>.<code>notConfigured</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-configured</code> = TRUE).<a href="#section-3.1-21.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-22.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-22.1.1.1">
+                <p id="section-3.1-22.1.1.1.1">If <em>m</em>.<code>notSecure</code> = 1 AND <em>f</em>.<code>notSecure</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-secure</code> = FALSE).<a href="#section-3.1-22.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-23.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-23.1.1.1">
+                <p id="section-3.1-23.1.1.1.1">If <em>m</em>.<code>notSecure</code> = 1 AND <em>f</em>.<code>notSecure</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-secure</code> = TRUE).<a href="#section-3.1-23.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-24.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-24.1.1.1">
+                <p id="section-3.1-24.1.1.1.1">If <em>m</em>.<code>recovery</code> = 1 AND <em>f</em>.<code>recovery</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-recovery</code> = FALSE).<a href="#section-3.1-24.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-25.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-25.1.1.1">
+                <p id="section-3.1-25.1.1.1.1">If <em>m</em>.<code>recovery</code> = 1 AND <em>f</em>.<code>recovery</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-recovery</code> = TRUE).<a href="#section-3.1-25.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-26.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-26.1.1.1">
+                <p id="section-3.1-26.1.1.1.1">If <em>m</em>.<code>debug</code> = 1 AND <em>f</em>.<code>debug</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-debug</code> = FALSE).<a href="#section-3.1-26.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-27.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-27.1.1.1">
+                <p id="section-3.1-27.1.1.1.1">If <em>m</em>.<code>debug</code> = 1 AND <em>f</em>.<code>debug</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-debug</code> = TRUE).<a href="#section-3.1-27.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-28.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-28.1.1.1">
+                <p id="section-3.1-28.1.1.1.1">If <em>m</em>.<code>notReplayProtected</code> = 1 AND <em>f</em>.<code>notReplayProtected</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-replay-protected</code> = FALSE).<a href="#section-3.1-28.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-29.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-29.1.1.1">
+                <p id="section-3.1-29.1.1.1.1">If <em>m</em>.<code>notReplayProtected</code> = 1 AND <em>f</em>.<code>notReplayProtected</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-replay-protected</code> = TRUE).<a href="#section-3.1-29.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-30.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-30.1.1.1">
+                <p id="section-3.1-30.1.1.1.1">If <em>m</em>.<code>notIntegrityProtected</code> = 1 AND <em>f</em>.<code>notIntegrityProtected</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-integrity-proteccted</code> = FALSE).<a href="#section-3.1-30.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-31.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-31.1.1.1">
+                <p id="section-3.1-31.1.1.1.1">If <em>m</em>.<code>notIntegrityProtected</code> = 1 AND <em>f</em>.<code>notIntegrityProtected</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-integrity-proteccted</code> = TRUE).<a href="#section-3.1-31.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-32.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-32.1.1.1">
+                <p id="section-3.1-32.1.1.1.1">If <em>m</em>.<code>notRuntimeMeasured</code> = 1 AND <em>f</em>.<code>notRuntimeMeasured</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-runtime-meas</code> = FALSE).<a href="#section-3.1-32.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-33.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-33.1.1.1">
+                <p id="section-3.1-33.1.1.1.1">If <em>m</em>.<code>notRuntimeMeasured</code> = 1 AND <em>f</em>.<code>notRuntimeMeasured</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-runtime-meas</code> = TRUE).<a href="#section-3.1-33.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-34.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-34.1.1.1">
+                <p id="section-3.1-34.1.1.1.1">If <em>m</em>.<code>notImmutable</code> = 1 AND <em>f</em>.<code>notImmutable</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-immutable</code> = FALSE).<a href="#section-3.1-34.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-35.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-35.1.1.1">
+                <p id="section-3.1-35.1.1.1.1">If <em>m</em>.<code>notImmutable</code> = 1 AND <em>f</em>.<code>notImmutable</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-immutable</code> = TRUE).<a href="#section-3.1-35.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-36.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-36.1.1.1">
+                <p id="section-3.1-36.1.1.1.1">If <em>m</em>.<code>notTcb</code> = 1 AND <em>f</em>.<code>notTcb</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-tcb</code> = FALSE).<a href="#section-3.1-36.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-37.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.1-37.1.1.1">
+                <p id="section-3.1-37.1.1.1.1">If <em>m</em>.<code>notTcb</code> = 1 AND <em>f</em>.<code>notTcb</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-tcb</code> = TRUE).<a href="#section-3.1-37.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-3.1-38">
+<dt>Step 4.</dt>
+<dd id="section-3.1-38.1">
+            <p id="section-3.1-38.1.1">The ECT.<code>authority</code> field is set up based on the signer of the certificate containing DTI as described in <a href="#sec-authority" class="auto internal xref">Section 3.4</a>.<a href="#section-3.1-38.1.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<p id="section-3.1-39">The completed ECT is added to the <code>ae</code> list.<a href="#section-3.1-39" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-ueid">
+<section id="section-3.2">
+        <h3 id="name-diceueid-transformation">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-diceueid-transformation" class="section-name selfRef">DiceUeid Transformation</a>
+        </h3>
+<p id="section-3.2-1">This section defines the transformation method for the DiceUeid certificate extension.
+This extension is identified by the following object identifier:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.2-2.1">
+            <p id="section-3.2-2.1.1">tcg-dice-Ueid - "2.23.133.5.4.4"<a href="#section-3.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-3.2-3">
+<dt>Step 1.</dt>
+<dd id="section-3.2-3.1">
+            <p id="section-3.2-3.1.1">An <code>ae</code> entry is allocated.<a href="#section-3.2-3.1.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 2.</dt>
+<dd id="section-3.2-3.2">
+            <p id="section-3.2-3.2.1">The <code>cmtype</code> of the ECT is set to <code>evidence</code>.<a href="#section-3.2-3.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 3.</dt>
+<dd id="section-3.2-3.3">
+            <p id="section-3.2-3.3.1">The DiceUeid entry populates the <code>ae</code> ECT <code>environment-map</code>.<code>instance-id</code>.<code>tagged-ueid-type</code>.
+The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to <code>ae</code>.<code>environment-map</code>.<code>instance-id</code>.<a href="#section-3.2-3.3.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 4.</dt>
+<dd id="section-3.2-3.4">
+            <p id="section-3.2-3.4.1">The ECT.<code>authority</code> field is set up based on the signer of the certificate containing DiceUeid as described in <a href="#sec-authority" class="auto internal xref">Section 3.4</a>.<a href="#section-3.2-3.4.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<p id="section-3.2-4">The completed ECT is added to the <code>ae</code> list.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-cmw">
+<section id="section-3.3">
+        <h3 id="name-diceconceptualmessagewrappe">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-diceconceptualmessagewrappe" class="section-name selfRef">DiceConceptualMessageWrapper Transformation</a>
+        </h3>
+<p id="section-3.3-1">This section defines the transformation method for the DiceConceptualMessageWrapper certificate extension.
+This extension is identified by the following object identifier:<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.3-2.1">
+            <p id="section-3.3-2.1.1">tcg-dice-Ueid - "2.23.133.5.4.9"<a href="#section-3.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-3.3-3">The DiceConceptualMessageWrapper entry OCTET STRING may contain a CBOR array, JSON array, or CBOR tagged value.
+If the entry contains a CBOR tag value of #6.571 or #6.1668557429, or a Content ID of 10571, or a Media Type of "application/ce+cbor",
+the contents are transformed according to <a href="#sec-ce-trans" class="auto internal xref">Section 4</a>.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-authority">
+<section id="section-3.4">
+        <h3 id="name-authority-field-in-dice-spd">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-authority-field-in-dice-spd" class="section-name selfRef">Authority field in DICE/SPDM ECTs</a>
+        </h3>
+<p id="section-3.4-1">The ECT authority field is an array of <code>$crypto-keys-type-choice</code> values.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">When adding Evidence to the ACS, the Verifier SHALL add the public key representing the signer of that Evidence (for example the DICE certificate or SPDM MEASUREMENTS response) to the ECT authority field.
+The Verifier SHALL add the authority of the signers of each certificate in the certificate path of the end-entity signing key to the ECT <code>authority</code> list.
+Having each authority in a certificate path in the ECT <code>authority</code> field lets conditional endorsement conditions match multiple authorities or match an authority that is scoped more broadly than the immediate signer of the Evidence artifact.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">Each signer authority value MUST be represented using <code>tagged-cose-key-type</code>.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="sec-ce-trans">
+<section id="section-4">
+      <h2 id="name-transforming-tcg-concise-ev">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-transforming-tcg-concise-ev" class="section-name selfRef">Transforming TCG Concise Evidence</a>
+      </h2>
+<p id="section-4-1">This section defines how Evidence from TCG <span>[<a href="#TCG.CE" class="cite xref">TCG.CE</a>]</span> is transformed into an internal representation that can be processed by Verifiers.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-2">Verifiers supporting the TCG Concise Evidence format SHOULD implement this transformation.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-3">Concise evidence may be recognized by any of the following registered types:<a href="#section-4-3" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+        <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">CBOR tag</th>
+            <th class="text-left" rowspan="1" colspan="1">C-F ID</th>
+            <th class="text-left" rowspan="1" colspan="1">TN Tag</th>
+            <th class="text-left" rowspan="1" colspan="1">Media Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">#6.571</td>
+            <td class="text-left" rowspan="1" colspan="1">10571</td>
+            <td class="text-left" rowspan="1" colspan="1">#6.1668557429</td>
+            <td class="text-left" rowspan="1" colspan="1">"application/ce+cbor"</td>
+          </tr>
+        </tbody>
+      </table>
+<p id="section-4-5">A Concise Evidence entry is converted to a CoRIM ECT (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) using the transformation steps in this section.
+A list of Evidence ECTs (i.e., <code>ae = [ + ECT]</code>) is constructed using CoRIM attestation evidence internal representation (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-8.2.1.1" class="relref">Section 8.2.1.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).
+The Concise Evidence scheme uses CoRIM CDDL definitions to define several Evidence representations called <em>triples</em>.
+Cases where Concise Evidence CDDL is identical to CoRIM CDDL the transformation logic uses the structure names in common.<a href="#section-4-5" class="pilcrow">¶</a></p>
+<div id="sec-evidence-triple">
+<section id="section-4.1">
+        <h3 id="name-transforming-the-ceevidence">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-transforming-the-ceevidence" class="section-name selfRef">Transforming the ce.evidence-triples</a>
+        </h3>
+<p id="section-4.1-1">The <code>ce.evidence-triples</code> structure is a list of <code>evidence-triple-record</code>.
+An <code>evidence-triple-record</code> consists of an <code>environment-map</code> and a list of <code>measurement-map</code>.
+For each <code>evidence-triple-record</code> an <code>ae</code> ECT is constructed.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="olPercent" id="section-4.1-2">
+<dt>Step 1.</dt>
+<dd id="section-4.1-2.1">
+            <p id="section-4.1-2.1.1">An <code>ae</code> ECT entry is allocated.<a href="#section-4.1-2.1.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 2.</dt>
+<dd id="section-4.1-2.2">
+            <p id="section-4.1-2.2.1">The <code>cmtype</code> of the ECT is set to <code>evidence</code>.<a href="#section-4.1-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 3.</dt>
+<dd id="section-4.1-2.3">
+            <p id="section-4.1-2.3.1">The Concise Evidence (CE) entry populates the <code>ae</code> ECT <code>environment</code> fields.<a href="#section-4.1-2.3.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.1-3.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.1-3.1.1.1">
+                <p id="section-4.1-3.1.1.1.1"><strong>copy</strong>(CE.<code>evidence-triple-record</code>.<code>environment-map</code>, ECT.<code>environment</code>.<code>environment-map</code>).<a href="#section-4.1-3.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-4.1-4">
+<dt>i</dt>
+<dd id="section-4.1-4.1">
+            <p id="section-4.1-4.1.1">For each ce in CE.<code>[ + measurement-map]</code>; and each ect in ECT.<code>[ + element-list]</code>:<a href="#section-4.1-4.1.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.1-5.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.1-5.1.1.1">
+                <p id="section-4.1-5.1.1.1.1"><strong>copy</strong>(ce.<code>mkey</code>, ect.<code>element-map</code>.<code>element-id</code>)<a href="#section-4.1-5.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.1-6.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.1-6.1.1.1">
+                <p id="section-4.1-6.1.1.1.1"><strong>copy</strong>(ce.<code>mval</code>, ect<code>.</code>element-map<code>.</code>element-claims`)<a href="#section-4.1-6.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-4.1-7">
+<dt>Step 4.</dt>
+<dd id="section-4.1-7.1">
+            <p id="section-4.1-7.1.1">The signer of the envelope containing CE is copied to the ECT.<code>authority</code> field as described in <a href="#sec-authority" class="auto internal xref">Section 3.4</a>.
+For example, a CE may be wrapped by an EAT token <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span> or DICE certificate <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>.
+The signer identity MUST be expressed using <code>$crypto-key-type-choice</code>.
+A profile or other arrangement is used to coordinate which <code>$crypto-key-type-choice</code> is used for both Evidence and Reference Values.<a href="#section-4.1-7.1.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 5.</dt>
+<dd id="section-4.1-7.2">
+            <p id="section-4.1-7.2.1">If CE has a profile, the profile is converted to a <code>$profile-type-choice</code> then copied to the ECT<code>.</code>profile` field.<a href="#section-4.1-7.2.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<p id="section-4.1-8">The completed ECT is added to the <code>ae</code> list.<a href="#section-4.1-8" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-identity-triple">
+<section id="section-4.2">
+        <h3 id="name-transforming-the-ceidentity">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-transforming-the-ceidentity" class="section-name selfRef">Transforming the ce.identity-triples</a>
+        </h3>
+<p id="section-4.2-1">The <code>ce.identity-triples</code> structure is a list of <code>ev-identity-triple-record</code>.
+An <code>ev-identity-triple-record</code> consists of an <code>environment-map</code> and a list of <code>$crypto-key-type-choice</code>.
+For each <code>ev-identity-triple-record</code> an <code>ae</code> ECT is constructed where the <code>$crypto-key-type-choice</code> values are copied as ECT Evidence measurement values.
+The ECT internal representation accommodates keys as a type of measurement.
+In order for the <code>$crypto-key-type-choice</code> keys to be verified a CoRIM <code>identity-triples</code> claim MUST be asserted.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="olPercent" id="section-4.2-2">
+<dt>Step 1.</dt>
+<dd id="section-4.2-2.1">
+            <p id="section-4.2-2.1.1">An <code>ae</code> ECT entry is allocated.<a href="#section-4.2-2.1.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 2.</dt>
+<dd id="section-4.2-2.2">
+            <p id="section-4.2-2.2.1">The <code>cmtype</code> of the ECT is set to <code>evidence</code>.<a href="#section-4.2-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 3.</dt>
+<dd id="section-4.2-2.3">
+            <p id="section-4.2-2.3.1">The Concise Evidence (CE) entry populates the <code>ae</code> ECT <code>environment</code> fields.<a href="#section-4.2-2.3.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.2-3.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.2-3.1.1.1">
+                <p id="section-4.2-3.1.1.1.1"><strong>copy</strong>(CE.<code>ce-identity-triple-record</code>.<code>environment-map</code>, ECT.<code>environment</code>.<code>environment-map</code>).<a href="#section-4.2-3.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.2-4.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.2-4.1.1.1">
+                <p id="section-4.2-4.1.1.1.1"><strong>copy</strong>(<em>null</em>, ECT.<code>element-list</code>.<code>element-map</code>.<code>element-id</code>).<a href="#section-4.2-4.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-4.2-5">
+<dt>i</dt>
+<dd id="section-4.2-5.1">
+            <p id="section-4.2-5.1.1">For each cek in CE.<code>[ + $crypto-key-type-choice ]</code>; and each ect in ECT.<code>element-list</code>.<code>element-map</code>.<code>element-claims</code>.<code>intrep-keys</code>.<code>[ + typed-crypto-key ]</code>:<a href="#section-4.2-5.1.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.2-6.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.2-6.1.1.1">
+                <p id="section-4.2-6.1.1.1.1"><strong>copy</strong>(cek, ect.<code>key</code>)<a href="#section-4.2-6.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.2-7.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.2-7.1.1.1">
+                <p id="section-4.2-7.1.1.1.1"><strong>set</strong>( &amp;(identity-key: 1), ect.<code>key-type</code>)<a href="#section-4.2-7.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-4.2-8">
+<dt>Step 4.</dt>
+<dd id="section-4.2-8.1">
+            <p id="section-4.2-8.1.1">The signer of the envelope containing CE is copied to the ECT.<code>authority</code> field.
+For example, a CE may be wrapped by an EAT token <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span> or DICE certificate <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>.
+The signer identity MUST be expressed using <code>$crypto-key-type-choice</code>.
+A profile or other arrangement is used to coordinate which <code>$crypto-key-type-choice</code> is used for both Evidence and Reference Values.<a href="#section-4.2-8.1.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 5.</dt>
+<dd id="section-4.2-8.2">
+            <p id="section-4.2-8.2.1">If CE has a profile, the profile is converted to a <code>$profile-type-choice</code> then copied to the ECT<code>.</code>profile` field.<a href="#section-4.2-8.2.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<p id="section-4.2-9">The completed ECT is added to the <code>ae</code> list.<a href="#section-4.2-9" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-attest-key-triple">
+<section id="section-4.3">
+        <h3 id="name-transforming-the-ceattest-k">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-transforming-the-ceattest-k" class="section-name selfRef">Transforming the ce.attest-key-triples</a>
+        </h3>
+<p id="section-4.3-1">The <code>ce.attest-key-triples</code> structure is a list of <code>ev-attest-key-triple-record</code>.
+An <code>ev-attest-key-triple-record</code> consists of an <code>environment-map</code> and a list of <code>$crypto-key-type-choice</code>.
+For each <code>ev-attest-key-triple-record</code> an <code>ae</code> ECT is constructed where the <code>$crypto-key-type-choice</code> values are copied as ECT Evidence measurement values.
+The ECT internal representation accommodates keys as a type of measurement.
+In order for the <code>$crypto-key-type-choice</code> keys to be verified a CoRIM <code>attest-key-triples</code> claim MUST be asserted.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="olPercent" id="section-4.3-2">
+<dt>Step 1.</dt>
+<dd id="section-4.3-2.1">
+            <p id="section-4.3-2.1.1">An <code>ae</code> ECT entry is allocated.<a href="#section-4.3-2.1.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 2.</dt>
+<dd id="section-4.3-2.2">
+            <p id="section-4.3-2.2.1">The <code>cmtype</code> of the ECT is set to <code>evidence</code>.<a href="#section-4.3-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 3.</dt>
+<dd id="section-4.3-2.3">
+            <p id="section-4.3-2.3.1">The Concise Evidence (CE) entry populates the <code>ae</code> ECT <code>environment</code> fields.<a href="#section-4.3-2.3.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.3-3.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.3-3.1.1.1">
+                <p id="section-4.3-3.1.1.1.1"><strong>copy</strong>(CE.<code>ce-attest-key-triple-record</code>.<code>environment-map</code>, ECT.<code>environment</code>.<code>environment-map</code>).<a href="#section-4.3-3.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.3-4.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.3-4.1.1.1">
+                <p id="section-4.3-4.1.1.1.1"><strong>copy</strong>(<em>null</em>, ECT.<code>element-list</code>.<code>element-map</code>.<code>element-id</code>).<a href="#section-4.3-4.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-4.3-5">
+<dt>i</dt>
+<dd id="section-4.3-5.1">
+            <p id="section-4.3-5.1.1">For each cek in CE.<code>[ + $crypto-key-type-choice ]</code>; and each ect in ECT.<code>element-list</code>.<code>element-map</code>.<code>element-claims</code>.<code>intrep-keys</code>.<code>[ + typed-crypto-key ]</code>:<a href="#section-4.3-5.1.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.3-6.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.3-6.1.1.1">
+                <p id="section-4.3-6.1.1.1.1"><strong>copy</strong>(cek, ect.<code>key</code>)<a href="#section-4.3-6.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.3-7.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-4.3-7.1.1.1">
+                <p id="section-4.3-7.1.1.1.1"><strong>set</strong>( &amp;(attest-key: 0), ect.<code>key-type</code>)<a href="#section-4.3-7.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-4.3-8">
+<dt>Step 4.</dt>
+<dd id="section-4.3-8.1">
+            <p id="section-4.3-8.1.1">The signer of the envelope containing CE is copied to the ECT.<code>authority</code> field.
+For example, a CE may be wrapped by an EAT token <span>[<a href="#I-D.ietf-rats-eat" class="cite xref">I-D.ietf-rats-eat</a>]</span> or DICE certificate <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>.
+The signer identity MUST be expressed using <code>$crypto-key-type-choice</code>.
+A profile or other arrangement is used to coordinate which <code>$crypto-key-type-choice</code> is used for both Evidence and Reference Values.<a href="#section-4.3-8.1.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>Step 5.</dt>
+<dd id="section-4.3-8.2">
+            <p id="section-4.3-8.2.1">If CE has a profile, the profile is converted to a <code>$profile-type-choice</code> then copied to the ECT<code>.</code>profile` field.<a href="#section-4.3-8.2.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<p id="section-4.3-9">The completed ECT is added to the <code>ae</code> list.<a href="#section-4.3-9" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="dmtf-spdm-structure-definitons">
+<section id="section-5">
+      <h2 id="name-dmtf-spdm-structure-definit">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-dmtf-spdm-structure-definit" class="section-name selfRef">DMTF SPDM Structure Definitons</a>
+      </h2>
+<p id="section-5-1">This section defines how a Verifier shall parse a DMTF Measurement Block.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">DMTF Measurement Block Definition:<a href="#section-5-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-3.1">
+          <p id="section-5-3.1.1">Byte Offset 0: DMTFSpecMeasurementValueType<a href="#section-5-3.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-3.1.2.1">
+              <p id="section-5-3.1.2.1.1">Bit 7     = 0b Digest / 1b Raw bit stream<a href="#section-5-3.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-5-3.1.2.2">
+              <p id="section-5-3.1.2.2.1">Bit [6:0] = Indicate what is measured<a href="#section-5-3.1.2.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-3.1.2.2.2.1">
+                  <p id="section-5-3.1.2.2.2.1.1">0x0 Immutable Rom<a href="#section-5-3.1.2.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-5-3.1.2.2.2.2">
+                  <p id="section-5-3.1.2.2.2.2.1">0x1 Mutable FW<a href="#section-5-3.1.2.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-5-3.1.2.2.2.3">
+                  <p id="section-5-3.1.2.2.2.3.1">0x2 HW Config<a href="#section-5-3.1.2.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-5-3.1.2.2.2.4">
+                  <p id="section-5-3.1.2.2.2.4.1">0x3 FW config<a href="#section-5-3.1.2.2.2.4.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-5-3.1.2.2.2.5">
+                  <p id="section-5-3.1.2.2.2.5.1">0x4 Freeform Manifest<a href="#section-5-3.1.2.2.2.5.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-5-3.1.2.2.2.6">
+                  <p id="section-5-3.1.2.2.2.6.1">0x5 Structured Representation of debug and device mode<a href="#section-5-3.1.2.2.2.6.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-5-3.1.2.2.2.7">
+                  <p id="section-5-3.1.2.2.2.7.1">0x6 Mutable FW Version Number<a href="#section-5-3.1.2.2.2.7.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-5-3.1.2.2.2.8">
+                  <p id="section-5-3.1.2.2.2.8.1">0x7 Mutable FW Secure Version Number<a href="#section-5-3.1.2.2.2.8.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-5-3.1.2.2.2.9">
+                  <p id="section-5-3.1.2.2.2.9.1">0x8 Hash-Extend Measurement (new in SPDM 1.3)<a href="#section-5-3.1.2.2.2.9.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-5-3.1.2.2.2.10">
+                  <p id="section-5-3.1.2.2.2.10.1">0x9 Informational (new in SPDM 1.3)<a href="#section-5-3.1.2.2.2.10.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-5-3.1.2.2.2.11">
+                  <p id="section-5-3.1.2.2.2.11.1">0xA Structured Measurement Manifest (new in SPDM 1.3)<a href="#section-5-3.1.2.2.2.11.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
+</li>
+          </ul>
+</li>
+        <li class="normal" id="section-5-3.2">
+          <p id="section-5-3.2.1">Byte Offset 1: DMTFSpecMeasurementValueSize<a href="#section-5-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-3.3">
+          <p id="section-5-3.3.1">Byte Offset 3: DMTFSpecMeasurementValue<a href="#section-5-3.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-4">Structured Manifest Block Definition (only for &gt;=SPDM 1.3):<a href="#section-5-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-5.1">
+          <p id="section-5-5.1.1">Byte Offset 0: Standard Body or Vendor Defined Header (SVH)<a href="#section-5-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-5.2">
+          <p id="section-5-5.2.1">Byte Offset 2 + VendorIdLen: Manifest<a href="#section-5-5.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-6">Standard Body or Vendor Defined Header (SVH) Definition (only for &gt;=SPDM 1.3):<a href="#section-5-6" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-7.1">
+          <p id="section-5-7.1.1">Byte Offset 0: ID<a href="#section-5-7.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-7.2">
+          <p id="section-5-7.2.1">Byte Offset 1: VendorIdLen<a href="#section-5-7.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-7.3">
+          <p id="section-5-7.3.1">Byte Offset 2: VendorId<a href="#section-5-7.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-8">DMTF Header for Concise Evidence Manifest Block:<a href="#section-5-8" class="pilcrow">¶</a></p>
+<p id="section-5-9">If SPDM Version 1.2:<a href="#section-5-9" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-10.1">
+          <p id="section-5-10.1.1">DMTFSpecMeasurementValueType = 0x84 (Raw Bit / Freeform Manifest)<a href="#section-5-10.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-10.2">
+          <p id="section-5-10.2.1">DMTFSpecMeasurementValueSize = Size of tagged-spdm-toc CBOR Tag<a href="#section-5-10.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-10.3">
+          <p id="section-5-10.3.1">DMTFSpecMeasurementValue     = tagged-spdm-toc CBOR Tag<a href="#section-5-10.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-11">if SPDM &gt;=Version 1.3:<a href="#section-5-11" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-12.1">
+          <p id="section-5-12.1.1">DMTFSpecMeasurementValueType = 0x8A (Raw Bit / Structured Manifest)<a href="#section-5-12.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-12.2">
+          <p id="section-5-12.2.1">DMTFSpecMeasurementValueSize = Size of Structured Manifest<a href="#section-5-12.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-12.3">
+          <p id="section-5-12.3.1">DMTFSpecMeasurementValue     = Structured Manifest<a href="#section-5-12.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-13">SVH for Concise Evidence Manifest Block:<a href="#section-5-13" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-14.1">
+          <p id="section-5-14.1.1">ID          = 0xA (IANA CBOR)<a href="#section-5-14.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-14.2">
+          <p id="section-5-14.2.1">VendorIdLen = 2<a href="#section-5-14.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-14.3">
+          <p id="section-5-14.3.1">VendorId    = 0x570 #6.570(spdm-toc-map)<a href="#section-5-14.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-15">Structured Manifest Block Definition for Concise Evidence:<a href="#section-5-15" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-16.1">
+          <p id="section-5-16.1.1">SVH      =  SVH for Concise Evidence Manifest Block<a href="#section-5-16.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-16.2">
+          <p id="section-5-16.2.1">Manifest = tagged-spdm-toc CBOR Tag Payload<a href="#section-5-16.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-17">DMTF Header for CBor Web Token (CWT):<a href="#section-5-17" class="pilcrow">¶</a></p>
+<p id="section-5-18">If SPDM Version 1.2:<a href="#section-5-18" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-19.1">
+          <p id="section-5-19.1.1">DMTFSpecMeasurementValueType = 0x84 (Raw Bit / Freeform Manifest)<a href="#section-5-19.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-19.2">
+          <p id="section-5-19.2.1">DMTFSpecMeasurementValueSize = Size of CWT<a href="#section-5-19.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-19.3">
+          <p id="section-5-19.3.1">DMTFSpecMeasurementValue     = CWT # COSE_Sign1<a href="#section-5-19.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-20">if SPDM = Version 1.3:<a href="#section-5-20" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-21.1">
+          <p id="section-5-21.1.1">DMTFSpecMeasurementValueType = 0x8A (Raw Bit / Structured Manifest)<a href="#section-5-21.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-21.2">
+          <p id="section-5-21.2.1">DMTFSpecMeasurementValueSize = Size of Structured Manifest<a href="#section-5-21.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-21.3">
+          <p id="section-5-21.3.1">DMTFSpecMeasurementValue     = Structured Manifest<a href="#section-5-21.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-22">SVH for CBor Web Token (CWT):<a href="#section-5-22" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-23.1">
+          <p id="section-5-23.1.1">ID          = 0xA (IANA CBOR)<a href="#section-5-23.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-23.2">
+          <p id="section-5-23.2.1">VendorIdLen = 2<a href="#section-5-23.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-23.3">
+          <p id="section-5-23.3.1">VendorId    = 0x18 #6.18<a href="#section-5-23.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-24">Structured Manifest Block Definition for CBor Web Token (CWT):<a href="#section-5-24" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-25.1">
+          <p id="section-5-25.1.1">SVH      =  SVH for CBor Web Token (CWT)<a href="#section-5-25.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-25.2">
+          <p id="section-5-25.2.1">Manifest = COSE_Sign1 Payload<a href="#section-5-25.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="transforming-spdm-measurement-block-digest">
+<section id="section-6">
+      <h2 id="name-transforming-spdm-measureme">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-transforming-spdm-measureme" class="section-name selfRef">Transforming SPDM Measurement Block Digest</a>
+      </h2>
+<span class="break"></span><dl class="olPercent" id="section-6-1">
+<dt>Step 1.</dt>
+<dd id="section-6-1.1">
+          <p id="section-6-1.1.1">if DMTFSpecMeasurementValueType is in range [0x80 - 0x83]:<a href="#section-6-1.1.1" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-6-1.1.2.1">
+              <p id="section-6-1.1.2.1.1"><strong>copy</strong>(SPDM.<code>MeasurementBlock</code>.DMTFSpecMeasurementValue , ECT.<code>environment</code>.<code>measurement-map</code>.<code>mval</code>.<code>digests</code>).<a href="#section-6-1.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</dd>
+        <dd class="break"></dd>
+<dt>Step 2.</dt>
+<dd id="section-6-1.2">
+          <p id="section-6-1.2.1">if DMTFSpecMeasurementValueType is in range [0x88]:<a href="#section-6-1.2.1" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-6-1.2.2.1">
+              <p id="section-6-1.2.2.1.1"><strong>copy</strong>(SPDM.<code>MeasurementBlock</code>.DMTFSpecMeasurementValue , ECT.<code>environment</code>.<code>measurement-map</code>.<code>mval</code>.<code>integrity-registers</code>).<a href="#section-6-1.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</dd>
+      <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="transforming-spdm-measurement-block-raw-value">
+<section id="section-7">
+      <h2 id="name-transforming-spdm-measuremen">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-transforming-spdm-measuremen" class="section-name selfRef">Transforming SPDM Measurement Block Raw Value</a>
+      </h2>
+<span class="break"></span><dl class="olPercent" id="section-7-1">
+<dt>Step 1.</dt>
+<dd id="section-7-1.1">
+          <p id="section-7-1.1.1">if DMTFSpecMeasurementValueType is in range [0x7]:<a href="#section-7-1.1.1" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-7-1.1.2.1">
+              <p id="section-7-1.1.2.1.1"><strong>copy</strong>(SPDM.<code>MeasurementBlock</code>.DMTFSpecMeasurementValue , ECT.<code>environment</code>.<code>measurement-map</code>.<code>mval</code>.<code>svn</code>).<a href="#section-7-1.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</dd>
+      <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="transforming-spdm-rats-eat-cwt">
+<section id="section-8">
+      <h2 id="name-transforming-spdm-rats-eat-">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-transforming-spdm-rats-eat-" class="section-name selfRef">Transforming SPDM RATS EAT CWT</a>
+      </h2>
+<p id="section-8-1">The RATS EAT CWT shall be reported in any of the assigned Measurement Blocks range [0xF0 - 0xFC]
+The Concise Evidence CBOR Tag is serialized inside eat-measurements (273) claim ($measurements-body-cbor /= bytes .cbor concise-evidence-map)
+Subsequently the transformation steps defined in <a href="#sec-ce-trans" class="auto internal xref">Section 4</a>.<a href="#section-8-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-spdm-trans">
+<section id="section-9">
+      <h2 id="name-transforming-spdm-evidence">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-transforming-spdm-evidence" class="section-name selfRef">Transforming SPDM Evidence</a>
+      </h2>
+<p id="section-9-1">This section defines how Evidence from SPDM <span>[<a href="#SPDM" class="cite xref">SPDM</a>]</span> is transformed into an internal representation that can be processed by Verifiers.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-2">Verifiers supporting the SPDM Evidence format SHOULD implement this transformation.
+SPDM Responders SHALL support a minimum version of 1.2<a href="#section-9-2" class="pilcrow">¶</a></p>
+<p id="section-9-3">Theory of Operations:<a href="#section-9-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-9-4.1">
+          <p id="section-9-4.1.1">The SPDM Requestor SHALL retrieve the measurement Manifest at Block 0xFD (Manifest Block) and send its payload to the Verifier<a href="#section-9-4.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-9-4.1.2.1">
+              <p id="section-9-4.1.2.1.1">The Verifier SHALL decode the payload as a tagged-spdm-toc CBOR tag.<a href="#section-9-4.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-9-4.1.2.2">
+              <p id="section-9-4.1.2.2.1">The Verifier SHALL extract the tagged-concise-evidence CBOR TAG from the tagged-spdm-toc CBOR tag<a href="#section-9-4.1.2.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+      </ul>
+<p id="section-9-5">The<code>concise-evidence</code> has a format that is similar to CoRIM <code>triples-map</code> (their semantics follows the matching rules described above).<a href="#section-9-5" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-9-6.1">
+          <p id="section-9-6.1.1">For every <code>spdm-indirect</code> measurement the Verifier shall ask the SPDM Requestor to retrieve the measurement block indicated by the index<a href="#section-9-6.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-9-6.1.2.1">
+              <p id="section-9-6.1.2.1.1">if the index is in range [0x1 - 0xEF] (refer to #Transforming SPDM Measurement Block Digest)<a href="#section-9-6.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-9-6.1.2.2">
+              <p id="section-9-6.1.2.2.1">if the index is in range [0xF0 - 0xFC] (refer to #Transforming SPDM RATS EAT CWT] )<a href="#section-9-6.1.2.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+      </ul>
+<p id="section-9-7">The TCG DICE Concise Evidence Binding for SPDM specification <span>[<a href="#TCG.CE" class="cite xref">TCG.CE</a>]</span> describes a process for converting the SPDM Measurement Block to Concise Evidence.
+Subsequently the transformation steps defined in <a href="#sec-ce-trans" class="auto internal xref">Section 4</a>.<a href="#section-9-7" class="pilcrow">¶</a></p>
+<p id="section-9-8">The keys provided in the ECT.<code>authority</code> field SHOULD include the key which signed the SPDM MEASUREMENTS response carrying the Evidence and keys which authorized that key as described in <a href="#sec-authority" class="auto internal xref">Section 3.4</a>.```<a href="#section-9-8" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="implementation-status">
+<section id="section-10">
+      <h2 id="name-implementation-status">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-implementation-status" class="section-name selfRef">Implementation Status</a>
+      </h2>
+<p id="section-10-1">This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft,
+and is based on a proposal described in <span>[<a href="#RFC7942" class="cite xref">RFC7942</a>]</span>.
+The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs.
+Please note that the listing of any individual implementation here does not imply endorsement by the IETF.
+Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors.
+This is not intended as, and must not be construed to be, a catalogue of available implementations or their features.
+Readers are advised to note that other implementations may exist.<a href="#section-10-1" class="pilcrow">¶</a></p>
+<p id="section-10-2">According to <span>[<a href="#RFC7942" class="cite xref">RFC7942</a>]</span>, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code,
+which may serve as Evidence of valuable experimentation and feedback that have made the implemented protocols more mature.
+It is up to the individual working groups to use this information as they see fit".<a href="#section-10-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-sec">
+<section id="section-11">
+      <h2 id="name-security-and-privacy-consid">
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-security-and-privacy-consid" class="section-name selfRef">Security and Privacy Considerations</a>
+      </h2>
+<p id="section-11-1">Evidence appraisal is at the core of any RATS protocol flow, mediating all interactions between Attesters and their Relying Parties.
+The Verifier is effectively part of the Attesters' and Relying Parties' trusted computing base (TCB).
+Any mistake in the appraisal process could have security implications.
+For instance, it could lead to the subversion of an access control function, which creates a chance for privilege escalation.<a href="#section-11-1" class="pilcrow">¶</a></p>
+<p id="section-11-2">Therefore, the Verifier’s code and configuration, especially those of the CoRIM processor, are primary security assets that must be built and maintained as securely as possible.<a href="#section-11-2" class="pilcrow">¶</a></p>
+<p id="section-11-3">The protection of both the Attester and Verifier systems should be considered throughout their entire lifecycle, from design to operation.
+This includes the following aspects:<a href="#section-11-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-11-4.1">
+          <p id="section-11-4.1.1">Minimizing implementation complexity (see also <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-endorsements-06#section-6.1" class="relref">Section 6.1</a> of [<a href="#I-D.ietf-rats-endorsements" class="cite xref">I-D.ietf-rats-endorsements</a>]</span>);<a href="#section-11-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-11-4.2">
+          <p id="section-11-4.2.1">Using memory-safe programming languages;<a href="#section-11-4.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-11-4.3">
+          <p id="section-11-4.3.1">Using secure defaults;<a href="#section-11-4.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-11-4.4">
+          <p id="section-11-4.4.1">Minimizing the attack surface by avoiding unnecessary features that could be exploited by attackers;<a href="#section-11-4.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-11-4.5">
+          <p id="section-11-4.5.1">Applying the principle of least privilege to the system's users;<a href="#section-11-4.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-11-4.6">
+          <p id="section-11-4.6.1">Minimizing the potential impact of security breaches by implementing separation of duties in both the software and operational architecture;<a href="#section-11-4.6.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-11-4.7">
+          <p id="section-11-4.7.1">Conducting regular, automated audits and reviews of the system, such as ensuring that users' privileges are correctly configured and that any new code has been audited and approved by independent parties;<a href="#section-11-4.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-11-4.8">
+          <p id="section-11-4.8.1">Failing securely in the event of errors to avoid compromising the security of the system.<a href="#section-11-4.8.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-11-5">The appraisal process should be auditable and reproducible.
+The integrity of the code and data during execution should be made an explicit objective, for example ensuring that the appraisal functions are computed in an attestable trusted execution environment (TEE).<a href="#section-11-5" class="pilcrow">¶</a></p>
+<p id="section-11-6">The integrity of public and private key material and the secrecy of private key material must be ensured at all times.
+This includes key material carried in attestation key triples and key material used to assert or verify the authority of triples (such as public keys that identify trusted supply chain actors).
+For more detailed information on protecting Trust Anchors, refer to <span><a href="https://rfc-editor.org/rfc/rfc9334#section-12.4" class="relref">Section 12.4</a> of [<a href="#RFC9334" class="cite xref">RFC9334</a>]</span>.<a href="#section-11-6" class="pilcrow">¶</a></p>
+<p id="section-11-7">The Verifier should use cryptographically protected, mutually authenticated secure channels to all its trusted input sources (i.e., Attesters, Endorsers, RVPs, Verifier Owners).
+The Attester should use cryptographically protected, mutually authenticated secure channels to all its trusted input sources (i.e., Verifiers, Relying Parties).
+These links must reach as deep as possible - possibly terminating within the Attesting Environment of an Attester or within the appraisal session context of a Verifier - to avoid man-in-the-middle attacks.
+Also consider minimizing the use of intermediaries: each intermediary becomes another party that needs to be trusted and therefore factored in the Attesters and Relying Parties' TCBs.
+Refer to <span><a href="https://rfc-editor.org/rfc/rfc9334#section-12.2" class="relref">Section 12.2</a> of [<a href="#RFC9334" class="cite xref">RFC9334</a>]</span> for information on Conceptual Messages protection.<a href="#section-11-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-iana-cons">
+<section id="section-12">
+      <h2 id="name-iana-considerations">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<p id="section-12-1">There are no IANA considerations.<a href="#section-12-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-combined-references">
+<section id="section-13">
+      <h2 id="name-references">
+<a href="#section-13" class="section-number selfRef">13. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<div id="sec-normative-references">
+<section id="section-13.1">
+        <h3 id="name-normative-references">
+<a href="#section-13.1" class="section-number selfRef">13.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="DICE.Attest">[DICE.Attest]</dt>
+        <dd>
+<span class="refAuthor">Trusted Computing Group (TCG)</span>, <span class="refTitle">"DICE Attestation Architecture"</span>, <span class="seriesInfo">Version 1.2, Revision 1 </span>, <time datetime="2025-01" class="refDate">January 2025</time>, <span>&lt;<a href="https://trustedcomputinggroup.org/wp-content/uploads/DICE-Attestation-Architecture-Version-1.2-rc-1_9January25.pdf">https://trustedcomputinggroup.org/wp-content/uploads/DICE-Attestation-Architecture-Version-1.2-rc-1_9January25.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="DICE.CoRIM">[DICE.CoRIM]</dt>
+        <dd>
+<span class="refAuthor">Trusted Computing Group (TCG)</span>, <span class="refTitle">"DICE Endorsement Architecture for Devices"</span>, <span class="seriesInfo">Version 1.0, Revision 0.38 </span>, <time datetime="2022-11" class="refDate">November 2022</time>, <span>&lt;<a href="https://trustedcomputinggroup.org/wp-content/uploads/TCG-Endorsement-Architecture-for-Devices-V1-R38_pub.pdf">https://trustedcomputinggroup.org/wp-content/uploads/TCG-Endorsement-Architecture-for-Devices-V1-R38_pub.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-rats-corim">[I-D.ietf-rats-corim]</dt>
+        <dd>
+<span class="refAuthor">Birkholz, H.</span>, <span class="refAuthor">Fossati, T.</span>, <span class="refAuthor">Deshpande, Y.</span>, <span class="refAuthor">Smith, N.</span>, and <span class="refAuthor">W. Pan</span>, <span class="refTitle">"Concise Reference Integrity Manifest"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rats-corim-07</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07">https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-rats-endorsements">[I-D.ietf-rats-endorsements]</dt>
+        <dd>
+<span class="refAuthor">Thaler, D.</span>, <span class="refAuthor">Birkholz, H.</span>, and <span class="refAuthor">T. Fossati</span>, <span class="refTitle">"RATS Endorsements"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rats-endorsements-06</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-endorsements-06">https://datatracker.ietf.org/doc/html/draft-ietf-rats-endorsements-06</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+        <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9334">[RFC9334]</dt>
+        <dd>
+<span class="refAuthor">Birkholz, H.</span>, <span class="refAuthor">Thaler, D.</span>, <span class="refAuthor">Richardson, M.</span>, <span class="refAuthor">Smith, N.</span>, and <span class="refAuthor">W. Pan</span>, <span class="refTitle">"Remote ATtestation procedureS (RATS) Architecture"</span>, <span class="seriesInfo">RFC 9334</span>, <span class="seriesInfo">DOI 10.17487/RFC9334</span>, <time datetime="2023-01" class="refDate">January 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9334">https://www.rfc-editor.org/rfc/rfc9334</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="SPDM">[SPDM]</dt>
+        <dd>
+<span class="refAuthor">Distributed Management Task Force</span>, <span class="refTitle">"Security Protocol and Data Model (SPDM)"</span>, <span class="seriesInfo">Version 1.3.0 </span>, <time datetime="2023-05" class="refDate">May 2023</time>, <span>&lt;<a href="https://www.dmtf.org/sites/default/files/standards/documents/DSP0274_1.3.0.pdf">https://www.dmtf.org/sites/default/files/standards/documents/DSP0274_1.3.0.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="TCG.CE">[TCG.CE]</dt>
+      <dd>
+<span class="refAuthor">Trusted Computing Group</span>, <span class="refTitle">"TCG DICE Concise Evidence Binding for SPDM"</span>, <span class="seriesInfo">Version 1.00, Revision 0.54 </span>, <time datetime="2024-01" class="refDate">January 2024</time>, <span>&lt;<a href="https://trustedcomputinggroup.org/wp-content/uploads/TCG-DICE-Concise-Evidence-Binding-for-SPDM-Version-1.0-Revision-54_pub.pdf">https://trustedcomputinggroup.org/wp-content/uploads/TCG-DICE-Concise-Evidence-Binding-for-SPDM-Version-1.0-Revision-54_pub.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-13.2">
+        <h3 id="name-informative-references">
+<a href="#section-13.2" class="section-number selfRef">13.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.ietf-rats-eat">[I-D.ietf-rats-eat]</dt>
+        <dd>
+<span class="refAuthor">Lundblade, L.</span>, <span class="refAuthor">Mandyam, G.</span>, <span class="refAuthor">O'Donoghue, J.</span>, and <span class="refAuthor">C. Wallace</span>, <span class="refTitle">"The Entity Attestation Token (EAT)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rats-eat-31</span>, <time datetime="2024-09-06" class="refDate">6 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-eat-31">https://datatracker.ietf.org/doc/html/draft-ietf-rats-eat-31</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5280">[RFC5280]</dt>
+        <dd>
+<span class="refAuthor">Cooper, D.</span>, <span class="refAuthor">Santesson, S.</span>, <span class="refAuthor">Farrell, S.</span>, <span class="refAuthor">Boeyen, S.</span>, <span class="refAuthor">Housley, R.</span>, and <span class="refAuthor">W. Polk</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"</span>, <span class="seriesInfo">RFC 5280</span>, <span class="seriesInfo">DOI 10.17487/RFC5280</span>, <time datetime="2008-05" class="refDate">May 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5280">https://www.rfc-editor.org/rfc/rfc5280</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7942">[RFC7942]</dt>
+        <dd>
+<span class="refAuthor">Sheffer, Y.</span> and <span class="refAuthor">A. Farrel</span>, <span class="refTitle">"Improving Awareness of Running Code: The Implementation Status Section"</span>, <span class="seriesInfo">BCP 205</span>, <span class="seriesInfo">RFC 7942</span>, <span class="seriesInfo">DOI 10.17487/RFC7942</span>, <time datetime="2016-07" class="refDate">July 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7942">https://www.rfc-editor.org/rfc/rfc7942</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8610">[RFC8610]</dt>
+        <dd>
+<span class="refAuthor">Birkholz, H.</span>, <span class="refAuthor">Vigano, C.</span>, and <span class="refAuthor">C. Bormann</span>, <span class="refTitle">"Concise Data Definition Language (CDDL): A Notational Convention to Express Concise Binary Object Representation (CBOR) and JSON Data Structures"</span>, <span class="seriesInfo">RFC 8610</span>, <span class="seriesInfo">DOI 10.17487/RFC8610</span>, <time datetime="2019-06" class="refDate">June 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8610">https://www.rfc-editor.org/rfc/rfc8610</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="STD94">[STD94]</dt>
+        <dd>
+<span class="refAuthor">Bormann, C.</span> and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Concise Binary Object Representation (CBOR)"</span>, <span class="seriesInfo">STD 94</span>, <span class="seriesInfo">RFC 8949</span>, <span class="seriesInfo">DOI 10.17487/RFC8949</span>, <time datetime="2020-12" class="refDate">December 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8949">https://www.rfc-editor.org/rfc/rfc8949</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="STD96">[STD96]</dt>
+      <dd>
+<span class="refAuthor">Schaad, J.</span>, <span class="refTitle">"CBOR Object Signing and Encryption (COSE): Structures and Process"</span>, <span class="seriesInfo">STD 96</span>, <span class="seriesInfo">RFC 9052</span>, <span class="seriesInfo">DOI 10.17487/RFC9052</span>, <time datetime="2022-08" class="refDate">August 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9052">https://www.rfc-editor.org/rfc/rfc9052</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+</div>
+<div id="contributors">
+<section id="appendix-A">
+      <h2 id="name-contributors">
+<a href="#name-contributors" class="section-name selfRef">Contributors</a>
+      </h2>
+<p id="appendix-A-1">The authors would like to thank the following people for their valuable contributions to the specification.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-2">Henk Birkholz<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+<p id="appendix-A-3">Email: henk.birkholz@ietf.contact<a href="#appendix-A-3" class="pilcrow">¶</a></p>
+<p id="appendix-A-4">Yogesh Deshpande<a href="#appendix-A-4" class="pilcrow">¶</a></p>
+<p id="appendix-A-5">Email: yogesh.deshpande@arm.com<a href="#appendix-A-5" class="pilcrow">¶</a></p>
+<p id="appendix-A-6">Thomas Fossati<a href="#appendix-A-6" class="pilcrow">¶</a></p>
+<p id="appendix-A-7">Email: Thomas.Fossati@linaro.org<a href="#appendix-A-7" class="pilcrow">¶</a></p>
+<p id="appendix-A-8">Dionna Glaze<a href="#appendix-A-8" class="pilcrow">¶</a></p>
+<p id="appendix-A-9">Email: dionnaglaze@google.com<a href="#appendix-A-9" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="appendix-B">
+      <h2 id="name-acknowledgments">
+<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="appendix-B-1">The authors would like to thank James D. Beaney, Francisco J. Chinchilla, Vincent R. Scarlata, and Piotr Zmijewski for review feedback.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-C">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Fabrizio D'Amato</span></div>
+<div dir="auto" class="left"><span class="org">AMD</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:fabrizio.damato@amd.com" class="email">fabrizio.damato@amd.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Andrew Draper</span></div>
+<div dir="auto" class="left"><span class="org">Altera</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:andrew.draper@altera.com" class="email">andrew.draper@altera.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Ned Smith</span></div>
+<div dir="auto" class="left"><span class="org">Intel Corporation</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:ned.smith@intel.com" class="email">ned.smith@intel.com</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
