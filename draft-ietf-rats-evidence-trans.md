@@ -187,6 +187,12 @@ The binary representation of DTI.`type` MUST be equivalent to the binary represe
 > > **copy**(DTI.`index`, ECT.`environment`.`environment-map`.`class-map`.`index`).
 
 {: dtt2-enum}
+* If a DiceUeid (EUID) extension is present, then this populates the `instance-id` field within the ECT `environment-map`.
+
+> > If DiceEUID extension is present: **copy**(UEID.`euid`, ECT.`environment-map`.`instance-id`.`tagged-ueid-type`).
+The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT.`environment-map`.`instance-id`.
+
+{: dtt2-enum}
 * The DTI entry populates the `ae` ECT `elemenet-list`.
 
 > > **copy**(DTI.`version`, ECT.`element-list`.`element-map`.`measurement-values-map`.`version-map`.`version`).
@@ -251,19 +257,9 @@ This extension is identified by the following object identifier:
 
 * tcg-dice-Ueid - "2.23.133.5.4.4"
 
-{:ueid-enum: counter="ueid" style="format Step %d."}
-
-{: ueid-enum}
-* An `ae` entry is allocated.
-
-* The `cmtype` of the ECT is set to `evidence`.
-
-* The DiceUeid entry populates the `ae` ECT `environment-map`.`instance-id`.`tagged-ueid-type`.
-The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to `ae`.`environment-map`.`instance-id`.
-
-* The ECT.`authority` field is set up based on the signer of the certificate containing DiceUeid as described in {{sec-authority}}.
-
-The completed ECT is added to the `ae` list.
+The DiceUeid extension does not create evidence directly.
+The `ueid` OCTET STRING within this extension is stored and used to populate the `instance-id` field within evidence created by other extensions.
+Section {{sec-tcb-info}} describes extensions which use this value.
 
 ## DiceConceptualMessageWrapper Transformation {#sec-cmw}
 
