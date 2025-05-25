@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-10T01:43:15.876879+00:00",
+  "timestamp": "2025-05-25T01:58:15.293400+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -1119,7 +1119,7 @@
       "labels": [],
       "body": "\u2026 environment-map.index\r\n\r\nThis allows users more flexible usage of multi-tcb-info by combining multiple TCBInfo to describe the same target environment",
       "createdAt": "2025-03-24T23:26:35Z",
-      "updatedAt": "2025-03-25T00:01:16Z",
+      "updatedAt": "2025-05-22T20:10:28Z",
       "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "89f1cefe5cbd78519234bf2d024c45dbaf7a68fb",
@@ -1164,6 +1164,139 @@
           "createdAt": "2025-03-25T00:01:16Z",
           "updatedAt": "2025-03-25T00:01:16Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6qkXaA",
+          "commit": {
+            "abbreviatedOid": "bb5ad66"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-22T15:19:37Z",
+          "updatedAt": "2025-05-22T15:19:37Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "What about existing certificates which contain negative values in the `DiceTcbInfo`.`index` field?",
+              "createdAt": "2025-05-22T15:19:37Z",
+              "updatedAt": "2025-05-22T15:19:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6qkZ2D",
+          "commit": {
+            "abbreviatedOid": "bb5ad66"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "I am not convinced that this is a good change, it breaks backwards compatibility and the benefits are not obvious to me.",
+          "createdAt": "2025-05-22T15:22:22Z",
+          "updatedAt": "2025-05-22T15:22:22Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6qkbob",
+          "commit": {
+            "abbreviatedOid": "bb5ad66"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-22T15:24:43Z",
+          "updatedAt": "2025-05-22T15:24:43Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "If we do want this change, then this line is not easy to read. What about this:\r\n```suggestion\r\n> > Note: the DTI.`index` field is not copied to ECT.`environment`.`environment-map`.`class-map`.`index`, instead it is copied to ECT.`element-list`.`element-map`.`measured-element-type-choice`.`mkey` (see below).\r\n```",
+              "createdAt": "2025-05-22T15:24:43Z",
+              "updatedAt": "2025-05-22T15:24:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6qkcYq",
+          "commit": {
+            "abbreviatedOid": "bb5ad66"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-22T15:25:42Z",
+          "updatedAt": "2025-05-22T15:25:42Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "```suggestion\r\n> > If DTI.`index` is non-negative then: **copy**(DTI.`index`, ECT.`element-list`.`element-map`.`measured-element-type-choice`.`mkey`).\r\n```",
+              "createdAt": "2025-05-22T15:25:42Z",
+              "updatedAt": "2025-05-22T15:25:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6qnUnA",
+          "commit": {
+            "abbreviatedOid": "bb5ad66"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-22T20:02:00Z",
+          "updatedAt": "2025-05-22T20:02:00Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "This doesn't describe what to do if the value is negative.",
+              "createdAt": "2025-05-22T20:02:00Z",
+              "updatedAt": "2025-05-22T20:02:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6qnVZm",
+          "commit": {
+            "abbreviatedOid": "bb5ad66"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-22T20:03:36Z",
+          "updatedAt": "2025-05-22T20:03:36Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "(see below) should reference the section or otherwise pin down the reference somehow.",
+              "createdAt": "2025-05-22T20:03:36Z",
+              "updatedAt": "2025-05-22T20:03:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6qnYyi",
+          "commit": {
+            "abbreviatedOid": "bb5ad66"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-05-22T20:10:28Z",
+          "updatedAt": "2025-05-22T20:10:28Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "There is an issue in corim on the scope of mkey namespace relative to other structures like IR and compnent-measurements. If the assumption is alternative name spaces map to mkey, then it is up to the corim and evidence designers to ensure namespace collisions are resolved.\r\n\r\nI'm not sure it makes sense to include `index` into that however. Since DiceTcbInfo can only have one set of measurements, mkey is essentially not populated. \r\n\r\nDiceTcbInfoSeq naturally maps to multiple instances of ECT (Evironment-Measurement tuples). I'm not sure there is a need to overload index.",
+              "createdAt": "2025-05-22T20:10:28Z",
+              "updatedAt": "2025-05-22T20:10:28Z"
+            }
+          ]
         }
       ]
     },
@@ -1238,6 +1371,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 16,
+      "id": "PR_kwDOMOnZXM6XP5MI",
+      "title": "Store UEID value in the ECT instance field, not in its own ECT",
+      "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/pull/16",
+      "state": "OPEN",
+      "author": "andrew-draper",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes issue #6\r\nTo support evidence from multiple dice/spdm attesters, the `instance-id` field needs to be filled in with a unique identifier (within the namespace of the `class-id`.\r\n\r\nFor better document flow, I think it would be better to move the DiceUeid section before DiceTcbInfo. I did not make that move now for easier comparison of diffs.",
+      "createdAt": "2025-05-22T15:16:40Z",
+      "updatedAt": "2025-05-22T15:16:40Z",
+      "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "2700b44e55f68826ea95af7a6a1e201966c51131",
+      "headRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
+      "headRefName": "populate-ect-instance",
+      "headRefOid": "4101dc7bd35b8553ba29ec4a1b9d2cf5a678065e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
