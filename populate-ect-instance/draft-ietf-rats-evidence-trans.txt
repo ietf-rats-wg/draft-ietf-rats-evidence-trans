@@ -5,10 +5,10 @@
 Remote ATtestation ProcedureS                                 F. D'Amato
 Internet-Draft                                                       AMD
 Intended status: Standards Track                               A. Draper
-Expires: 23 November 2025                                         Altera
+Expires: 6 December 2025                                          Altera
                                                                 N. Smith
                                                        Intel Corporation
-                                                             22 May 2025
+                                                             4 June 2025
 
 
                         Evidence Transformations
@@ -44,7 +44,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 November 2025.
+   This Internet-Draft will expire on 6 December 2025.
 
 Copyright Notice
 
@@ -211,10 +211,10 @@ Table of Contents
       *copy*(DTI.index, ECT.environment.environment-map.class-
          map.index).
 
-   ii If a DiceUeid (EUID) extension is present, then this populates the
+   ii If a DiceUeid (UEID) extension is present, then this populates the
       instance-id field within the ECT environment-map.
 
-      If DiceEUID extension is present: *copy*(UEID.euid,
+      If DiceUeid extension is present: *copy*(UEID.ueid,
          ECT.environment-map.instance-id.tagged-ueid-type).  The CBOR
          tag #6.550 is prepended to the DiceUeid OCTET STRING then
          copied to ECT.environment-map.instance-id.
@@ -323,8 +323,8 @@ Table of Contents
    *  tcg-dice-Ueid - "2.23.133.5.4.4"
 
    The DiceUeid extension does not create evidence directly.  The ueid
-   OCTET STRING within this extension is stored and used to populate the
-   instance-id field within evidence created by other extensions.
+   OCTET STRING within this extension is used to populate the instance-
+   id field within evidence created by other extensions.
    Section Section 3.1 describes extensions which use this value.
 
 3.3.  DiceConceptualMessageWrapper Transformation
