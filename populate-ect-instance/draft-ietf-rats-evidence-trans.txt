@@ -66,8 +66,8 @@ Table of Contents
      1.1.  Terminology
    2.  Verifier Reconciliation
    3.  Transforming DICE Certificate Extension Evidence
-     3.1.  DiceTcbInfo Transformation
-     3.2.  DiceUeid Transformation
+     3.1.  DiceUeid Transformation
+     3.2.  DiceTcbInfo Transformation
      3.3.  DiceConceptualMessageWrapper Transformation
      3.4.  Authority field in DICE/SPDM ECTs
    4.  Transforming TCG Concise Evidence
@@ -160,7 +160,20 @@ Table of Contents
    Verifiers supporting the DICE certificate Evidence extensions SHOULD
    implement this transformation.
 
-3.1.  DiceTcbInfo Transformation
+3.1.  DiceUeid Transformation
+
+   This section defines the transformation method for the DiceUeid
+   certificate extension.  This extension is identified by the following
+   object identifier:
+
+   *  tcg-dice-Ueid - "2.23.133.5.4.4"
+
+   The DiceUeid extension does not create evidence directly.  The ueid
+   OCTET STRING within this extension is used to populate the instance-
+   id field within evidence created by other extensions.
+   Section Section 3.2 describes extensions which use this value.
+
+3.2.  DiceTcbInfo Transformation
 
    This section defines transformation methods for DICE certificate
    extensions DiceTcbInfo, DiceMultiTcbInfo, and DiceMultiTcbInfoComp.
@@ -313,19 +326,6 @@ Table of Contents
             certificate containing DTI as described in Section 3.4.
 
    The completed ECT is added to the ae list.
-
-3.2.  DiceUeid Transformation
-
-   This section defines the transformation method for the DiceUeid
-   certificate extension.  This extension is identified by the following
-   object identifier:
-
-   *  tcg-dice-Ueid - "2.23.133.5.4.4"
-
-   The DiceUeid extension does not create evidence directly.  The ueid
-   OCTET STRING within this extension is used to populate the instance-
-   id field within evidence created by other extensions.
-   Section Section 3.1 describes extensions which use this value.
 
 3.3.  DiceConceptualMessageWrapper Transformation
 
