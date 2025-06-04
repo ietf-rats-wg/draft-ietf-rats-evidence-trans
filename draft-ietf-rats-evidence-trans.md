@@ -142,6 +142,17 @@ This section defines how Evidence from an X.509 certificate {{-x509}} containing
 
 Verifiers supporting the DICE certificate Evidence extensions SHOULD implement this transformation.
 
+## DiceUeid Transformation {#sec-ueid}
+
+This section defines the transformation method for the DiceUeid certificate extension.
+This extension is identified by the following object identifier:
+
+* tcg-dice-Ueid - "2.23.133.5.4.4"
+
+The DiceUeid extension does not create evidence directly.
+The `ueid` OCTET STRING within this extension is used to populate the `instance-id` field within evidence created by other extensions.
+Section {{sec-tcb-info}} describes extensions which use this value.
+
 ## DiceTcbInfo Transformation {#sec-tcb-info}
 
 This section defines transformation methods for DICE certificate extensions DiceTcbInfo, DiceMultiTcbInfo, and DiceMultiTcbInfoComp.
@@ -249,17 +260,6 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 * The ECT.`authority` field is set up based on the signer of the certificate containing DTI as described in {{sec-authority}}.
 
 The completed ECT is added to the `ae` list.
-
-## DiceUeid Transformation {#sec-ueid}
-
-This section defines the transformation method for the DiceUeid certificate extension.
-This extension is identified by the following object identifier:
-
-* tcg-dice-Ueid - "2.23.133.5.4.4"
-
-The DiceUeid extension does not create evidence directly.
-The `ueid` OCTET STRING within this extension is used to populate the `instance-id` field within evidence created by other extensions.
-Section {{sec-tcb-info}} describes extensions which use this value.
 
 ## DiceConceptualMessageWrapper Transformation {#sec-cmw}
 
