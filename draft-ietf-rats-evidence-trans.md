@@ -142,6 +142,17 @@ This section defines how Evidence from an X.509 certificate {{-x509}} containing
 
 Verifiers supporting the DICE certificate Evidence extensions SHOULD implement this transformation.
 
+## DiceUeid Transformation {#sec-ueid}
+
+This section defines the transformation method for the DiceUeid certificate extension.
+This extension is identified by the following object identifier:
+
+* tcg-dice-Ueid - "2.23.133.5.4.4"
+
+The DiceUeid extension does not create evidence directly.
+The `ueid` OCTET STRING within this extension is used to populate the `instance-id` field within evidence created by other extensions.
+Section {{sec-tcb-info}} describes extensions which use this value.
+
 ## DiceTcbInfo Transformation {#sec-tcb-info}
 
 This section defines transformation methods for DICE certificate extensions DiceTcbInfo, DiceMultiTcbInfo, and DiceMultiTcbInfoComp.
@@ -185,6 +196,12 @@ The binary representation of DTI.`type` MUST be equivalent to the binary represe
 > > **copy**(DTI.`layer`, ECT.`environment`.`environment-map`.`class-map`.`layer`).
 
 > > **copy**(DTI.`index`, ECT.`environment`.`environment-map`.`class-map`.`index`).
+
+{: dtt2-enum}
+* If a DiceUeid (UEID) extension is present, then this populates the `instance-id` field within the ECT `environment-map`.
+
+> > If DiceUeid extension is present: **copy**(UEID.`ueid`, ECT.`environment-map`.`instance-id`.`tagged-ueid-type`).
+The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT.`environment-map`.`instance-id`.
 
 {: dtt2-enum}
 * The DTI entry populates the `ae` ECT `elemenet-list`.
@@ -241,27 +258,6 @@ The binary representation of DTI.`type` MUST be equivalent to the binary represe
 {: dtt-enum}
 
 * The ECT.`authority` field is set up based on the signer of the certificate containing DTI as described in {{sec-authority}}.
-
-The completed ECT is added to the `ae` list.
-
-## DiceUeid Transformation {#sec-ueid}
-
-This section defines the transformation method for the DiceUeid certificate extension.
-This extension is identified by the following object identifier:
-
-* tcg-dice-Ueid - "2.23.133.5.4.4"
-
-{:ueid-enum: counter="ueid" style="format Step %d."}
-
-{: ueid-enum}
-* An `ae` entry is allocated.
-
-* The `cmtype` of the ECT is set to `evidence`.
-
-* The DiceUeid entry populates the `ae` ECT `environment-map`.`instance-id`.`tagged-ueid-type`.
-The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to `ae`.`environment-map`.`instance-id`.
-
-* The ECT.`authority` field is set up based on the signer of the certificate containing DiceUeid as described in {{sec-authority}}.
 
 The completed ECT is added to the `ae` list.
 
