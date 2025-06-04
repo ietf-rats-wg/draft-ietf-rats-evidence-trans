@@ -187,9 +187,9 @@ The binary representation of DTI.`type` MUST be equivalent to the binary represe
 > > **copy**(DTI.`index`, ECT.`environment`.`environment-map`.`class-map`.`index`).
 
 {: dtt2-enum}
-* If a DiceUeid (EUID) extension is present, then this populates the `instance-id` field within the ECT `environment-map`.
+* If a DiceUeid (UEID) extension is present, then this populates the `instance-id` field within the ECT `environment-map`.
 
-> > If DiceEUID extension is present: **copy**(UEID.`euid`, ECT.`environment-map`.`instance-id`.`tagged-ueid-type`).
+> > If DiceUeid extension is present: **copy**(UEID.`ueid`, ECT.`environment-map`.`instance-id`.`tagged-ueid-type`).
 The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT.`environment-map`.`instance-id`.
 
 {: dtt2-enum}
@@ -258,7 +258,7 @@ This extension is identified by the following object identifier:
 * tcg-dice-Ueid - "2.23.133.5.4.4"
 
 The DiceUeid extension does not create evidence directly.
-The `ueid` OCTET STRING within this extension is stored and used to populate the `instance-id` field within evidence created by other extensions.
+The `ueid` OCTET STRING within this extension is used to populate the `instance-id` field within evidence created by other extensions.
 Section {{sec-tcb-info}} describes extensions which use this value.
 
 ## DiceConceptualMessageWrapper Transformation {#sec-cmw}
