@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-25T01:58:15.293400+00:00",
+  "timestamp": "2025-06-05T01:51:34.713384+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -1377,26 +1377,89 @@
       "id": "PR_kwDOMOnZXM6XP5MI",
       "title": "Store UEID value in the ECT instance field, not in its own ECT",
       "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/pull/16",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "andrew-draper",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Fixes issue #6\r\nTo support evidence from multiple dice/spdm attesters, the `instance-id` field needs to be filled in with a unique identifier (within the namespace of the `class-id`.\r\n\r\nFor better document flow, I think it would be better to move the DiceUeid section before DiceTcbInfo. I did not make that move now for easier comparison of diffs.",
       "createdAt": "2025-05-22T15:16:40Z",
-      "updatedAt": "2025-05-22T15:16:40Z",
+      "updatedAt": "2025-06-04T10:00:21Z",
       "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "2700b44e55f68826ea95af7a6a1e201966c51131",
       "headRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "headRefName": "populate-ect-instance",
-      "headRefOid": "4101dc7bd35b8553ba29ec4a1b9d2cf5a678065e",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "802994a594fa6901df38929423134113eeba4d39",
+      "closedAt": "2025-06-04T10:00:13Z",
+      "mergedAt": "2025-06-04T10:00:13Z",
+      "mergedBy": "andrew-draper",
+      "mergeCommit": {
+        "oid": "f5464dd6736f38057d390caa043122c335a3472f"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM6snhhV",
+          "commit": {
+            "abbreviatedOid": "4101dc7"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-04T09:44:35Z",
+          "updatedAt": "2025-06-04T09:44:35Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\n* If a DiceUeid (UEID) extension is present, then this populates the `instance-id` field within the ECT `environment-map`.\r\n```",
+              "createdAt": "2025-06-04T09:44:35Z",
+              "updatedAt": "2025-06-04T09:44:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6snmAc",
+          "commit": {
+            "abbreviatedOid": "4101dc7"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-04T09:49:03Z",
+          "updatedAt": "2025-06-04T09:49:03Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\n> > If DiceUeid extension is present: **copy**(UEID.`ueid`, ECT.`environment-map`.`instance-id`.`tagged-ueid-type`).\r\n```",
+              "createdAt": "2025-06-04T09:49:03Z",
+              "updatedAt": "2025-06-04T09:49:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMOnZXM6snnuL",
+          "commit": {
+            "abbreviatedOid": "4101dc7"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-04T09:50:30Z",
+          "updatedAt": "2025-06-04T09:50:30Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "```suggestion\r\nThe `ueid` OCTET STRING within this extension is used to populate the `instance-id` field within evidence created by other extensions.\r\n```",
+              "createdAt": "2025-06-04T09:50:30Z",
+              "updatedAt": "2025-06-04T09:50:30Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
