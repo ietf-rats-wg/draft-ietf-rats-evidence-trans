@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-05T01:51:34.713384+00:00",
+  "timestamp": "2025-06-26T01:53:25.460433+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -147,15 +147,15 @@
       "id": "I_kwDOMOnZXM6oflKd",
       "title": "Need text describing how instance field is used to separate evidence from multiple attesters",
       "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "andrew-draper",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "If there are multiple attesters then the Verifier needs a way to separate evidence from them.\n\nThe instance field should be filled in with a value derived from the deviceid key to ensure that evidence from each verifier is kept separate.",
       "createdAt": "2025-02-03T09:04:10Z",
-      "updatedAt": "2025-02-14T18:58:11Z",
-      "closedAt": null,
+      "updatedAt": "2025-06-24T12:09:30Z",
+      "closedAt": "2025-06-24T12:09:30Z",
       "comments": [
         {
           "author": "nedmsmith",
@@ -226,6 +226,13 @@
           "body": "Using the DICE UEID extension seems like a good solution to the problem. If noone disagrees then I'll put together a PR which says something like this:\n\n1. When adding evidence from a DICE certificate, if that certificate includes a ueid extension, then set ECT.environment.instance field to the contents of that Ueid extension.\n2. When adding evidence from SPDM, if the certificate whose subject key signed the evidence includes a Ueid extension, then set ECT.environment.instance field to the contents of that Ueid extension\n\nThis gives the Attester the choice of whether or not to include an instance field in the ECT, which should address privacy issues.\n\nIt also handles the case where the certificate chain branches, for example if an entity higher up in a certificate chain issues certificates for multiple entities of the same time lower down the chain (eg a VM manager authorizing chains for multiple VMS). In that case the issuing identity can ensure that it has a different UEID from the entities below it, and that different entities below it have distinct UEIDs.",
           "createdAt": "2025-02-14T18:58:10Z",
           "updatedAt": "2025-02-14T18:58:10Z"
+        },
+        {
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed by commit #16, the UEID field is used to populate instance.",
+          "createdAt": "2025-06-24T12:09:30Z",
+          "updatedAt": "2025-06-24T12:09:30Z"
         }
       ]
     },
