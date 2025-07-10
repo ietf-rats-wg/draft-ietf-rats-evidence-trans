@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-26T01:53:25.460433+00:00",
+  "timestamp": "2025-07-10T01:56:29.233090+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -249,6 +249,22 @@
       "body": "Evidence is asserted with the authority of the key that signed it and if Issue #5 is applied, it contains the set of cert path keys as transitively trusted entities. However, there isn't a way to use conditional endorsement to attribute claims to any of the entities in the cert path. For example, a deviceID certificate may have a device type classification, or have key quality properties. \n\nBut for conditional endorsement to be used, there needs to be an ECT entry already in the ACS. A reasonable way to achieve this is for the Evidence processing behavior to add ECT entries for cert path keys. A straight forward approach is the subjectPublicKeyInfo of the Issuer is placed in the ECT `authority` field and the subjectPublicKeyInfo of the Subject is placed in the `ECT.environment-map.instance-id` field. The `claims-list` portion need not be populated.\n\nA conditional endorsement that matches on instance-id can now add to `claims-list` subsequently.\n\nA risk of automated behavior that inserts instance identifiers is if an entity wants to manage privacy by NOT populating instance-id / other instance identifiers, the automation becomes a hurdle that must be overcome.",
       "createdAt": "2025-02-07T20:40:58Z",
       "updatedAt": "2025-02-10T22:29:18Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 17,
+      "id": "I_kwDOMOnZXM6_w3nh",
+      "title": "Add transformation for co.coswid-triples",
+      "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/issues/17",
+      "state": "OPEN",
+      "author": "deeglaze",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The comid-coswid linking triple needs a way of matching evidence with reference values, and this is one of the tricker processes to define.\n\nIf we have two forms of ECT, one for CoSWID-reference (comid-coswid linking triple binds an environment to named and then dereferenced coswid tags) with cmtype reference-values, and one for CoSWID-addition (binds an environment to ev-coswid-evidence-maps) with cmtype evidence, then we need to define the way to reconcile the two.\n\nThe reconciliation is the topic of the CoMID-CoSWID triple draft that I've created a repo for, but the transformation of the evidence to an internal representation is still something that seems more relevant to this draft.",
+      "createdAt": "2025-07-09T21:59:15Z",
+      "updatedAt": "2025-07-09T21:59:15Z",
       "closedAt": null,
       "comments": []
     }
