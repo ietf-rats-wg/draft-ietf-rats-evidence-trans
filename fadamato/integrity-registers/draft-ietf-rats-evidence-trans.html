@@ -16,12 +16,12 @@ Consequently, Evidence may require format transformation to an internal represen
 This document specifies Evidence transformation methods for DiceTcbInfo, concise evidence, and SPDM measurements block structures.
 These Evidence structures are converted to the CoRIM internal representation and follow CoRIM defined appraisal procedures. 
     " name="description">
-<meta content="xml2rfc 3.28.1" name="generator">
+<meta content="xml2rfc 3.30.0" name="generator">
 <meta content="Evidence, RATS, attestation, verifier, supply chain, RIM, appraisal" name="keyword">
 <meta content="draft-ietf-rats-evidence-trans-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.28.1
-    Python 3.12.10
+  xml2rfc 3.30.0
+    Python 3.12.11
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
@@ -30,7 +30,7 @@ These Evidence structures are converted to the CoRIM internal representation and
     platformdirs 4.3.8
     pycountry 24.6.1
     PyYAML 6.0.2
-    requests 2.32.3
+    requests 2.32.4
     setuptools 80.9.0
     wcwidth 0.2.13
 -->
@@ -1051,11 +1051,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Evidence Transformations</td>
-<td class="right">June 2025</td>
+<td class="right">August 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">D'Amato, et al.</td>
-<td class="center">Expires 6 December 2025</td>
+<td class="center">Expires 21 February 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1068,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-rats-evidence-trans-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-06-04" class="published">4 June 2025</time>
+<time datetime="2025-08-20" class="published">20 August 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-12-06">6 December 2025</time></dd>
+<dd class="expires"><time datetime="2026-02-21">21 February 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1120,7 +1120,7 @@ These Evidence structures are converted to the CoRIM internal representation and
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 6 December 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 February 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1279,13 +1279,13 @@ appear in all capitals, as shown here.<a href="#section-1.1-4" class="pilcrow">�
       <h2 id="name-verifier-reconciliation">
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-verifier-reconciliation" class="section-name selfRef">Verifier Reconciliation</a>
       </h2>
-<p id="section-2-1">This document assumes the reader is familiar with Verifier reconciliation as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>.
+<p id="section-2-1">This document assumes the reader is familiar with Verifier reconciliation as described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-08#section-2" class="relref">Section 2</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>.
 It describes how a Verifier should process the CoRIM to enable CoRIM authors to convey their intended meaning and how a Verifier reconciles its various inputs.
 Evidence is one of its inputs.
 The Verifier is expected to create an internal representation from an external representation.
 By using an internal representation, the Verifier processes Evidence inputs such that they can be appraised consistently.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <p id="section-2-2">This document defines format transformations for Evidence in DICE <span>[<a href="#DICE.Attest" class="cite xref">DICE.Attest</a>]</span>, SPDM <span>[<a href="#SPDM" class="cite xref">SPDM</a>]</span>, and concise evidence <span>[<a href="#TCG.CE" class="cite xref">TCG.CE</a>]</span> formats that are transformed into a Verifier's internal representation.
-This document uses the CoMID internal representation (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) as the transformation target.
+This document uses the CoMID internal representation (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-08#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) as the transformation target.
 Other internal representations are possible but out of scope for this document.<a href="#section-2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1331,9 +1331,9 @@ Section <a href="#sec-tcb-info" class="auto internal xref">Section 3.2</a> descr
             <p id="section-3.2-3.3.1">tcg-dice-MultiTcbInfoComp - "2.23.133.5.4.8"<a href="#section-3.2-3.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.2-4">Each DiceTcbInfo entry in a MultiTcbInfo is converted to a CoRIM ECT (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) using the transformation steps in this section.
+<p id="section-3.2-4">Each DiceTcbInfo entry in a MultiTcbInfo is converted to a CoRIM ECT (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-08#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) using the transformation steps in this section.
 Each DiceMultiTcbInfo entry is independent of the others such that each is transformed to a separate ECT entry.
-A list of Evidence ECTs (i.e., <code>ae = [ + ECT]</code>) is constructed using CoRIM attestation evidence internal representation (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-8.2.1.1" class="relref">Section 8.2.1.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).
+A list of Evidence ECTs (i.e., <code>ae = [ + ECT]</code>) is constructed using CoRIM attestation evidence internal representation (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-08#section-8.2.1.1" class="relref">Section 8.2.1.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).
 Each DiceMultiTcbInfoComp entry is converted to a DiceMultiTcbInfo entry then processed as a DiceMultiTcbInfo.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 <p id="section-3.2-5">For each DiceTcbInfo (DTI) entry in a DiceMultiTcbInfo allocate an ECT structure.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="olPercent" id="section-3.2-6">
@@ -1475,18 +1475,20 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
             </ul>
 </li>
         </ul>
-<span class="break"></span><dl class="olPercent" id="section-3.2-21">
-<dt>iv</dt>
-<dd id="section-3.2-21.1">
-            <p id="section-3.2-21.1.1">The DTI entry populates the <code>ae</code> ECT <code>elemenet-list</code>.<code>flags</code>. Foreach <em>f</em> in DTI.<code>OperationalFlags</code> and each <em>m</em> in DTI.<code>OperationalFlagsMask</code>:<a href="#section-3.2-21.1.1" class="pilcrow">¶</a></p>
-</dd>
-        <dd class="break"></dd>
-</dl>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.2-21.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.2-21.1.1.1">
+                <p id="section-3.2-21.1.1.1.1">Foreach INTEGRITYREGISTER in IRLIST: <strong>copy</strong>(DTI.<code>INTEGRITYREGISTER</code>.<code>registerNum</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>integrity-registers</code>.<code>integrity-register-id-type-choice</code>).<a href="#section-3.2-21.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-22.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-22.1.1.1">
-                <p id="section-3.2-22.1.1.1.1">If <em>m</em>.<code>notConfigured</code> = 1 AND <em>f</em>.<code>notConfigured</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-configured</code> = FALSE).<a href="#section-3.2-22.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-22.1.1.1.1">Foreach FWID in INTEGRITYREGISTER.FWIDLIST: <strong>copy</strong>(DTI.<code>FWID</code>.<code>digest</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>integrity-registers</code>.<code>digest-type</code>.<code>val</code>).<a href="#section-3.2-22.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1495,25 +1497,23 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-23.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-23.1.1.1">
-                <p id="section-3.2-23.1.1.1.1">If <em>m</em>.<code>notConfigured</code> = 1 AND <em>f</em>.<code>notConfigured</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-configured</code> = TRUE).<a href="#section-3.2-23.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-23.1.1.1.1">Foreach FWID in INTEGRITYREGISTER.FWIDLIST: <strong>copy</strong>(DTI.<code>FWID</code>.<code>alg</code>, ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>integrity-registers</code>.<code>digest-type</code>.<code>alg</code>).<a href="#section-3.2-23.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
         </ul>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.2-24.1">
-            <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.2-24.1.1.1">
-                <p id="section-3.2-24.1.1.1.1">If <em>m</em>.<code>notSecure</code> = 1 AND <em>f</em>.<code>notSecure</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-secure</code> = FALSE).<a href="#section-3.2-24.1.1.1.1" class="pilcrow">¶</a></p>
-</li>
-            </ul>
-</li>
-        </ul>
+<span class="break"></span><dl class="olPercent" id="section-3.2-24">
+<dt>iv</dt>
+<dd id="section-3.2-24.1">
+            <p id="section-3.2-24.1.1">The DTI entry populates the <code>ae</code> ECT <code>elemenet-list</code>.<code>flags</code>. Foreach <em>f</em> in DTI.<code>OperationalFlags</code> and each <em>m</em> in DTI.<code>OperationalFlagsMask</code>:<a href="#section-3.2-24.1.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-25.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-25.1.1.1">
-                <p id="section-3.2-25.1.1.1.1">If <em>m</em>.<code>notSecure</code> = 1 AND <em>f</em>.<code>notSecure</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-secure</code> = TRUE).<a href="#section-3.2-25.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-25.1.1.1.1">If <em>m</em>.<code>notConfigured</code> = 1 AND <em>f</em>.<code>notConfigured</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-configured</code> = FALSE).<a href="#section-3.2-25.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1522,7 +1522,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-26.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-26.1.1.1">
-                <p id="section-3.2-26.1.1.1.1">If <em>m</em>.<code>recovery</code> = 1 AND <em>f</em>.<code>recovery</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-recovery</code> = FALSE).<a href="#section-3.2-26.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-26.1.1.1.1">If <em>m</em>.<code>notConfigured</code> = 1 AND <em>f</em>.<code>notConfigured</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-configured</code> = TRUE).<a href="#section-3.2-26.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1531,7 +1531,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-27.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-27.1.1.1">
-                <p id="section-3.2-27.1.1.1.1">If <em>m</em>.<code>recovery</code> = 1 AND <em>f</em>.<code>recovery</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-recovery</code> = TRUE).<a href="#section-3.2-27.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-27.1.1.1.1">If <em>m</em>.<code>notSecure</code> = 1 AND <em>f</em>.<code>notSecure</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-secure</code> = FALSE).<a href="#section-3.2-27.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1540,7 +1540,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-28.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-28.1.1.1">
-                <p id="section-3.2-28.1.1.1.1">If <em>m</em>.<code>debug</code> = 1 AND <em>f</em>.<code>debug</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-debug</code> = FALSE).<a href="#section-3.2-28.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-28.1.1.1.1">If <em>m</em>.<code>notSecure</code> = 1 AND <em>f</em>.<code>notSecure</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-secure</code> = TRUE).<a href="#section-3.2-28.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1549,7 +1549,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-29.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-29.1.1.1">
-                <p id="section-3.2-29.1.1.1.1">If <em>m</em>.<code>debug</code> = 1 AND <em>f</em>.<code>debug</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-debug</code> = TRUE).<a href="#section-3.2-29.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-29.1.1.1.1">If <em>m</em>.<code>recovery</code> = 1 AND <em>f</em>.<code>recovery</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-recovery</code> = FALSE).<a href="#section-3.2-29.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1558,7 +1558,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-30.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-30.1.1.1">
-                <p id="section-3.2-30.1.1.1.1">If <em>m</em>.<code>notReplayProtected</code> = 1 AND <em>f</em>.<code>notReplayProtected</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-replay-protected</code> = FALSE).<a href="#section-3.2-30.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-30.1.1.1.1">If <em>m</em>.<code>recovery</code> = 1 AND <em>f</em>.<code>recovery</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-recovery</code> = TRUE).<a href="#section-3.2-30.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1567,7 +1567,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-31.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-31.1.1.1">
-                <p id="section-3.2-31.1.1.1.1">If <em>m</em>.<code>notReplayProtected</code> = 1 AND <em>f</em>.<code>notReplayProtected</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-replay-protected</code> = TRUE).<a href="#section-3.2-31.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-31.1.1.1.1">If <em>m</em>.<code>debug</code> = 1 AND <em>f</em>.<code>debug</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-debug</code> = FALSE).<a href="#section-3.2-31.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1576,7 +1576,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-32.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-32.1.1.1">
-                <p id="section-3.2-32.1.1.1.1">If <em>m</em>.<code>notIntegrityProtected</code> = 1 AND <em>f</em>.<code>notIntegrityProtected</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-integrity-proteccted</code> = FALSE).<a href="#section-3.2-32.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-32.1.1.1.1">If <em>m</em>.<code>debug</code> = 1 AND <em>f</em>.<code>debug</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-debug</code> = TRUE).<a href="#section-3.2-32.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1585,7 +1585,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-33.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-33.1.1.1">
-                <p id="section-3.2-33.1.1.1.1">If <em>m</em>.<code>notIntegrityProtected</code> = 1 AND <em>f</em>.<code>notIntegrityProtected</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-integrity-proteccted</code> = TRUE).<a href="#section-3.2-33.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-33.1.1.1.1">If <em>m</em>.<code>notReplayProtected</code> = 1 AND <em>f</em>.<code>notReplayProtected</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-replay-protected</code> = FALSE).<a href="#section-3.2-33.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1594,7 +1594,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-34.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-34.1.1.1">
-                <p id="section-3.2-34.1.1.1.1">If <em>m</em>.<code>notRuntimeMeasured</code> = 1 AND <em>f</em>.<code>notRuntimeMeasured</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-runtime-meas</code> = FALSE).<a href="#section-3.2-34.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-34.1.1.1.1">If <em>m</em>.<code>notReplayProtected</code> = 1 AND <em>f</em>.<code>notReplayProtected</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-replay-protected</code> = TRUE).<a href="#section-3.2-34.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1603,7 +1603,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-35.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-35.1.1.1">
-                <p id="section-3.2-35.1.1.1.1">If <em>m</em>.<code>notRuntimeMeasured</code> = 1 AND <em>f</em>.<code>notRuntimeMeasured</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-runtime-meas</code> = TRUE).<a href="#section-3.2-35.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-35.1.1.1.1">If <em>m</em>.<code>notIntegrityProtected</code> = 1 AND <em>f</em>.<code>notIntegrityProtected</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-integrity-proteccted</code> = FALSE).<a href="#section-3.2-35.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1612,7 +1612,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-36.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-36.1.1.1">
-                <p id="section-3.2-36.1.1.1.1">If <em>m</em>.<code>notImmutable</code> = 1 AND <em>f</em>.<code>notImmutable</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-immutable</code> = FALSE).<a href="#section-3.2-36.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-36.1.1.1.1">If <em>m</em>.<code>notIntegrityProtected</code> = 1 AND <em>f</em>.<code>notIntegrityProtected</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-integrity-proteccted</code> = TRUE).<a href="#section-3.2-36.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1621,7 +1621,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-37.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-37.1.1.1">
-                <p id="section-3.2-37.1.1.1.1">If <em>m</em>.<code>notImmutable</code> = 1 AND <em>f</em>.<code>notImmutable</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-immutable</code> = TRUE).<a href="#section-3.2-37.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-37.1.1.1.1">If <em>m</em>.<code>notRuntimeMeasured</code> = 1 AND <em>f</em>.<code>notRuntimeMeasured</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-runtime-meas</code> = FALSE).<a href="#section-3.2-37.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1630,7 +1630,7 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-38.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-38.1.1.1">
-                <p id="section-3.2-38.1.1.1.1">If <em>m</em>.<code>notTcb</code> = 1 AND <em>f</em>.<code>notTcb</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-tcb</code> = FALSE).<a href="#section-3.2-38.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-38.1.1.1.1">If <em>m</em>.<code>notRuntimeMeasured</code> = 1 AND <em>f</em>.<code>notRuntimeMeasured</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-runtime-meas</code> = TRUE).<a href="#section-3.2-38.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -1639,19 +1639,46 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 <li class="normal ulEmpty" id="section-3.2-39.1">
             <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-3.2-39.1.1.1">
-                <p id="section-3.2-39.1.1.1.1">If <em>m</em>.<code>notTcb</code> = 1 AND <em>f</em>.<code>notTcb</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-tcb</code> = TRUE).<a href="#section-3.2-39.1.1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-3.2-39.1.1.1.1">If <em>m</em>.<code>notImmutable</code> = 1 AND <em>f</em>.<code>notImmutable</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-immutable</code> = FALSE).<a href="#section-3.2-39.1.1.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
         </ul>
-<span class="break"></span><dl class="olPercent" id="section-3.2-40">
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.2-40.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.2-40.1.1.1">
+                <p id="section-3.2-40.1.1.1.1">If <em>m</em>.<code>notImmutable</code> = 1 AND <em>f</em>.<code>notImmutable</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-immutable</code> = TRUE).<a href="#section-3.2-40.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.2-41.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.2-41.1.1.1">
+                <p id="section-3.2-41.1.1.1.1">If <em>m</em>.<code>notTcb</code> = 1 AND <em>f</em>.<code>notTcb</code> = 1; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-tcb</code> = FALSE).<a href="#section-3.2-41.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.2-42.1">
+            <ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-3.2-42.1.1.1">
+                <p id="section-3.2-42.1.1.1.1">If <em>m</em>.<code>notTcb</code> = 1 AND <em>f</em>.<code>notTcb</code> = 0; <strong>set</strong>(ECT.<code>element-list</code>.<code>element-map</code>.<code>measurement-values-map</code>.<code>flags</code>.<code>is-tcb</code> = TRUE).<a href="#section-3.2-42.1.1.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+</li>
+        </ul>
+<span class="break"></span><dl class="olPercent" id="section-3.2-43">
 <dt>Step 4.</dt>
-<dd id="section-3.2-40.1">
-            <p id="section-3.2-40.1.1">The ECT.<code>authority</code> field is set up based on the signer of the certificate containing DTI as described in <a href="#sec-authority" class="auto internal xref">Section 3.4</a>.<a href="#section-3.2-40.1.1" class="pilcrow">¶</a></p>
+<dd id="section-3.2-43.1">
+            <p id="section-3.2-43.1.1">The ECT.<code>authority</code> field is set up based on the signer of the certificate containing DTI as described in <a href="#sec-authority" class="auto internal xref">Section 3.4</a>.<a href="#section-3.2-43.1.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-3.2-41">The completed ECT is added to the <code>ae</code> list.<a href="#section-3.2-41" class="pilcrow">¶</a></p>
+<p id="section-3.2-44">The completed ECT is added to the <code>ae</code> list.<a href="#section-3.2-44" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cmw">
@@ -1712,8 +1739,8 @@ Having each authority in a certificate path in the ECT <code>authority</code> fi
           </tr>
         </tbody>
       </table>
-<p id="section-4-5">A Concise Evidence entry is converted to a CoRIM ECT (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) using the transformation steps in this section.
-A list of Evidence ECTs (i.e., <code>ae = [ + ECT]</code>) is constructed using CoRIM attestation evidence internal representation (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07#section-8.2.1.1" class="relref">Section 8.2.1.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).
+<p id="section-4-5">A Concise Evidence entry is converted to a CoRIM ECT (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-08#section-8.2.1" class="relref">Section 8.2.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>) using the transformation steps in this section.
+A list of Evidence ECTs (i.e., <code>ae = [ + ECT]</code>) is constructed using CoRIM attestation evidence internal representation (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-08#section-8.2.1.1" class="relref">Section 8.2.1.1</a> of [<a href="#I-D.ietf-rats-corim" class="cite xref">I-D.ietf-rats-corim</a>]</span>).
 The Concise Evidence scheme uses CoRIM CDDL definitions to define several Evidence representations called <em>triples</em>.
 Cases where Concise Evidence CDDL is identical to CoRIM CDDL the transformation logic uses the structure names in common.<a href="#section-4-5" class="pilcrow">¶</a></p>
 <div id="sec-evidence-triple">
@@ -2342,7 +2369,7 @@ Refer to <span><a href="https://rfc-editor.org/rfc/rfc9334#section-12.2" class="
 <dd class="break"></dd>
 <dt id="I-D.ietf-rats-corim">[I-D.ietf-rats-corim]</dt>
         <dd>
-<span class="refAuthor">Birkholz, H.</span>, <span class="refAuthor">Fossati, T.</span>, <span class="refAuthor">Deshpande, Y.</span>, <span class="refAuthor">Smith, N.</span>, and <span class="refAuthor">W. Pan</span>, <span class="refTitle">"Concise Reference Integrity Manifest"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rats-corim-07</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07">https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-07</a>&gt;</span>. </dd>
+<span class="refAuthor">Birkholz, H.</span>, <span class="refAuthor">Fossati, T.</span>, <span class="refAuthor">Deshpande, Y.</span>, <span class="refAuthor">Smith, N.</span>, and <span class="refAuthor">W. Pan</span>, <span class="refTitle">"Concise Reference Integrity Manifest"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-rats-corim-08</span>, <time datetime="2025-07-07" class="refDate">7 July 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-08">https://datatracker.ietf.org/doc/html/draft-ietf-rats-corim-08</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-rats-endorsements">[I-D.ietf-rats-endorsements]</dt>
         <dd>

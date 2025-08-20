@@ -5,10 +5,10 @@
 Remote ATtestation ProcedureS                                 F. D'Amato
 Internet-Draft                                                       AMD
 Intended status: Standards Track                               A. Draper
-Expires: 6 December 2025                                          Altera
+Expires: 21 February 2026                                         Altera
                                                                 N. Smith
                                                        Intel Corporation
-                                                             4 June 2025
+                                                          20 August 2025
 
 
                         Evidence Transformations
@@ -44,7 +44,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 December 2025.
+   This Internet-Draft will expire on 21 February 2026.
 
 Copyright Notice
 
@@ -248,6 +248,20 @@ Table of Contents
 
       Foreach FWID in FWIDLIST: *copy*(DTI.FWID.hashAlg, ECT.element-
          list.element-map.measurement-values-map.digests.digest.alg).
+
+      Foreach INTEGRITYREGISTER in IRLIST:
+         *copy*(DTI.INTEGRITYREGISTER.registerNum, ECT.element-
+         list.element-map.measurement-values-map.integrity-
+         registers.integrity-register-id-type-choice).
+
+      Foreach FWID in INTEGRITYREGISTER.FWIDLIST:
+         *copy*(DTI.FWID.digest, ECT.element-list.element-
+         map.measurement-values-map.integrity-registers.digest-
+         type.val).
+
+      Foreach FWID in INTEGRITYREGISTER.FWIDLIST:
+         *copy*(DTI.FWID.alg, ECT.element-list.element-map.measurement-
+         values-map.integrity-registers.digest-type.alg).
 
    iv The DTI entry populates the ae ECT elemenet-list.flags.  Foreach
       _f_ in DTI.OperationalFlags and each _m_ in
@@ -819,9 +833,9 @@ Table of Contents
    [I-D.ietf-rats-corim]
               Birkholz, H., Fossati, T., Deshpande, Y., Smith, N., and
               W. Pan, "Concise Reference Integrity Manifest", Work in
-              Progress, Internet-Draft, draft-ietf-rats-corim-07, 3
-              March 2025, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-rats-corim-07>.
+              Progress, Internet-Draft, draft-ietf-rats-corim-08, 7 July
+              2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              rats-corim-08>.
 
    [I-D.ietf-rats-endorsements]
               Thaler, D., Birkholz, H., and T. Fossati, "RATS
