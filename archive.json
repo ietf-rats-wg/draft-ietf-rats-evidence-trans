@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-10T01:56:29.233090+00:00",
+  "timestamp": "2025-08-21T01:46:18.659524+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -1135,21 +1135,21 @@
       "id": "PR_kwDOMOnZXM6P8mVj",
       "title": "Transform TCBInfo 'index' field into measurement-map.mkey rather than\u2026",
       "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/pull/13",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "fdamato",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "\u2026 environment-map.index\r\n\r\nThis allows users more flexible usage of multi-tcb-info by combining multiple TCBInfo to describe the same target environment",
       "createdAt": "2025-03-24T23:26:35Z",
-      "updatedAt": "2025-05-22T20:10:28Z",
+      "updatedAt": "2025-08-19T03:10:42Z",
       "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "89f1cefe5cbd78519234bf2d024c45dbaf7a68fb",
       "headRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "headRefName": "fdamato/tcbinfo_mkey",
       "headRefOid": "bb5ad66fd533d8e4699f3e560aac61a58653a9bb",
-      "closedAt": null,
+      "closedAt": "2025-08-19T03:10:42Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -1161,7 +1161,7 @@
             "abbreviatedOid": "7ff90ec"
           },
           "author": "nedmsmith",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "NONE",
           "state": "COMMENTED",
           "body": "See suggestion.",
           "createdAt": "2025-03-24T23:40:41Z",
@@ -1181,7 +1181,7 @@
             "abbreviatedOid": "bb5ad66"
           },
           "author": "nedmsmith",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "NONE",
           "state": "APPROVED",
           "body": "LGTM",
           "createdAt": "2025-03-25T00:01:16Z",
@@ -1267,7 +1267,7 @@
             "abbreviatedOid": "bb5ad66"
           },
           "author": "nedmsmith",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "NONE",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2025-05-22T20:02:00Z",
@@ -1287,7 +1287,7 @@
             "abbreviatedOid": "bb5ad66"
           },
           "author": "nedmsmith",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "NONE",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2025-05-22T20:03:36Z",
@@ -1307,7 +1307,7 @@
             "abbreviatedOid": "bb5ad66"
           },
           "author": "nedmsmith",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "NONE",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2025-05-22T20:10:28Z",
@@ -1483,6 +1483,40 @@
           ]
         }
       ]
+    },
+    {
+      "number": 18,
+      "id": "PR_kwDOMOnZXM6khlFs",
+      "title": "Include DICE Integrity Registers Transformation",
+      "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/pull/18",
+      "state": "OPEN",
+      "author": "fdamato",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-08-20T15:48:56Z",
+      "updatedAt": "2025-08-20T15:51:32Z",
+      "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "f5464dd6736f38057d390caa043122c335a3472f",
+      "headRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
+      "headRefName": "fadamato/integrity-registers",
+      "headRefOid": "76da5f1d86987001b2fa9c1541476caaa46953fc",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "fdamato",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Not an expert of the transformation semantics, so consider this a draft and advice on the proper way to make the transformation",
+          "createdAt": "2025-08-20T15:51:24Z",
+          "updatedAt": "2025-08-20T15:51:24Z"
+        }
+      ],
+      "reviews": []
     }
   ]
 }
