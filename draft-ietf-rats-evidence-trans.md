@@ -216,6 +216,12 @@ The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT
 
 > > Foreach FWID in FWIDLIST: **copy**(DTI.`FWID`.`hashAlg`, ECT.`element-list`.`element-map`.`measurement-values-map`.`digests`.`digest`.`alg`).
 
+> > Foreach INTEGRITYREGISTER in IRLIST: **copy**(DTI.`INTEGRITYREGISTER`.`registerNum`, ECT.`element-list`.`element-map`.`measurement-values-map`.`integrity-registers`.`integrity-register-id-type-choice`).
+
+> > Foreach FWID in INTEGRITYREGISTER.FWIDLIST: **copy**(DTI.`FWID`.`digest`, ECT.`element-list`.`element-map`.`measurement-values-map`.`integrity-registers`.`digest-type`.`val`).
+
+> > Foreach FWID in INTEGRITYREGISTER.FWIDLIST: **copy**(DTI.`FWID`.`alg`, ECT.`element-list`.`element-map`.`measurement-values-map`.`integrity-registers`.`digest-type`.`alg`).
+
 {: dtt2-enum}
 * The DTI entry populates the `ae` ECT `elemenet-list`.`flags`. Foreach _f_ in DTI.`OperationalFlags` and each _m_ in DTI.`OperationalFlagsMask`:
 
