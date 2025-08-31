@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-08-21T01:46:18.659524+00:00",
+  "timestamp": "2025-08-31T01:48:49.950401+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -265,6 +265,22 @@
       "body": "The comid-coswid linking triple needs a way of matching evidence with reference values, and this is one of the tricker processes to define.\n\nIf we have two forms of ECT, one for CoSWID-reference (comid-coswid linking triple binds an environment to named and then dereferenced coswid tags) with cmtype reference-values, and one for CoSWID-addition (binds an environment to ev-coswid-evidence-maps) with cmtype evidence, then we need to define the way to reconcile the two.\n\nThe reconciliation is the topic of the CoMID-CoSWID triple draft that I've created a repo for, but the transformation of the evidence to an internal representation is still something that seems more relevant to this draft.",
       "createdAt": "2025-07-09T21:59:15Z",
       "updatedAt": "2025-07-09T21:59:15Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 20,
+      "id": "I_kwDOMOnZXM7Itkyf",
+      "title": "Conveyance of EAT over SPDM",
+      "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/issues/20",
+      "state": "OPEN",
+      "author": "steven-bellock",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "See https://github.com/opencomputeproject/Security/issues/65.\n\nWhat that means for this specification is that, at a minimum, indices `0xf0-0xf3` will not be used to convey an EAT over SPDM. If the current proposal in OCP Attestation is adopted, and if a Verifier supports both OCP EAT and TCG concise evidence over SPDM 1.2, then it will need to distinguish between the two.",
+      "createdAt": "2025-08-29T16:15:35Z",
+      "updatedAt": "2025-08-29T16:15:35Z",
       "closedAt": null,
       "comments": []
     }
@@ -1489,24 +1505,26 @@
       "id": "PR_kwDOMOnZXM6khlFs",
       "title": "Include DICE Integrity Registers Transformation",
       "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/pull/18",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "fdamato",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-08-20T15:48:56Z",
-      "updatedAt": "2025-08-20T15:51:32Z",
+      "updatedAt": "2025-08-29T15:42:51Z",
       "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "f5464dd6736f38057d390caa043122c335a3472f",
       "headRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "headRefName": "fadamato/integrity-registers",
       "headRefOid": "76da5f1d86987001b2fa9c1541476caaa46953fc",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-08-29T15:42:51Z",
+      "mergedAt": "2025-08-29T15:42:51Z",
+      "mergedBy": "fdamato",
+      "mergeCommit": {
+        "oid": "198d9891f88b0bdd76195204f14d55dfca18a581"
+      },
       "comments": [
         {
           "author": "fdamato",
@@ -1514,8 +1532,55 @@
           "body": "Not an expert of the transformation semantics, so consider this a draft and advice on the proper way to make the transformation",
           "createdAt": "2025-08-20T15:51:24Z",
           "updatedAt": "2025-08-20T15:51:24Z"
+        },
+        {
+          "author": "fdamato",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks Andrew. I`ll go ahead and merge this one, in the meantime",
+          "createdAt": "2025-08-29T15:42:48Z",
+          "updatedAt": "2025-08-29T15:42:48Z"
         }
       ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM684zhN",
+          "commit": {
+            "abbreviatedOid": "76da5f1"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looks good to me.\r\nThere may be an underlying issue in both the FWID and INTEGRITYREGISTER copying, which is that if the DICE measurement is malformed (eg omits the digest type) then this algorithm can create an invalid ACS entry. I will file a separate issue for this.",
+          "createdAt": "2025-08-29T14:38:55Z",
+          "updatedAt": "2025-08-29T14:38:55Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "id": "PR_kwDOMOnZXM6mBFCN",
+      "title": "Replace SPDM Block Number for EAT CWT to 0xFD",
+      "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/pull/19",
+      "state": "OPEN",
+      "author": "fdamato",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-08-29T15:57:01Z",
+      "updatedAt": "2025-08-29T15:57:17Z",
+      "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "198d9891f88b0bdd76195204f14d55dfca18a581",
+      "headRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
+      "headRefName": "fadamato/spdm_block_eat",
+      "headRefOid": "d98efe0736b8e92321702f72db948495d8cbdada",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
       "reviews": []
     }
   ]
