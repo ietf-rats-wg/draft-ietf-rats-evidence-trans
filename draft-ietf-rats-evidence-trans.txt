@@ -5,10 +5,10 @@
 Remote ATtestation ProcedureS                                 F. D'Amato
 Internet-Draft                                                       AMD
 Intended status: Standards Track                               A. Draper
-Expires: 2 March 2026                                             Altera
+Expires: 26 March 2026                                            Altera
                                                                 N. Smith
                                                        Intel Corporation
-                                                          29 August 2025
+                                                       22 September 2025
 
 
                         Evidence Transformations
@@ -44,7 +44,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 March 2026.
+   This Internet-Draft will expire on 26 March 2026.
 
 Copyright Notice
 
@@ -671,10 +671,10 @@ Table of Contents
 8.  Transforming SPDM RATS EAT CWT
 
    The RATS EAT CWT shall be reported in any of the assigned Measurement
-   Blocks range [0xF0 - 0xFC] The Concise Evidence CBOR Tag is
-   serialized inside eat-measurements (273) claim ($measurements-body-
-   cbor /= bytes .cbor concise-evidence-map) Subsequently the
-   transformation steps defined in Section 4.
+   Block 0xFD The Concise Evidence CBOR Tag is serialized inside eat-
+   measurements (273) claim ($measurements-body-cbor /= bytes .cbor
+   concise-evidence-map) Subsequently the transformation steps defined
+   in Section 4.
 
 9.  Transforming SPDM Evidence
 
@@ -706,8 +706,8 @@ Table of Contents
       -  if the index is in range [0x1 - 0xEF] (refer to #Transforming
          SPDM Measurement Block Digest)
 
-      -  if the index is in range [0xF0 - 0xFC] (refer to #Transforming
-         SPDM RATS EAT CWT] )
+      -  if the index is 0xFD (refer to #Transforming SPDM RATS EAT CWT]
+         )
 
    The TCG DICE Concise Evidence Binding for SPDM specification [TCG.CE]
    describes a process for converting the SPDM Measurement Block to
