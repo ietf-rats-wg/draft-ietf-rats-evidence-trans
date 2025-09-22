@@ -533,7 +533,7 @@ Structured Manifest Block Definition for CBor Web Token (CWT):
 
 # Transforming SPDM RATS EAT CWT
 
-The RATS EAT CWT shall be reported in any of the assigned Measurement Blocks range \[0xF0 - 0xFC\]
+The RATS EAT CWT shall be reported in any of the assigned Measurement Block 0xFD
 The Concise Evidence CBOR Tag is serialized inside eat-measurements (273) claim ($measurements-body-cbor /= bytes .cbor concise-evidence-map)
 Subsequently the transformation steps defined in {{sec-ce-trans}}.
 
@@ -554,7 +554,7 @@ The`concise-evidence` has a format that is similar to CoRIM `triples-map` (their
 
 - For every `spdm-indirect` measurement the Verifier shall ask the SPDM Requestor to retrieve the measurement block indicated by the index
   - if the index is in range \[0x1 - 0xEF\] (refer to #Transforming SPDM Measurement Block Digest)
-  - if the index is in range \[0xF0 - 0xFC\] (refer to #Transforming SPDM RATS EAT CWT] )
+  - if the index is 0xFD (refer to #Transforming SPDM RATS EAT CWT] )
 
 The TCG DICE Concise Evidence Binding for SPDM specification {{-ce}} describes a process for converting the SPDM Measurement Block to Concise Evidence.
 Subsequently the transformation steps defined in {{sec-ce-trans}}.
