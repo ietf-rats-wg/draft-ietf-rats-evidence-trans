@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-08-31T01:48:49.950401+00:00",
+  "timestamp": "2025-09-23T01:40:11.596490+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -1562,26 +1562,42 @@
       "id": "PR_kwDOMOnZXM6mBFCN",
       "title": "Replace SPDM Block Number for EAT CWT to 0xFD",
       "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/pull/19",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "fdamato",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-08-29T15:57:01Z",
-      "updatedAt": "2025-08-29T15:57:17Z",
+      "updatedAt": "2025-09-22T17:25:54Z",
       "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "198d9891f88b0bdd76195204f14d55dfca18a581",
       "headRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "headRefName": "fadamato/spdm_block_eat",
       "headRefOid": "d98efe0736b8e92321702f72db948495d8cbdada",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-09-22T17:25:54Z",
+      "mergedAt": "2025-09-22T17:25:54Z",
+      "mergedBy": "fdamato",
+      "mergeCommit": {
+        "oid": "f08e474d9db9f8266cf07fecc8ee3c1b84df0c3e"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM7B9xt5",
+          "commit": {
+            "abbreviatedOid": "d98efe0"
+          },
+          "author": "nedmsmith",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "LGTM",
+          "createdAt": "2025-09-22T17:25:01Z",
+          "updatedAt": "2025-09-22T17:25:01Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
