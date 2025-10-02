@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-09-23T01:40:11.596490+00:00",
+  "timestamp": "2025-10-02T01:39:44.668670+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -1595,6 +1595,46 @@
           "body": "LGTM",
           "createdAt": "2025-09-22T17:25:01Z",
           "updatedAt": "2025-09-22T17:25:01Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 21,
+      "id": "PR_kwDOMOnZXM6rYKNK",
+      "title": "Minor editorial fixup",
+      "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/pull/21",
+      "state": "OPEN",
+      "author": "steven-bellock",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-09-30T16:27:17Z",
+      "updatedAt": "2025-09-30T18:41:40Z",
+      "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "f08e474d9db9f8266cf07fecc8ee3c1b84df0c3e",
+      "headRepository": "steven-bellock/draft-ietf-rats-evidence-trans",
+      "headRefName": "editorial",
+      "headRefOid": "fc02309c5faf20bdef84ae2c21243c8c138f755d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM7D2sUc",
+          "commit": {
+            "abbreviatedOid": "fc02309"
+          },
+          "author": "fdamato",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-09-30T16:48:02Z",
+          "updatedAt": "2025-09-30T16:48:02Z",
           "comments": []
         }
       ]
