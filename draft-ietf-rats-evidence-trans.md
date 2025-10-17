@@ -2,13 +2,12 @@
 v: 3
 
 title: Evidence Transformations
-abbref: EvTrans
+abbrev: EvTrans
 docname: draft-ietf-rats-evidence-trans-latest
-replaces: draft-smith-rats-evidence-trans-01
 category: std
 consensus: true
 submissiontype: IETF
-
+date: 2025-10-17
 ipr: trust200902
 area: "Security"
 workgroup: "Remote ATtestation ProcedureS"
@@ -28,12 +27,12 @@ author:
   email: fabrizio.damato@amd.com
 - ins: A. Draper
   name: Andrew Draper
-  org: Altera
-  email: andrew.draper@altera.com
+  org: Independent
+  email: andrew.draper@freeside.org.uk
 - ins: N. Smith
   name: Ned Smith
-  org: Intel Corporation
-  email: ned.smith@intel.com
+  org: Independent
+  email: ned.smith.ietf@outlook.com
 
 normative:
   I-D.ietf-rats-corim: corim
@@ -80,9 +79,9 @@ informative:
   STD94:
     -: cbor
     =: RFC8949
-  I-D.ietf-rats-eat: eat
+  RFC9711: eat
   RFC5280: x509
-  RFC7942:
+  RFC7942: running-code
 
 entity:
   SELF: "RFCthis"
@@ -107,7 +106,9 @@ Consequently, Evidence may require format transformation to an internal represen
 This document specifies Evidence transformation methods for DiceTcbInfo {{-dice-attest}}, concise evidence {{-ce}}, and SPDM measurements block {{-spdm}} structures.
 These Evidence structures are converted to the CoRIM internal representation (Section 2.1 {{-corim}}) and follow CoRIM defined appraisal procedures (Section 8 {{-corim}}).
 
-## Terminology
+# Requirements Language and Terminology
+
+{::boilerplate bcp14}
 
 This document uses terms and concepts defined by the RATS architecture.
 For a complete glossary. See {{Section 4 of -rats-arch}}.
@@ -121,8 +122,6 @@ There are many possible Evidence structures including those mentioned above.
 The CoRIM specification defines an "internal representation" for Evidence (Section 8.2.1.3 {{-corim}}).
 This document defines mapping operations that convert from an external representation to an internal representation.
 The conversion steps are also known as "transformation".
-
-{::boilerplate bcp14}
 
 # Verifier Reconciliation {#sec-verifier-rec}
 
@@ -575,7 +574,7 @@ According to {{RFC7942}}, "this will allow reviewers and working groups to assig
 which may serve as Evidence of valuable experimentation and feedback that have made the implemented protocols more mature.
 It is up to the individual working groups to use this information as they see fit".
 
-# Security and Privacy Considerations {#sec-sec}
+# Security Considerations {#sec-sec}
 
 Evidence appraisal is at the core of any RATS protocol flow, mediating all interactions between Attesters and their Relying Parties.
 The Verifier is effectively part of the Attesters' and Relying Parties' trusted computing base (TCB).
