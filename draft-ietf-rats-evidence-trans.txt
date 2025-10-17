@@ -5,10 +5,9 @@
 Remote ATtestation ProcedureS                                 F. D'Amato
 Internet-Draft                                                       AMD
 Intended status: Standards Track                               A. Draper
-Expires: 26 March 2026                                            Altera
-                                                                N. Smith
-                                                       Intel Corporation
-                                                       22 September 2025
+Expires: 20 April 2026                                          N. Smith
+                                                             Independent
+                                                         17 October 2025
 
 
                         Evidence Transformations
@@ -44,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 March 2026.
+   This Internet-Draft will expire on 20 April 2026.
 
 Copyright Notice
 
@@ -63,28 +62,28 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
-     1.1.  Terminology
-   2.  Verifier Reconciliation
-   3.  Transforming DICE Certificate Extension Evidence
-     3.1.  DiceUeid Transformation
-     3.2.  DiceTcbInfo Transformation
-     3.3.  DiceConceptualMessageWrapper Transformation
-     3.4.  Authority field in DICE/SPDM ECTs
-   4.  Transforming TCG Concise Evidence
-     4.1.  Transforming the ce.evidence-triples
-     4.2.  Transforming the ce.identity-triples
-     4.3.  Transforming the ce.attest-key-triples
-   5.  DMTF SPDM Structure Definitons
-   6.  Transforming SPDM Measurement Block Digest
-   7.  Transforming SPDM Measurement Block Raw Value
-   8.  Transforming SPDM RATS EAT CWT
-   9.  Transforming SPDM Evidence
-   10. Implementation Status
-   11. Security and Privacy Considerations
-   12. IANA Considerations
-   13. References
-     13.1.  Normative References
-     13.2.  Informative References
+   2.  Requirements Language and Terminology
+   3.  Verifier Reconciliation
+   4.  Transforming DICE Certificate Extension Evidence
+     4.1.  DiceUeid Transformation
+     4.2.  DiceTcbInfo Transformation
+     4.3.  DiceConceptualMessageWrapper Transformation
+     4.4.  Authority field in DICE/SPDM ECTs
+   5.  Transforming TCG Concise Evidence
+     5.1.  Transforming the ce.evidence-triples
+     5.2.  Transforming the ce.identity-triples
+     5.3.  Transforming the ce.attest-key-triples
+   6.  DMTF SPDM Structure Definitons
+   7.  Transforming SPDM Measurement Block Digest
+   8.  Transforming SPDM Measurement Block Raw Value
+   9.  Transforming SPDM RATS EAT CWT
+   10. Transforming SPDM Evidence
+   11. Implementation Status
+   12. Security Considerations
+   13. IANA Considerations
+   14. References
+     14.1.  Normative References
+     14.2.  Informative References
    Contributors
    Acknowledgments
    Authors' Addresses
@@ -105,7 +104,13 @@ Table of Contents
    [I-D.ietf-rats-corim]) and follow CoRIM defined appraisal procedures
    (Section 8 [I-D.ietf-rats-corim]).
 
-1.1.  Terminology
+2.  Requirements Language and Terminology
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
 
    This document uses terms and concepts defined by the RATS
    architecture.  For a complete glossary.  See Section 4 of [RFC9334].
@@ -126,13 +131,7 @@ Table of Contents
    representation to an internal representation.  The conversion steps
    are also known as "transformation".
 
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-   "OPTIONAL" in this document are to be interpreted as described in
-   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
-   capitals, as shown here.
-
-2.  Verifier Reconciliation
+3.  Verifier Reconciliation
 
    This document assumes the reader is familiar with Verifier
    reconciliation as described in Section 2 of [I-D.ietf-rats-corim].
@@ -151,7 +150,7 @@ Table of Contents
    [I-D.ietf-rats-corim]) as the transformation target.  Other internal
    representations are possible but out of scope for this document.
 
-3.  Transforming DICE Certificate Extension Evidence
+4.  Transforming DICE Certificate Extension Evidence
 
    This section defines how Evidence from an X.509 certificate [RFC5280]
    containing a DICE certificate extension [DICE.Attest] is transformed
@@ -160,7 +159,7 @@ Table of Contents
    Verifiers supporting the DICE certificate Evidence extensions SHOULD
    implement this transformation.
 
-3.1.  DiceUeid Transformation
+4.1.  DiceUeid Transformation
 
    This section defines the transformation method for the DiceUeid
    certificate extension.  This extension is identified by the following
@@ -171,9 +170,9 @@ Table of Contents
    The DiceUeid extension does not create evidence directly.  The ueid
    OCTET STRING within this extension is used to populate the instance-
    id field within evidence created by other extensions.
-   Section Section 3.2 describes extensions which use this value.
+   Section Section 4.2 describes extensions which use this value.
 
-3.2.  DiceTcbInfo Transformation
+4.2.  DiceTcbInfo Transformation
 
    This section defines transformation methods for DICE certificate
    extensions DiceTcbInfo, DiceMultiTcbInfo, and DiceMultiTcbInfoComp.
@@ -337,11 +336,11 @@ Table of Contents
          list.element-map.measurement-values-map.flags.is-tcb = TRUE).
 
    Step 4.  The ECT.authority field is set up based on the signer of the
-            certificate containing DTI as described in Section 3.4.
+            certificate containing DTI as described in Section 4.4.
 
    The completed ECT is added to the ae list.
 
-3.3.  DiceConceptualMessageWrapper Transformation
+4.3.  DiceConceptualMessageWrapper Transformation
 
    This section defines the transformation method for the
    DiceConceptualMessageWrapper certificate extension.  This extension
@@ -353,9 +352,9 @@ Table of Contents
    CBOR array, JSON array, or CBOR tagged value.  If the entry contains
    a CBOR tag value of #6.571 or #6.1668557429, or a Content ID of
    10571, or a Media Type of "application/ce+cbor", the contents are
-   transformed according to Section 4.
+   transformed according to Section 5.
 
-3.4.  Authority field in DICE/SPDM ECTs
+4.4.  Authority field in DICE/SPDM ECTs
 
    The ECT authority field is an array of $crypto-keys-type-choice
    values.
@@ -373,7 +372,7 @@ Table of Contents
    Each signer authority value MUST be represented using tagged-cose-
    key-type.
 
-4.  Transforming TCG Concise Evidence
+5.  Transforming TCG Concise Evidence
 
    This section defines how Evidence from TCG [TCG.CE] is transformed
    into an internal representation that can be processed by Verifiers.
@@ -402,7 +401,7 @@ Table of Contents
    Evidence CDDL is identical to CoRIM CDDL the transformation logic
    uses the structure names in common.
 
-4.1.  Transforming the ce.evidence-triples
+5.1.  Transforming the ce.evidence-triples
 
    The ce.evidence-triples structure is a list of evidence-triple-
    record.  An evidence-triple-record consists of an environment-map and
@@ -427,20 +426,19 @@ Table of Contents
       *copy*(ce.mval, ect.element-map.element-claims`)
 
    Step 4.  The signer of the envelope containing CE is copied to the
-            ECT.authority field as described in Section 3.4.  For
-            example, a CE may be wrapped by an EAT token
-            [I-D.ietf-rats-eat] or DICE certificate [DICE.Attest].  The
-            signer identity MUST be expressed using $crypto-key-type-
-            choice.  A profile or other arrangement is used to
-            coordinate which $crypto-key-type-choice is used for both
-            Evidence and Reference Values.
+            ECT.authority field as described in Section 4.4.  For
+            example, a CE may be wrapped by an EAT token [RFC9711] or
+            DICE certificate [DICE.Attest].  The signer identity MUST be
+            expressed using $crypto-key-type-choice.  A profile or other
+            arrangement is used to coordinate which $crypto-key-type-
+            choice is used for both Evidence and Reference Values.
 
    Step 5.  If CE has a profile, the profile is converted to a $profile-
             type-choice then copied to the ECT.profile` field.
 
    The completed ECT is added to the ae list.
 
-4.2.  Transforming the ce.identity-triples
+5.2.  Transforming the ce.identity-triples
 
    The ce.identity-triples structure is a list of ev-identity-triple-
    record.  An ev-identity-triple-record consists of an environment-map
@@ -473,18 +471,18 @@ Table of Contents
 
    Step 4.  The signer of the envelope containing CE is copied to the
             ECT.authority field.  For example, a CE may be wrapped by an
-            EAT token [I-D.ietf-rats-eat] or DICE certificate
-            [DICE.Attest].  The signer identity MUST be expressed using
-            $crypto-key-type-choice.  A profile or other arrangement is
-            used to coordinate which $crypto-key-type-choice is used for
-            both Evidence and Reference Values.
+            EAT token [RFC9711] or DICE certificate [DICE.Attest].  The
+            signer identity MUST be expressed using $crypto-key-type-
+            choice.  A profile or other arrangement is used to
+            coordinate which $crypto-key-type-choice is used for both
+            Evidence and Reference Values.
 
    Step 5.  If CE has a profile, the profile is converted to a $profile-
             type-choice then copied to the ECT.profile` field.
 
    The completed ECT is added to the ae list.
 
-4.3.  Transforming the ce.attest-key-triples
+5.3.  Transforming the ce.attest-key-triples
 
    The ce.attest-key-triples structure is a list of ev-attest-key-
    triple-record.  An ev-attest-key-triple-record consists of an
@@ -517,18 +515,18 @@ Table of Contents
 
    Step 4.  The signer of the envelope containing CE is copied to the
             ECT.authority field.  For example, a CE may be wrapped by an
-            EAT token [I-D.ietf-rats-eat] or DICE certificate
-            [DICE.Attest].  The signer identity MUST be expressed using
-            $crypto-key-type-choice.  A profile or other arrangement is
-            used to coordinate which $crypto-key-type-choice is used for
-            both Evidence and Reference Values.
+            EAT token [RFC9711] or DICE certificate [DICE.Attest].  The
+            signer identity MUST be expressed using $crypto-key-type-
+            choice.  A profile or other arrangement is used to
+            coordinate which $crypto-key-type-choice is used for both
+            Evidence and Reference Values.
 
    Step 5.  If CE has a profile, the profile is converted to a $profile-
             type-choice then copied to the ECT.profile` field.
 
    The completed ECT is added to the ae list.
 
-5.  DMTF SPDM Structure Definitons
+6.  DMTF SPDM Structure Definitons
 
    This section defines how a Verifier shall parse a DMTF Measurement
    Block.
@@ -648,7 +646,7 @@ Table of Contents
 
    *  Manifest = COSE_Sign1 Payload
 
-6.  Transforming SPDM Measurement Block Digest
+7.  Transforming SPDM Measurement Block Digest
 
    Step 1.  if DMTFSpecMeasurementValueType is in range [0x80 - 0x83]:
 
@@ -661,22 +659,22 @@ Table of Contents
                ECT.environment.measurement-map.mval.integrity-
                registers).
 
-7.  Transforming SPDM Measurement Block Raw Value
+8.  Transforming SPDM Measurement Block Raw Value
 
    Step 1.  if DMTFSpecMeasurementValueType is in range [0x7]:
 
                *copy*(SPDM.MeasurementBlock.DMTFSpecMeasurementValue ,
                ECT.environment.measurement-map.mval.svn).
 
-8.  Transforming SPDM RATS EAT CWT
+9.  Transforming SPDM RATS EAT CWT
 
    The RATS EAT CWT shall be reported in any of the assigned Measurement
    Block 0xFD The Concise Evidence CBOR Tag is serialized inside eat-
    measurements (273) claim ($measurements-body-cbor /= bytes .cbor
    concise-evidence-map) Subsequently the transformation steps defined
-   in Section 4.
+   in Section 5.
 
-9.  Transforming SPDM Evidence
+10.  Transforming SPDM Evidence
 
    This section defines how Evidence from SPDM [SPDM] is transformed
    into an internal representation that can be processed by Verifiers.
@@ -712,13 +710,13 @@ Table of Contents
    The TCG DICE Concise Evidence Binding for SPDM specification [TCG.CE]
    describes a process for converting the SPDM Measurement Block to
    Concise Evidence.  Subsequently the transformation steps defined in
-   Section 4.
+   Section 5.
 
    The keys provided in the ECT.authority field SHOULD include the key
    which signed the SPDM MEASUREMENTS response carrying the Evidence and
-   keys which authorized that key as described in Section 3.4.```
+   keys which authorized that key as described in Section 4.4.```
 
-10.  Implementation Status
+11.  Implementation Status
 
    This section records the status of known implementations of the
    protocol defined by this specification at the time of posting of this
@@ -740,7 +738,7 @@ Table of Contents
    It is up to the individual working groups to use this information as
    they see fit".
 
-11.  Security and Privacy Considerations
+12.  Security Considerations
 
    Evidence appraisal is at the core of any RATS protocol flow,
    mediating all interactions between Attesters and their Relying
@@ -808,13 +806,13 @@ Table of Contents
    to Section 12.2 of [RFC9334] for information on Conceptual Messages
    protection.
 
-12.  IANA Considerations
+13.  IANA Considerations
 
    There are no IANA considerations.
 
-13.  References
+14.  References
 
-13.1.  Normative References
+14.1.  Normative References
 
    [DICE.Attest]
               Trusted Computing Group (TCG), "DICE Attestation
@@ -869,14 +867,7 @@ Table of Contents
               content/uploads/TCG-DICE-Concise-Evidence-Binding-for-
               SPDM-Version-1.0-Revision-54_pub.pdf>.
 
-13.2.  Informative References
-
-   [I-D.ietf-rats-eat]
-              Lundblade, L., Mandyam, G., O'Donoghue, J., and C.
-              Wallace, "The Entity Attestation Token (EAT)", Work in
-              Progress, Internet-Draft, draft-ietf-rats-eat-31, 6
-              September 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-rats-eat-31>.
+14.2.  Informative References
 
    [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
               Housley, R., and W. Polk, "Internet X.509 Public Key
@@ -894,6 +885,11 @@ Table of Contents
               Express Concise Binary Object Representation (CBOR) and
               JSON Data Structures", RFC 8610, DOI 10.17487/RFC8610,
               June 2019, <https://www.rfc-editor.org/rfc/rfc8610>.
+
+   [RFC9711]  Lundblade, L., Mandyam, G., O'Donoghue, J., and C.
+              Wallace, "The Entity Attestation Token (EAT)", RFC 9711,
+              DOI 10.17487/RFC9711, April 2025,
+              <https://www.rfc-editor.org/rfc/rfc9711>.
 
    [STD94]    Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", STD 94, RFC 8949,
@@ -940,10 +936,10 @@ Authors' Addresses
 
 
    Andrew Draper
-   Altera
-   Email: andrew.draper@altera.com
+   Independent
+   Email: andrew.draper@freeside.org.uk
 
 
    Ned Smith
-   Intel Corporation
-   Email: ned.smith@intel.com
+   Independent
+   Email: ned.smith.ietf@outlook.com
