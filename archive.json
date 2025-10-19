@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-02T01:39:44.668670+00:00",
+  "timestamp": "2025-10-19T01:54:12.325736+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -1638,6 +1638,36 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 22,
+      "id": "PR_kwDOMOnZXM6uWZPC",
+      "title": "misc cleanup and author info updated",
+      "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/pull/22",
+      "state": "MERGED",
+      "author": "nedmsmith",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "nedmsmith"
+      ],
+      "labels": [],
+      "body": "Fixed bug in yaml headers, updated author info, misc other cleanup",
+      "createdAt": "2025-10-17T17:03:28Z",
+      "updatedAt": "2025-10-17T17:04:20Z",
+      "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "f08e474d9db9f8266cf07fecc8ee3c1b84df0c3e",
+      "headRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
+      "headRefName": "updt-author-info",
+      "headRefOid": "cc6e4e64d359ffc4523be73f66c2f4735ff5fe32",
+      "closedAt": "2025-10-17T17:04:11Z",
+      "mergedAt": "2025-10-17T17:04:11Z",
+      "mergedBy": "nedmsmith",
+      "mergeCommit": {
+        "oid": "063c0c8e45d7a01c5cc01b7e316022dc9dbc6d51"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
