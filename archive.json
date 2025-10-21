@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-19T01:54:12.325736+00:00",
+  "timestamp": "2025-10-21T01:45:48.322219+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -1611,7 +1611,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-09-30T16:27:17Z",
-      "updatedAt": "2025-09-30T18:41:40Z",
+      "updatedAt": "2025-10-20T14:36:28Z",
       "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "f08e474d9db9f8266cf07fecc8ee3c1b84df0c3e",
@@ -1636,6 +1636,19 @@
           "createdAt": "2025-09-30T16:48:02Z",
           "updatedAt": "2025-09-30T16:48:02Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOMOnZXM7IE6Nv",
+          "commit": {
+            "abbreviatedOid": "fc02309"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looks good to me",
+          "createdAt": "2025-10-20T14:36:28Z",
+          "updatedAt": "2025-10-20T14:36:28Z",
+          "comments": []
         }
       ]
     },
@@ -1653,7 +1666,7 @@
       "labels": [],
       "body": "Fixed bug in yaml headers, updated author info, misc other cleanup",
       "createdAt": "2025-10-17T17:03:28Z",
-      "updatedAt": "2025-10-17T17:04:20Z",
+      "updatedAt": "2025-10-20T14:34:28Z",
       "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "f08e474d9db9f8266cf07fecc8ee3c1b84df0c3e",
@@ -1667,7 +1680,21 @@
         "oid": "063c0c8e45d7a01c5cc01b7e316022dc9dbc6d51"
       },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM7IE4jJ",
+          "commit": {
+            "abbreviatedOid": "cc6e4e6"
+          },
+          "author": "andrew-draper",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Looks good, thanks",
+          "createdAt": "2025-10-20T14:34:28Z",
+          "updatedAt": "2025-10-20T14:34:28Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
