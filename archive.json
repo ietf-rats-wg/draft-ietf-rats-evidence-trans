@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-21T01:45:48.322219+00:00",
+  "timestamp": "2025-11-09T01:52:16.992198+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -283,6 +283,30 @@
       "updatedAt": "2025-08-29T16:15:35Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 23,
+      "id": "I_kwDOMOnZXM7Wd3QP",
+      "title": "Handling of CBOR in SPDM SVH",
+      "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/issues/23",
+      "state": "OPEN",
+      "author": "steven-bellock",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I consider SPDM's handling of the SVH for IANA CBOR to be confusing and ambiguous. I have filed https://github.com/DMTF/SPDM-WG/issues/4396 against the SPDM specification to get some clarity, after which this specification may need to be updated.",
+      "createdAt": "2025-11-07T00:33:31Z",
+      "updatedAt": "2025-11-09T00:04:49Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "henkbirkholz",
+          "authorAssociation": "MEMBER",
+          "body": "@steven-bellock thank you for the synchronization! ",
+          "createdAt": "2025-11-09T00:04:48Z",
+          "updatedAt": "2025-11-09T00:04:48Z"
+        }
+      ]
     }
   ],
   "pulls": [
