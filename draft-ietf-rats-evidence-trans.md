@@ -475,15 +475,15 @@ if SPDM >=Version 1.3:
 SVH for Concise Evidence Manifest Block:
 
 - ID          = 0xA (IANA CBOR)
-- VendorIdLen = 2
-- VendorId    = 0x570 #6.570(spdm-toc-map)
+- VendorIdLen = 3
+- VendorId    = (0xd9 0x02 0x3a) #6.570(spdm-toc-map)
 
 Structured Manifest Block Definition for Concise Evidence:
 
-- SVH      =  SVH for Concise Evidence Manifest Block
+- SVH      = SVH for Concise Evidence Manifest Block
 - Manifest = tagged-spdm-toc CBOR Tag Payload
 
-DMTF Header for CBor Web Token (CWT):
+DMTF Header for signed CBOR Web Token (CWT):
 
 If SPDM Version 1.2:
 
@@ -497,15 +497,15 @@ if SPDM = Version 1.3:
 - DMTFSpecMeasurementValueSize = Size of Structured Manifest
 - DMTFSpecMeasurementValue     = Structured Manifest
 
-SVH for CBor Web Token (CWT):
+SVH for signed CBOR Web Token (CWT):
 
 - ID          = 0xA (IANA CBOR)
-- VendorIdLen = 2
-- VendorId    = 0x18 #6.18
+- VendorIdLen = 1
+- VendorId    = 0xd2 #6.18(COSE_Sign1)
 
-Structured Manifest Block Definition for CBor Web Token (CWT):
+Structured Manifest Block Definition for CBOR Web Token (CWT):
 
-- SVH      =  SVH for CBor Web Token (CWT)
+- SVH      = SVH for CBOR Web Token (CWT)
 - Manifest = COSE_Sign1 Payload
 
 # Transforming SPDM Measurement Block Digest
