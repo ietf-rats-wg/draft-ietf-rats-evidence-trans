@@ -603,9 +603,9 @@ Table of Contents
 
    *  ID = 0xA (IANA CBOR)
 
-   *  VendorIdLen = 2
+   *  VendorIdLen = 3
 
-   *  VendorId = 0x570 #6.570(spdm-toc-map)
+   *  VendorId = (0xd9 0x02 0x3a) #6.570(spdm-toc-map)
 
    Structured Manifest Block Definition for Concise Evidence:
 
@@ -613,7 +613,7 @@ Table of Contents
 
    *  Manifest = tagged-spdm-toc CBOR Tag Payload
 
-   DMTF Header for CBor Web Token (CWT):
+   DMTF Header for signed CBOR Web Token (CWT):
 
    If SPDM Version 1.2:
 
@@ -632,17 +632,17 @@ Table of Contents
 
    *  DMTFSpecMeasurementValue = Structured Manifest
 
-   SVH for CBor Web Token (CWT):
+   SVH for signed CBOR Web Token (CWT):
 
    *  ID = 0xA (IANA CBOR)
 
-   *  VendorIdLen = 2
+   *  VendorIdLen = 1
 
-   *  VendorId = 0x18 #6.18
+   *  VendorId = 0xd2 #6.18(COSE_Sign1)
 
-   Structured Manifest Block Definition for CBor Web Token (CWT):
+   Structured Manifest Block Definition for CBOR Web Token (CWT):
 
-   *  SVH = SVH for CBor Web Token (CWT)
+   *  SVH = SVH for CBOR Web Token (CWT)
 
    *  Manifest = COSE_Sign1 Payload
 
@@ -831,9 +831,9 @@ Table of Contents
    [I-D.ietf-rats-corim]
               Birkholz, H., Fossati, T., Deshpande, Y., Smith, N., and
               W. Pan, "Concise Reference Integrity Manifest", Work in
-              Progress, Internet-Draft, draft-ietf-rats-corim-08, 7 July
-              2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              rats-corim-08>.
+              Progress, Internet-Draft, draft-ietf-rats-corim-09, 20
+              October 2025, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-rats-corim-09>.
 
    [I-D.ietf-rats-endorsements]
               Thaler, D., Birkholz, H., and T. Fossati, "RATS
