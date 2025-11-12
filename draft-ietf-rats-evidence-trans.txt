@@ -76,7 +76,7 @@ Table of Contents
    6.  DMTF SPDM Structure Definitons
    7.  Transforming SPDM Measurement Block Digest
    8.  Transforming SPDM Measurement Block Raw Value
-   9.  Transforming SPDM RATS EAT CWT
+   9.  Transforming EAT Conveyed by SPDM
    10. Transforming SPDM Evidence
    11. Implementation Status
    12. Security Considerations
@@ -666,13 +666,12 @@ Table of Contents
                *copy*(SPDM.MeasurementBlock.DMTFSpecMeasurementValue ,
                ECT.environment.measurement-map.mval.svn).
 
-9.  Transforming SPDM RATS EAT CWT
+9.  Transforming EAT Conveyed by SPDM
 
-   The RATS EAT CWT shall be reported in any of the assigned Measurement
-   Block 0xFD The Concise Evidence CBOR Tag is serialized inside eat-
-   measurements (273) claim ($measurements-body-cbor /= bytes .cbor
-   concise-evidence-map) Subsequently the transformation steps defined
-   in Section 5.
+   The EAT shall be reported in Measurement Block 0xFD.  The Concise
+   Evidence CBOR Tag is serialized inside eat-measurements (273) claim
+   ($measurements-body-cbor /= bytes .cbor concise-evidence-map)
+   Subsequently the transformation steps defined in Section 5.
 
 10.  Transforming SPDM Evidence
 
@@ -704,8 +703,8 @@ Table of Contents
       -  if the index is in range [0x1 - 0xEF] (refer to #Transforming
          SPDM Measurement Block Digest)
 
-      -  if the index is 0xFD (refer to #Transforming SPDM RATS EAT CWT]
-         )
+      -  if the index is 0xFD (refer to #Transforming EAT Conveyed by
+         SPDM] )
 
    The TCG DICE Concise Evidence Binding for SPDM specification [TCG.CE]
    describes a process for converting the SPDM Measurement Block to

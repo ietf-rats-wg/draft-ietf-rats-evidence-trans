@@ -1198,7 +1198,7 @@ These Evidence structures are converted to the CoRIM internal representation and
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-transforming-spdm-measuremen" class="internal xref">Transforming SPDM Measurement Block Raw Value</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-transforming-spdm-rats-eat-" class="internal xref">Transforming SPDM RATS EAT CWT</a></p>
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-transforming-eat-conveyed-b" class="internal xref">Transforming EAT Conveyed by SPDM</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
             <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-transforming-spdm-evidence" class="internal xref">Transforming SPDM Evidence</a></p>
@@ -2219,12 +2219,12 @@ A profile or other arrangement is used to coordinate which <code>$crypto-key-typ
 </dl>
 </section>
 </div>
-<div id="transforming-spdm-rats-eat-cwt">
+<div id="transforming-eat-conveyed-by-spdm">
 <section id="section-9">
-      <h2 id="name-transforming-spdm-rats-eat-">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-transforming-spdm-rats-eat-" class="section-name selfRef">Transforming SPDM RATS EAT CWT</a>
+      <h2 id="name-transforming-eat-conveyed-b">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-transforming-eat-conveyed-b" class="section-name selfRef">Transforming EAT Conveyed by SPDM</a>
       </h2>
-<p id="section-9-1">The RATS EAT CWT shall be reported in any of the assigned Measurement Block 0xFD
+<p id="section-9-1">The EAT shall be reported in Measurement Block 0xFD.
 The Concise Evidence CBOR Tag is serialized inside eat-measurements (273) claim ($measurements-body-cbor /= bytes .cbor concise-evidence-map)
 Subsequently the transformation steps defined in <a href="#sec-ce-trans" class="auto internal xref">Section 5</a>.<a href="#section-9-1" class="pilcrow">¶</a></p>
 </section>
@@ -2260,7 +2260,7 @@ SPDM Responders SHALL support a minimum version of 1.2<a href="#section-10-2" cl
               <p id="section-10-6.1.2.1.1">if the index is in range [0x1 - 0xEF] (refer to #Transforming SPDM Measurement Block Digest)<a href="#section-10-6.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10-6.1.2.2">
-              <p id="section-10-6.1.2.2.1">if the index is 0xFD (refer to #Transforming SPDM RATS EAT CWT] )<a href="#section-10-6.1.2.2.1" class="pilcrow">¶</a></p>
+              <p id="section-10-6.1.2.2.1">if the index is 0xFD (refer to #Transforming EAT Conveyed by SPDM] )<a href="#section-10-6.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </li>
