@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-09T01:52:16.992198+00:00",
+  "timestamp": "2025-11-13T01:50:49.800756+00:00",
   "repo": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
   "labels": [
     {
@@ -289,15 +289,17 @@
       "id": "I_kwDOMOnZXM7Wd3QP",
       "title": "Handling of CBOR in SPDM SVH",
       "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/issues/23",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "steven-bellock",
-      "authorAssociation": "NONE",
-      "assignees": [],
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "steven-bellock"
+      ],
       "labels": [],
       "body": "I consider SPDM's handling of the SVH for IANA CBOR to be confusing and ambiguous. I have filed https://github.com/DMTF/SPDM-WG/issues/4396 against the SPDM specification to get some clarity, after which this specification may need to be updated.",
       "createdAt": "2025-11-07T00:33:31Z",
-      "updatedAt": "2025-11-09T00:04:49Z",
-      "closedAt": null,
+      "updatedAt": "2025-11-12T19:11:58Z",
+      "closedAt": "2025-11-12T19:11:58Z",
       "comments": [
         {
           "author": "henkbirkholz",
@@ -305,6 +307,20 @@
           "body": "@steven-bellock thank you for the synchronization! ",
           "createdAt": "2025-11-09T00:04:48Z",
           "updatedAt": "2025-11-09T00:04:48Z"
+        },
+        {
+          "author": "steven-bellock",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@fdamato this was clarified at the SPDM Working Group today. The `VendorId` is the CBOR-encoded tag number, that is followed by the CBOR-encoded tag content. So, for example\n>ID = 0xA (IANA CBOR)\nVendorIdLen = 2\nVendorId = 0x570 #6.570(spdm-toc-map)\n\nis incorrect, since `VendorId` is not CBOR-encoded.",
+          "createdAt": "2025-11-12T15:35:41Z",
+          "updatedAt": "2025-11-12T15:35:41Z"
+        },
+        {
+          "author": "steven-bellock",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@fdamato the outer tag for OCP EAT is the Self-described CBOR tag, not `COSE_Sign1`, but that is another issue.",
+          "createdAt": "2025-11-12T17:36:42Z",
+          "updatedAt": "2025-11-12T17:36:42Z"
         }
       ]
     }
@@ -1628,24 +1644,26 @@
       "id": "PR_kwDOMOnZXM6rYKNK",
       "title": "Minor editorial fixup",
       "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/pull/21",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "steven-bellock",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-09-30T16:27:17Z",
-      "updatedAt": "2025-10-20T14:36:28Z",
+      "updatedAt": "2025-11-12T19:14:16Z",
       "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
       "baseRefName": "main",
       "baseRefOid": "f08e474d9db9f8266cf07fecc8ee3c1b84df0c3e",
       "headRepository": "steven-bellock/draft-ietf-rats-evidence-trans",
       "headRefName": "editorial",
       "headRefOid": "fc02309c5faf20bdef84ae2c21243c8c138f755d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-11-12T19:14:16Z",
+      "mergedAt": "2025-11-12T19:14:16Z",
+      "mergedBy": "fdamato",
+      "mergeCommit": {
+        "oid": "022210aff5b47796c85c4e2659a40923ba683560"
+      },
       "comments": [],
       "reviews": [
         {
@@ -1716,6 +1734,56 @@
           "body": "Looks good, thanks",
           "createdAt": "2025-10-20T14:34:28Z",
           "updatedAt": "2025-10-20T14:34:28Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "id": "PR_kwDOMOnZXM6zCSK-",
+      "title": "CBOR-encoded tag number for SPDM VendorID field",
+      "url": "https://github.com/ietf-rats-wg/draft-ietf-rats-evidence-trans/pull/24",
+      "state": "MERGED",
+      "author": "steven-bellock",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix #23.",
+      "createdAt": "2025-11-12T17:44:49Z",
+      "updatedAt": "2025-11-12T19:11:57Z",
+      "baseRepository": "ietf-rats-wg/draft-ietf-rats-evidence-trans",
+      "baseRefName": "main",
+      "baseRefOid": "063c0c8e45d7a01c5cc01b7e316022dc9dbc6d51",
+      "headRepository": "steven-bellock/draft-ietf-rats-evidence-trans",
+      "headRefName": "fix-23",
+      "headRefOid": "2fb7b22d2bc1731fb48d7cf847e8e6c553e444f7",
+      "closedAt": "2025-11-12T19:11:57Z",
+      "mergedAt": "2025-11-12T19:11:57Z",
+      "mergedBy": "fdamato",
+      "mergeCommit": {
+        "oid": "24f33083f2f625c7e489bd5e6abca5b4e3b3546b"
+      },
+      "comments": [
+        {
+          "author": "steven-bellock",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@henkbirkholz please check the CBOR-encoded bytes.",
+          "createdAt": "2025-11-12T17:45:18Z",
+          "updatedAt": "2025-11-12T17:45:18Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOMOnZXM7N754Z",
+          "commit": {
+            "abbreviatedOid": "2fb7b22"
+          },
+          "author": "fdamato",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-11-12T19:11:13Z",
+          "updatedAt": "2025-11-12T19:11:13Z",
           "comments": []
         }
       ]
