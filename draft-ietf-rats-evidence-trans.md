@@ -304,9 +304,9 @@ A list of Evidence ECTs (i.e., `ae = [ + ECT]`) is constructed using CoRIM attes
 The Concise Evidence scheme uses CoRIM CDDL definitions to define several Evidence representations called _triples_.
 Cases where Concise Evidence CDDL is identical to CoRIM CDDL the transformation logic uses the structure names in common.
 
-## Transforming the ce.evidence-triples {#sec-evidence-triple}
+## Transforming Concise Evidence Triples {#sec-evidence-triple}
 
-The `ce.evidence-triples` structure is a list of `evidence-triple-record`.
+The concise evidence triples (`ce.evidence-triples`) structure is a list of `evidence-triple-record` (see {{-ce}}).
 An `evidence-triple-record` consists of an `environment-map` and a list of `measurement-map`.
 For each `evidence-triple-record` an `ae` ECT is constructed.
 
@@ -341,87 +341,48 @@ A profile or other arrangement is used to coordinate which `$crypto-key-type-cho
 
 The completed ECT is added to the `ae` list.
 
-## Transforming the ce.identity-triples {#sec-identity-triple}
+## Transforming Key Triples {#sec-key-triples}
 
-The `ce.identity-triples` structure is a list of `ev-identity-triple-record`.
-An `ev-identity-triple-record` consists of an `environment-map` and a list of `$crypto-key-type-choice`.
-For each `ev-identity-triple-record` an `ae` ECT is constructed where the `$crypto-key-type-choice` values are copied as ECT Evidence measurement values.
-The ECT internal representation accommodates keys as a type of measurement.
-In order for the `$crypto-key-type-choice` keys to be verified a CoRIM `identity-triples` claim MUST be asserted.
+The concise evidence identity and attest key triples structure are lists of `ev-identity-triple-record` and `ev-attest-key-triple-record` respectively (see {{-ce}}).
+Both `ev-identity-triple-record` and `ev-attest-key-triple-record` consist of an environment (`environment-map`) and a key-list (`[ + $crypto-key-type-choice ]` ) respectively.
 
-{:ikt-enum: counter="ikt" style="format Step %d."}
+Keys transformation involves mapping these triples into a Verifier's internal representation as defined in {{Section 8.3.2 of -corim}} called the `keys` relation.
+The `keys` relation is a list of `key-item` which contains a `Key-addition-ECT` that is staged for key verification.
+If key verification succeeds, the `key-item.addition` is appended to the Accepted Claims Set (ACS).
+The staged `keys` relations are processed according to {{Section 8.3.4 of -corim}}.
 
-{: ikt-enum}
-* An `ae` ECT entry is allocated.
+The transformation algorithm for `ev-attest-key-triple-record` and `ev-identity-triple-record` is described in the following pseudocode.
 
-* The `cmtype` of the ECT is set to `evidence`.
+~~~ pseudocode
+FUNC transform(
+    T: ev-attest-key-triple-record / ev-identity-triple-record,
+    verifier: [ + $crypto-key-type-choice ],
+    profile: $profile-type-choice
+) -> key-item {
+    item := key-item::NEW()
 
-* The Concise Evidence (CE) entry populates the `ae` ECT `environment` fields.
+    IF TYPEOF(T) == ev-attest-key-triple-record:
+        item.addition.key-type = attest-key
+    ELIF TYPEOF(T) == ev-identity-triple-record:
+        item.addition.key-type = identity-key
 
-> > **copy**(CE.`ce-identity-triple-record`.`environment-map`, ECT.`environment`.`environment-map`).
+    item.addition.environment = T.environment
 
-> > **copy**(_null_, ECT.`element-list`.`element-map`.`element-id`).
+    item.addition.key-id = T.mkey
 
-{:ikt2-enum: counter="ikt2" style="format %i"}
+    item.addition.key-list = T.key-list
 
-{: ikt2-enum}
+    item.addition.authority = verifier
 
-* For each cek in CE.`[ + $crypto-key-type-choice ]`; and each ect in ECT.`element-list`.`element-map`.`element-claims`.`intrep-keys`.`[ + typed-crypto-key ]`:
+    IF profile:
+        item.addition.profile = profile
 
-> > **copy**(cek, ect.`key`)
+    RETURN item
+}
+~~~
+{: #algo-key-transform title="Key Triples Transformation"}
 
-> > **set**( &(identity-key: 1), ect.`key-type`)
-
-{: ikt-enum}
-* The signer of the envelope containing CE is copied to the ECT.`authority` field.
-For example, a CE may be wrapped by an EAT token {{-eat}} or DICE certificate {{-dice-attest}}.
-The signer identity MUST be expressed using `$crypto-key-type-choice`.
-A profile or other arrangement is used to coordinate which `$crypto-key-type-choice` is used for both Evidence and Reference Values.
-
-* If CE has a profile, the profile is converted to a `$profile-type-choice` then copied to the ECT`.`profile` field.
-
-The completed ECT is added to the `ae` list.
-
-## Transforming the ce.attest-key-triples {#sec-attest-key-triple}
-
-The `ce.attest-key-triples` structure is a list of `ev-attest-key-triple-record`.
-An `ev-attest-key-triple-record` consists of an `environment-map` and a list of `$crypto-key-type-choice`.
-For each `ev-attest-key-triple-record` an `ae` ECT is constructed where the `$crypto-key-type-choice` values are copied as ECT Evidence measurement values.
-The ECT internal representation accommodates keys as a type of measurement.
-In order for the `$crypto-key-type-choice` keys to be verified a CoRIM `attest-key-triples` claim MUST be asserted.
-
-{:akt-enum: counter="akt" style="format Step %d."}
-
-{: akt-enum}
-* An `ae` ECT entry is allocated.
-
-* The `cmtype` of the ECT is set to `evidence`.
-
-* The Concise Evidence (CE) entry populates the `ae` ECT `environment` fields.
-
-> > **copy**(CE.`ce-attest-key-triple-record`.`environment-map`, ECT.`environment`.`environment-map`).
-
-> > **copy**(_null_, ECT.`element-list`.`element-map`.`element-id`).
-
-{:akt2-enum: counter="akt2" style="format %i"}
-
-{: akt2-enum}
-
-* For each cek in CE.`[ + $crypto-key-type-choice ]`; and each ect in ECT.`element-list`.`element-map`.`element-claims`.`intrep-keys`.`[ + typed-crypto-key ]`:
-
-> > **copy**(cek, ect.`key`)
-
-> > **set**( &(attest-key: 0), ect.`key-type`)
-
-{: akt-enum}
-* The signer of the envelope containing CE is copied to the ECT.`authority` field.
-For example, a CE may be wrapped by an EAT token {{-eat}} or DICE certificate {{-dice-attest}}.
-The signer identity MUST be expressed using `$crypto-key-type-choice`.
-A profile or other arrangement is used to coordinate which `$crypto-key-type-choice` is used for both Evidence and Reference Values.
-
-* If CE has a profile, the profile is converted to a `$profile-type-choice` then copied to the ECT`.`profile` field.
-
-The completed ECT is added to the `ae` list.
+Note: keys in `item.addition.key-list` are added with Verifier authority because the Verifier is the entity that performs the verification check.
 
 # DMTF SPDM Structure Definitons
 
