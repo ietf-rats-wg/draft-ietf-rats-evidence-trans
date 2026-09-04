@@ -70,13 +70,12 @@ Table of Contents
      4.3.  DiceConceptualMessageWrapper Transformation
      4.4.  Authority field in DICE/SPDM ECTs
    5.  Transforming TCG Concise Evidence
-     5.1.  Transforming the ce.evidence-triples
-     5.2.  Transforming the ce.identity-triples
-     5.3.  Transforming the ce.attest-key-triples
+     5.1.  Transforming Concise Evidence Triples
+     5.2.  Transforming Key Triples
    6.  DMTF SPDM Structure Definitons
    7.  Transforming SPDM Measurement Block Digest
    8.  Transforming SPDM Measurement Block Raw Value
-   9.  Transforming SPDM RATS EAT CWT
+   9.  Transforming EAT Conveyed by SPDM
    10. Transforming SPDM Evidence
    11. Implementation Status
    12. Security Considerations
@@ -401,12 +400,12 @@ Table of Contents
    Evidence CDDL is identical to CoRIM CDDL the transformation logic
    uses the structure names in common.
 
-5.1.  Transforming the ce.evidence-triples
+5.1.  Transforming Concise Evidence Triples
 
-   The ce.evidence-triples structure is a list of evidence-triple-
-   record.  An evidence-triple-record consists of an environment-map and
-   a list of measurement-map.  For each evidence-triple-record an ae ECT
-   is constructed.
+   The concise evidence triples (ce.evidence-triples) structure is a
+   list of evidence-triple-record (see [TCG.CE]).  An evidence-triple-
+   record consists of an environment-map and a list of measurement-map.
+   For each evidence-triple-record an ae ECT is constructed.
 
    Step 1.  An ae ECT entry is allocated.
 
@@ -438,93 +437,57 @@ Table of Contents
 
    The completed ECT is added to the ae list.
 
-5.2.  Transforming the ce.identity-triples
+5.2.  Transforming Key Triples
 
-   The ce.identity-triples structure is a list of ev-identity-triple-
-   record.  An ev-identity-triple-record consists of an environment-map
-   and a list of $crypto-key-type-choice.  For each ev-identity-triple-
-   record an ae ECT is constructed where the $crypto-key-type-choice
-   values are copied as ECT Evidence measurement values.  The ECT
-   internal representation accommodates keys as a type of measurement.
-   In order for the $crypto-key-type-choice keys to be verified a CoRIM
-   identity-triples claim MUST be asserted.
+   The concise evidence identity and attest key triples structure are
+   lists of ev-identity-triple-record and ev-attest-key-triple-record
+   respectively (see [TCG.CE]).  Both ev-identity-triple-record and ev-
+   attest-key-triple-record consist of an environment (environment-map)
+   and a key-list ([ + $crypto-key-type-choice ] ) respectively.
 
-   Step 1.  An ae ECT entry is allocated.
+   Keys transformation involves mapping these triples into a Verifier's
+   internal representation as defined in Section 8.3.2 of
+   [I-D.ietf-rats-corim] called the keys relation.  The keys relation is
+   a list of key-item which contains a Key-addition-ECT that is staged
+   for key verification.  If key verification succeeds, the key-
+   item.addition is appended to the Accepted Claims Set (ACS).  The
+   staged keys relations are processed according to Section 8.3.4 of
+   [I-D.ietf-rats-corim].
 
-   Step 2.  The cmtype of the ECT is set to evidence.
+   The transformation algorithm for ev-attest-key-triple-record and ev-
+   identity-triple-record is described in the following pseudocode.
 
-   Step 3.  The Concise Evidence (CE) entry populates the ae ECT
-            environment fields.
+   FUNC transform(
+       T: ev-attest-key-triple-record / ev-identity-triple-record,
+       verifier: [ + $crypto-key-type-choice ],
+       profile: $profile-type-choice
+   ) -> key-item {
+       item := key-item::NEW()
 
-      *copy*(CE.ce-identity-triple-record.environment-map,
-         ECT.environment.environment-map).
+       IF TYPEOF(T) == ev-attest-key-triple-record:
+           item.addition.key-type = attest-key
+       ELIF TYPEOF(T) == ev-identity-triple-record:
+           item.addition.key-type = identity-key
 
-      *copy*(_null_, ECT.element-list.element-map.element-id).
+       item.addition.environment = T.environment
 
-   i  For each cek in CE.[ + $crypto-key-type-choice ]; and each ect in
-      ECT.element-list.element-map.element-claims.intrep-keys.[ + typed-
-      crypto-key ]:
+       item.addition.key-id = T.mkey
 
-      *copy*(cek, ect.key)
+       item.addition.key-list = T.key-list
 
-      *set*( &(identity-key: 1), ect.key-type)
+       item.addition.authority = verifier
 
-   Step 4.  The signer of the envelope containing CE is copied to the
-            ECT.authority field.  For example, a CE may be wrapped by an
-            EAT token [RFC9711] or DICE certificate [DICE.Attest].  The
-            signer identity MUST be expressed using $crypto-key-type-
-            choice.  A profile or other arrangement is used to
-            coordinate which $crypto-key-type-choice is used for both
-            Evidence and Reference Values.
+       IF profile:
+           item.addition.profile = profile
 
-   Step 5.  If CE has a profile, the profile is converted to a $profile-
-            type-choice then copied to the ECT.profile` field.
+       RETURN item
+   }
 
-   The completed ECT is added to the ae list.
+                    Figure 1: Key Triples Transformation
 
-5.3.  Transforming the ce.attest-key-triples
-
-   The ce.attest-key-triples structure is a list of ev-attest-key-
-   triple-record.  An ev-attest-key-triple-record consists of an
-   environment-map and a list of $crypto-key-type-choice.  For each ev-
-   attest-key-triple-record an ae ECT is constructed where the $crypto-
-   key-type-choice values are copied as ECT Evidence measurement values.
-   The ECT internal representation accommodates keys as a type of
-   measurement.  In order for the $crypto-key-type-choice keys to be
-   verified a CoRIM attest-key-triples claim MUST be asserted.
-
-   Step 1.  An ae ECT entry is allocated.
-
-   Step 2.  The cmtype of the ECT is set to evidence.
-
-   Step 3.  The Concise Evidence (CE) entry populates the ae ECT
-            environment fields.
-
-      *copy*(CE.ce-attest-key-triple-record.environment-map,
-         ECT.environment.environment-map).
-
-      *copy*(_null_, ECT.element-list.element-map.element-id).
-
-   i  For each cek in CE.[ + $crypto-key-type-choice ]; and each ect in
-      ECT.element-list.element-map.element-claims.intrep-keys.[ + typed-
-      crypto-key ]:
-
-      *copy*(cek, ect.key)
-
-      *set*( &(attest-key: 0), ect.key-type)
-
-   Step 4.  The signer of the envelope containing CE is copied to the
-            ECT.authority field.  For example, a CE may be wrapped by an
-            EAT token [RFC9711] or DICE certificate [DICE.Attest].  The
-            signer identity MUST be expressed using $crypto-key-type-
-            choice.  A profile or other arrangement is used to
-            coordinate which $crypto-key-type-choice is used for both
-            Evidence and Reference Values.
-
-   Step 5.  If CE has a profile, the profile is converted to a $profile-
-            type-choice then copied to the ECT.profile` field.
-
-   The completed ECT is added to the ae list.
+   Note: keys in item.addition.key-list are added with Verifier
+   authority because the Verifier is the entity that performs the
+   verification check.
 
 6.  DMTF SPDM Structure Definitons
 
@@ -603,9 +566,9 @@ Table of Contents
 
    *  ID = 0xA (IANA CBOR)
 
-   *  VendorIdLen = 2
+   *  VendorIdLen = 3
 
-   *  VendorId = 0x570 #6.570(spdm-toc-map)
+   *  VendorId = (0xd9 0x02 0x3a) #6.570(spdm-toc-map)
 
    Structured Manifest Block Definition for Concise Evidence:
 
@@ -613,7 +576,7 @@ Table of Contents
 
    *  Manifest = tagged-spdm-toc CBOR Tag Payload
 
-   DMTF Header for CBor Web Token (CWT):
+   DMTF Header for signed CBOR Web Token (CWT):
 
    If SPDM Version 1.2:
 
@@ -632,17 +595,17 @@ Table of Contents
 
    *  DMTFSpecMeasurementValue = Structured Manifest
 
-   SVH for CBor Web Token (CWT):
+   SVH for signed CBOR Web Token (CWT):
 
    *  ID = 0xA (IANA CBOR)
 
-   *  VendorIdLen = 2
+   *  VendorIdLen = 1
 
-   *  VendorId = 0x18 #6.18
+   *  VendorId = 0xd2 #6.18(COSE_Sign1)
 
-   Structured Manifest Block Definition for CBor Web Token (CWT):
+   Structured Manifest Block Definition for CBOR Web Token (CWT):
 
-   *  SVH = SVH for CBor Web Token (CWT)
+   *  SVH = SVH for CBOR Web Token (CWT)
 
    *  Manifest = COSE_Sign1 Payload
 
@@ -666,13 +629,12 @@ Table of Contents
                *copy*(SPDM.MeasurementBlock.DMTFSpecMeasurementValue ,
                ECT.environment.measurement-map.mval.svn).
 
-9.  Transforming SPDM RATS EAT CWT
+9.  Transforming EAT Conveyed by SPDM
 
-   The RATS EAT CWT shall be reported in any of the assigned Measurement
-   Block 0xFD The Concise Evidence CBOR Tag is serialized inside eat-
-   measurements (273) claim ($measurements-body-cbor /= bytes .cbor
-   concise-evidence-map) Subsequently the transformation steps defined
-   in Section 5.
+   The EAT shall be reported in Measurement Block 0xFD.  The Concise
+   Evidence CBOR Tag is serialized inside eat-measurements (273) claim
+   ($measurements-body-cbor /= bytes .cbor concise-evidence-map)
+   Subsequently the transformation steps defined in Section 5.
 
 10.  Transforming SPDM Evidence
 
@@ -704,8 +666,8 @@ Table of Contents
       -  if the index is in range [0x1 - 0xEF] (refer to #Transforming
          SPDM Measurement Block Digest)
 
-      -  if the index is 0xFD (refer to #Transforming SPDM RATS EAT CWT]
-         )
+      -  if the index is 0xFD (refer to #Transforming EAT Conveyed by
+         SPDM] )
 
    The TCG DICE Concise Evidence Binding for SPDM specification [TCG.CE]
    describes a process for converting the SPDM Measurement Block to
@@ -831,16 +793,16 @@ Table of Contents
    [I-D.ietf-rats-corim]
               Birkholz, H., Fossati, T., Deshpande, Y., Smith, N., and
               W. Pan, "Concise Reference Integrity Manifest", Work in
-              Progress, Internet-Draft, draft-ietf-rats-corim-08, 7 July
-              2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              rats-corim-08>.
+              Progress, Internet-Draft, draft-ietf-rats-corim-11, 6 July
+              2026, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              rats-corim-11>.
 
    [I-D.ietf-rats-endorsements]
               Thaler, D., Birkholz, H., and T. Fossati, "RATS
               Endorsements", Work in Progress, Internet-Draft, draft-
-              ietf-rats-endorsements-07, 25 August 2025,
+              ietf-rats-endorsements-09, 2 March 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-rats-
-              endorsements-07>.
+              endorsements-09>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
