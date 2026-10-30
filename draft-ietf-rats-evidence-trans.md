@@ -7,7 +7,7 @@ docname: draft-ietf-rats-evidence-trans-latest
 category: std
 consensus: true
 submissiontype: IETF
-date: 2025-10-17
+date: 2026-10-30
 ipr: trust200902
 area: "Security"
 workgroup: "Remote ATtestation ProcedureS"
