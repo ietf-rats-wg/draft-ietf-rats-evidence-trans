@@ -123,6 +123,10 @@ The CoRIM specification defines an "internal representation" for Evidence (Secti
 This document defines mapping operations that convert from an external representation to an internal representation.
 The conversion steps are also known as "transformation".
 
+The transformations are specified in pseudocode using the notation defined in {{Section 8.1 of -corim}}.
+The pseudocode is meant for readability and not for execution.
+Type names are taken from the CDDL of CoRIM and Concise Evidence; the names of structures defined by {{-dice-attest}} (e.g., `DiceTcbInfo`, `FWID`) and {{-spdm}} (e.g., `MeasurementBlock`) are used as bare type names.
+
 # Verifier Reconciliation {#sec-verifier-rec}
 
 This document assumes the reader is familiar with Verifier reconciliation as described in {{Section 2 of -corim}}.
@@ -169,102 +173,125 @@ Each DiceMultiTcbInfo entry is independent of the others such that each is trans
 A list of Evidence ECTs (i.e., `ae = [ + ECT]`) is constructed using CoRIM attestation evidence internal representation (see {{Section 8.2.1.1 of -corim}}).
 Each DiceMultiTcbInfoComp entry is converted to a DiceMultiTcbInfo entry then processed as a DiceMultiTcbInfo.
 
-For each DiceTcbInfo (DTI) entry in a DiceMultiTcbInfo allocate an ECT structure.
+Each DiceTcbInfo (DTI) entry in a DiceMultiTcbInfo is transformed as described by the pseudocode in {{algo-dti-transform}}.
+The pseudocode uses the notation defined in {{Section 8.1 of -corim}}.
+The `ueid` parameter is the `ueid` OCTET STRING of the DiceUeid extension, if present.
+The `signer` parameter is set up as described in {{sec-authority}}.
 
-{:dtt-enum: counter="dtt" style="format Step %d."}
+~~~ pseudocode
+FUNC fwids_to_digests(fwids: [ + FWID ]) -> digests-type {
+    digests := digests-type::NEW()
 
-{: dtt-enum}
-* An `ae` entry is allocated.
+    FOREACH fwid IN fwids:
+        d := eatmc.digest::NEW()
+        d.alg = fwid.hashAlg
+        d.val = fwid.digest
+        digests::APPEND(d)
 
-* The `cmtype` of the ECT is set to `evidence`.
+    RETURN digests
+}
 
-* The DiceTcbInfo (DTI) entry populates the `ae` ECT.
+FUNC dti_flags_to_flags_map(
+    f: OperationalFlags,
+    m: OperationalFlagsMask
+) -> flags-map {
+    fm := flags-map::NEW()
 
-{:dtt2-enum: counter="dtt2" style="format %i"}
+    IF m.notConfigured == 1:
+        fm.is-configured = (f.notConfigured == 0)
+    IF m.notSecure == 1:
+        fm.is-secure = (f.notSecure == 0)
+    IF m.recovery == 1:
+        fm.is-recovery = (f.recovery == 0)
+    IF m.debug == 1:
+        fm.is-debug = (f.debug == 0)
+    IF m.notReplayProtected == 1:
+        fm.is-replay-protected = (f.notReplayProtected == 0)
+    IF m.notIntegrityProtected == 1:
+        fm.is-integrity-protected = (f.notIntegrityProtected == 0)
+    IF m.notRuntimeMeasured == 1:
+        fm.is-runtime-meas = (f.notRuntimeMeasured == 0)
+    IF m.notImmutable == 1:
+        fm.is-immutable = (f.notImmutable == 0)
+    IF m.notTcb == 1:
+        fm.is-tcb = (f.notTcb == 0)
 
-{: dtt2-enum}
-* The DTI entry populates the `ae` ECT `environment-map`
+    RETURN fm
+}
 
-> > **copy**(DTI.`type`, ECT.`environment`.`environment-map`.`class-map`.`class-id`).
+FUNC dti_to_ae_item(
+    dti: DiceTcbInfo,
+    ueid: ueid-type,
+    signer: [ + $crypto-key-type-choice ]
+) -> ae-item {
+    item := ae-item::NEW()
+
+    item.addition.cmtype = evidence
+
+    // environment
+    IF dti.type:
+        item.addition.environment.class.class-id = dti.type
+    IF dti.vendor:
+        item.addition.environment.class.vendor = dti.vendor
+    IF dti.model:
+        item.addition.environment.class.model = dti.model
+    IF dti.layer:
+        item.addition.environment.class.layer = dti.layer
+    IF dti.index:
+        item.addition.environment.class.index = dti.index
+    IF ueid:
+        item.addition.environment.instance = #6.550(ueid)
+
+    // element-list
+    em := element-map::NEW()
+
+    IF dti.version:
+        em.element-claims.version.version = dti.version
+    IF dti.svn:
+        em.element-claims.svn = dti.svn
+    IF dti.vendorInfo:
+        em.element-claims.raw-value = #6.560(dti.vendorInfo)
+    IF dti.FWIDLIST:
+        em.element-claims.digests = fwids_to_digests(dti.FWIDLIST)
+    FOREACH ir IN dti.IRLIST:
+        em.element-claims.integrity-registers[ir.registerNum] =
+            fwids_to_digests(ir.FWIDLIST)
+    IF dti.OperationalFlags:
+        em.element-claims.flags =
+            dti_flags_to_flags_map(dti.OperationalFlags,
+                                   dti.OperationalFlagsMask)
+
+    item.addition.element-list::APPEND(em)
+
+    item.addition.authority = signer
+
+    RETURN item
+}
+
+FUNC dice_to_ae(
+    dtis: [ + DiceTcbInfo ],
+    ueid: ueid-type,
+    signer: [ + $crypto-key-type-choice ]
+) -> ae {
+    result := ae::NEW()
+
+    FOREACH dti IN dtis:
+        result::APPEND(dti_to_ae_item(dti, ueid, signer))
+
+    RETURN result
+}
+~~~
+{: #algo-dti-transform title="DiceTcbInfo Transformation"}
+
 The binary representation of DTI.`type` MUST be equivalent to the binary representation of `class-id` without the CBOR tag.
 
-> > **copy**(DTI.`vendor`, ECT.`environment`.`environment-map`.`class-map`.`vendor`).
+The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING before it is copied to the `instance` field of the `environment-map`.
 
-> > **copy**(DTI.`model`, ECT.`environment`.`environment-map`.`class-map`.`model`).
+The DTI.`vendorInfo` OCTET STRING is wrapped in the CBOR tag #6.560 (`tagged-bytes`) as required by `$raw-value-type-choice`.
 
-> > **copy**(DTI.`layer`, ECT.`environment`.`environment-map`.`class-map`.`layer`).
-
-> > **copy**(DTI.`index`, ECT.`environment`.`environment-map`.`class-map`.`index`).
-
-{: dtt2-enum}
-* If a DiceUeid (UEID) extension is present, then this populates the `instance-id` field within the ECT `environment-map`.
-
-> > If DiceUeid extension is present: **copy**(UEID.`ueid`, ECT.`environment-map`.`instance-id`.`tagged-ueid-type`).
-The CBOR tag #6.550 is prepended to the DiceUeid OCTET STRING then copied to ECT.`environment-map`.`instance-id`.
-
-{: dtt2-enum}
-* The DTI entry populates the `ae` ECT `elemenet-list`.
-
-> > **copy**(DTI.`version`, ECT.`element-list`.`element-map`.`measurement-values-map`.`version-map`.`version`).
-
-> > **copy**(DTI.`svn`, ECT.`element-list`.`element-map`.`measurement-values-map`.`svn`).
-
-> > **copy**(DTI.`vendorInfo`, ECT.`element-list`.`element-map`.`measurement-values-map`.`raw-value`).
-
-> > Foreach FWID in FWIDLIST: **copy**(DTI.`FWID`.`digest`, ECT.`element-list`.`element-map`.`measurement-values-map`.`digests`.`digest`.`val`).
-
-> > Foreach FWID in FWIDLIST: **copy**(DTI.`FWID`.`hashAlg`, ECT.`element-list`.`element-map`.`measurement-values-map`.`digests`.`digest`.`alg`).
-
-> > Foreach INTEGRITYREGISTER in IRLIST: **copy**(DTI.`INTEGRITYREGISTER`.`registerNum`, ECT.`element-list`.`element-map`.`measurement-values-map`.`integrity-registers`.`integrity-register-id-type-choice`).
-
-> > Foreach FWID in INTEGRITYREGISTER.FWIDLIST: **copy**(DTI.`FWID`.`digest`, ECT.`element-list`.`element-map`.`measurement-values-map`.`integrity-registers`.`digest-type`.`val`).
-
-> > Foreach FWID in INTEGRITYREGISTER.FWIDLIST: **copy**(DTI.`FWID`.`alg`, ECT.`element-list`.`element-map`.`measurement-values-map`.`integrity-registers`.`digest-type`.`alg`).
-
-{: dtt2-enum}
-* The DTI entry populates the `ae` ECT `elemenet-list`.`flags`. Foreach _f_ in DTI.`OperationalFlags` and each _m_ in DTI.`OperationalFlagsMask`:
-
-> > If _m_.`notConfigured` = 1 AND _f_.`notConfigured` = 1; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-configured` = FALSE).
-
-> > If _m_.`notConfigured` = 1 AND _f_.`notConfigured` = 0; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-configured` = TRUE).
-
-> > If _m_.`notSecure` = 1 AND _f_.`notSecure` = 1; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-secure` = FALSE).
-
-> > If _m_.`notSecure` = 1 AND _f_.`notSecure` = 0; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-secure` = TRUE).
-
-> > If _m_.`recovery` = 1 AND _f_.`recovery` = 1; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-recovery` = FALSE).
-
-> > If _m_.`recovery` = 1 AND _f_.`recovery` = 0; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-recovery` = TRUE).
-
-> > If _m_.`debug` = 1 AND _f_.`debug` = 1; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-debug` = FALSE).
-
-> > If _m_.`debug` = 1 AND _f_.`debug` = 0; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-debug` = TRUE).
-
-> > If _m_.`notReplayProtected` = 1 AND _f_.`notReplayProtected` = 1; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-replay-protected` = FALSE).
-
-> > If _m_.`notReplayProtected` = 1 AND _f_.`notReplayProtected` = 0; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-replay-protected` = TRUE).
-
-> > If _m_.`notIntegrityProtected` = 1 AND _f_.`notIntegrityProtected` = 1; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-integrity-proteccted` = FALSE).
-
-> > If _m_.`notIntegrityProtected` = 1 AND _f_.`notIntegrityProtected` = 0; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-integrity-proteccted` = TRUE).
-
-> > If _m_.`notRuntimeMeasured` = 1 AND _f_.`notRuntimeMeasured` = 1; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-runtime-meas` = FALSE).
-
-> > If _m_.`notRuntimeMeasured` = 1 AND _f_.`notRuntimeMeasured` = 0; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-runtime-meas` = TRUE).
-
-> > If _m_.`notImmutable` = 1 AND _f_.`notImmutable` = 1; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-immutable` = FALSE).
-
-> > If _m_.`notImmutable` = 1 AND _f_.`notImmutable` = 0; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-immutable` = TRUE).
-
-> > If _m_.`notTcb` = 1 AND _f_.`notTcb` = 1; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-tcb` = FALSE).
-
-> > If _m_.`notTcb` = 1 AND _f_.`notTcb` = 0; **set**(ECT.`element-list`.`element-map`.`measurement-values-map`.`flags`.`is-tcb` = TRUE).
-
-{: dtt-enum}
-
-* The ECT.`authority` field is set up based on the signer of the certificate containing DTI as described in {{sec-authority}}.
-
-The completed ECT is added to the `ae` list.
+<cref>The flag-by-flag mapping above follows the previous text of this section.
+For `recovery` and `debug`, DiceTcbInfo does not use the "not" prefix, so the polarity of `is-recovery` and `is-debug` looks inverted.
+Confirm against {{-dice-attest}}.</cref>
 
 ## DiceConceptualMessageWrapper Transformation {#sec-cmw}
 
@@ -276,6 +303,23 @@ This extension is identified by the following object identifier:
 The DiceConceptualMessageWrapper entry OCTET STRING may contain a CBOR array, JSON array, or CBOR tagged value.
 If the entry contains a CBOR tag value of #6.571 or #6.1668557429, or a Content ID of 10571, or a Media Type of "application/ce+cbor",
 the contents are transformed according to {{sec-ce-trans}}.
+
+~~~ pseudocode
+FUNC dice_cmw_to_ae(
+    cmw: DiceConceptualMessageWrapper,
+    signer: [ + $crypto-key-type-choice ]
+) -> ae {
+    IF TYPEOF(cmw) == tagged-concise-evidence:
+        RETURN transform_ce(~cmw, signer)
+    ELIF TYPEOF(cmw) == concise-evidence-map:
+        // identified by Content ID or Media Type
+        RETURN transform_ce(cmw, signer)
+
+    // other content is not transformed
+    RETURN ae::NEW()
+}
+~~~
+{: #algo-dice-cmw-transform title="DiceConceptualMessageWrapper Transformation"}
 
 ## Authority field in DICE/SPDM ECTs {#sec-authority}
 
@@ -304,124 +348,110 @@ A list of Evidence ECTs (i.e., `ae = [ + ECT]`) is constructed using CoRIM attes
 The Concise Evidence scheme uses CoRIM CDDL definitions to define several Evidence representations called _triples_.
 Cases where Concise Evidence CDDL is identical to CoRIM CDDL the transformation logic uses the structure names in common.
 
-## Transforming the ce.evidence-triples {#sec-evidence-triple}
-
-The `ce.evidence-triples` structure is a list of `evidence-triple-record`.
-An `evidence-triple-record` consists of an `environment-map` and a list of `measurement-map`.
-For each `evidence-triple-record` an `ae` ECT is constructed.
-
-{:cet-enum: counter="cet" style="format Step %d."}
-
-{: cet-enum}
-* An `ae` ECT entry is allocated.
-
-* The `cmtype` of the ECT is set to `evidence`.
-
-* The Concise Evidence (CE) entry populates the `ae` ECT `environment` fields.
-
-> > **copy**(CE.`evidence-triple-record`.`environment-map`, ECT.`environment`.`environment-map`).
-
-{:cet2-enum: counter="cet2" style="format %i"}
-
-{: cet2-enum}
-
-* For each ce in CE.`[ + measurement-map]`; and each ect in ECT.`[ + element-list]`:
-
-> > **copy**(ce.`mkey`, ect.`element-map`.`element-id`)
-
-> > **copy**(ce.`mval`, ect`.`element-map`.`element-claims`)
-
-{: cet-enum}
-* The signer of the envelope containing CE is copied to the ECT.`authority` field as described in {{sec-authority}}.
+The pseudocode in {{algo-ce-transform}} transforms a Concise Evidence (CE) entry.
+The `signer` parameter is the signer of the envelope containing the CE, set up as described in {{sec-authority}}.
 For example, a CE may be wrapped by an EAT token {{-eat}} or DICE certificate {{-dice-attest}}.
 The signer identity MUST be expressed using `$crypto-key-type-choice`.
 A profile or other arrangement is used to coordinate which `$crypto-key-type-choice` is used for both Evidence and Reference Values.
+If the CE has a profile, the profile is converted to a `$profile-type-choice` and copied to the `profile` field of every resulting ECT.
+(The pseudocode reuses the `mms_to_ems` function defined in {{Section 8.3.2.1.1 of -corim}}.)
 
-* If CE has a profile, the profile is converted to a `$profile-type-choice` then copied to the ECT`.`profile` field.
+~~~ pseudocode
+FUNC transform_ce(
+    ce: concise-evidence-map,
+    signer: [ + $crypto-key-type-choice ]
+) -> ae {
+    result := ae::NEW()
+    profile := ce.profile
 
-The completed ECT is added to the `ae` list.
+    FOREACH T IN ce.evidence-triples:
+        result::APPEND(transform_ce_evidence(T, signer, profile))
+
+    FOREACH T IN ce.identity-triples:
+        result::APPEND(transform_ce_keys(T, signer, profile))
+
+    FOREACH T IN ce.attest-key-triples:
+        result::APPEND(transform_ce_keys(T, signer, profile))
+
+    RETURN result
+}
+~~~
+{: #algo-ce-transform title="Concise Evidence Transformation"}
+
+## Transforming the ce.evidence-triples {#sec-evidence-triple}
+
+The `ce.evidence-triples` structure is a list of `evidence-triple-record`.
+An `evidence-triple-record` consists of an `environment-map` (`environment`) and a list of `measurement-map` (`measurements`).
+For each `evidence-triple-record` an `ae` ECT is constructed.
+
+~~~ pseudocode
+FUNC transform_ce_evidence(
+    T: evidence-triple-record,
+    signer: [ + $crypto-key-type-choice ],
+    profile: $profile-type-choice
+) -> ae-item {
+    item := ae-item::NEW()
+
+    item.addition.cmtype = evidence
+    item.addition.environment = T.environment
+    item.addition.element-list = mms_to_ems(T.measurements)
+    item.addition.authority = signer
+
+    IF profile:
+        item.addition.profile = profile
+
+    RETURN item
+}
+~~~
+{: #algo-ce-evidence-transform title="CE Evidence Triple Transformation"}
 
 ## Transforming the ce.identity-triples {#sec-identity-triple}
 
 The `ce.identity-triples` structure is a list of `ev-identity-triple-record`.
-An `ev-identity-triple-record` consists of an `environment-map` and a list of `$crypto-key-type-choice`.
+An `ev-identity-triple-record` consists of an `environment-map` (`environment`) and a list of `$crypto-key-type-choice` (`key-list`).
 For each `ev-identity-triple-record` an `ae` ECT is constructed where the `$crypto-key-type-choice` values are copied as ECT Evidence measurement values.
 The ECT internal representation accommodates keys as a type of measurement.
 In order for the `$crypto-key-type-choice` keys to be verified a CoRIM `identity-triples` claim MUST be asserted.
 
-{:ikt-enum: counter="ikt" style="format Step %d."}
+~~~ pseudocode
+FUNC transform_ce_keys(
+    T: ev-identity-triple-record / ev-attest-key-triple-record,
+    signer: [ + $crypto-key-type-choice ],
+    profile: $profile-type-choice
+) -> ae-item {
+    item := ae-item::NEW()
 
-{: ikt-enum}
-* An `ae` ECT entry is allocated.
+    item.addition.cmtype = evidence
+    item.addition.environment = T.environment
 
-* The `cmtype` of the ECT is set to `evidence`.
+    em := element-map::NEW()
+    em.element-claims.cryptokeys = T.key-list
+    item.addition.element-list::APPEND(em)
 
-* The Concise Evidence (CE) entry populates the `ae` ECT `environment` fields.
+    item.addition.authority = signer
 
-> > **copy**(CE.`ce-identity-triple-record`.`environment-map`, ECT.`environment`.`environment-map`).
+    IF profile:
+        item.addition.profile = profile
 
-> > **copy**(_null_, ECT.`element-list`.`element-map`.`element-id`).
+    RETURN item
+}
+~~~
+{: #algo-ce-keys-transform title="CE Identity and Attest Key Triples Transformation"}
 
-{:ikt2-enum: counter="ikt2" style="format %i"}
-
-{: ikt2-enum}
-
-* For each cek in CE.`[ + $crypto-key-type-choice ]`; and each ect in ECT.`element-list`.`element-map`.`element-claims`.`intrep-keys`.`[ + typed-crypto-key ]`:
-
-> > **copy**(cek, ect.`key`)
-
-> > **set**( &(identity-key: 1), ect.`key-type`)
-
-{: ikt-enum}
-* The signer of the envelope containing CE is copied to the ECT.`authority` field.
-For example, a CE may be wrapped by an EAT token {{-eat}} or DICE certificate {{-dice-attest}}.
-The signer identity MUST be expressed using `$crypto-key-type-choice`.
-A profile or other arrangement is used to coordinate which `$crypto-key-type-choice` is used for both Evidence and Reference Values.
-
-* If CE has a profile, the profile is converted to a `$profile-type-choice` then copied to the ECT`.`profile` field.
-
-The completed ECT is added to the `ae` list.
+<cref>The previous text set a `key-type` (`identity-key` or `attest-key`) next to the keys.
+`E-ECT` and `measurement-values-map` in {{-corim}} have no such member: `key-type` belongs to the `keys` relation, which is staged from the CoRIM triple.
+As a result, the two kinds of CE triple are transformed identically.
+Confirm that this is the intent.</cref>
 
 ## Transforming the ce.attest-key-triples {#sec-attest-key-triple}
 
 The `ce.attest-key-triples` structure is a list of `ev-attest-key-triple-record`.
-An `ev-attest-key-triple-record` consists of an `environment-map` and a list of `$crypto-key-type-choice`.
+An `ev-attest-key-triple-record` consists of an `environment-map` (`environment`) and a list of `$crypto-key-type-choice` (`key-list`).
 For each `ev-attest-key-triple-record` an `ae` ECT is constructed where the `$crypto-key-type-choice` values are copied as ECT Evidence measurement values.
 The ECT internal representation accommodates keys as a type of measurement.
 In order for the `$crypto-key-type-choice` keys to be verified a CoRIM `attest-key-triples` claim MUST be asserted.
 
-{:akt-enum: counter="akt" style="format Step %d."}
-
-{: akt-enum}
-* An `ae` ECT entry is allocated.
-
-* The `cmtype` of the ECT is set to `evidence`.
-
-* The Concise Evidence (CE) entry populates the `ae` ECT `environment` fields.
-
-> > **copy**(CE.`ce-attest-key-triple-record`.`environment-map`, ECT.`environment`.`environment-map`).
-
-> > **copy**(_null_, ECT.`element-list`.`element-map`.`element-id`).
-
-{:akt2-enum: counter="akt2" style="format %i"}
-
-{: akt2-enum}
-
-* For each cek in CE.`[ + $crypto-key-type-choice ]`; and each ect in ECT.`element-list`.`element-map`.`element-claims`.`intrep-keys`.`[ + typed-crypto-key ]`:
-
-> > **copy**(cek, ect.`key`)
-
-> > **set**( &(attest-key: 0), ect.`key-type`)
-
-{: akt-enum}
-* The signer of the envelope containing CE is copied to the ECT.`authority` field.
-For example, a CE may be wrapped by an EAT token {{-eat}} or DICE certificate {{-dice-attest}}.
-The signer identity MUST be expressed using `$crypto-key-type-choice`.
-A profile or other arrangement is used to coordinate which `$crypto-key-type-choice` is used for both Evidence and Reference Values.
-
-* If CE has a profile, the profile is converted to a `$profile-type-choice` then copied to the ECT`.`profile` field.
-
-The completed ECT is added to the `ae` list.
+The transformation is the same as for `ce.identity-triples`, i.e., {{algo-ce-keys-transform}}.
 
 # DMTF SPDM Structure Definitons
 
@@ -510,31 +540,63 @@ Structured Manifest Block Definition for CBOR Web Token (CWT):
 
 # Transforming SPDM Measurement Block Digest
 
-{:mbk-enum: counter="mbk" style="format Step %d."}
+~~~ pseudocode
+FUNC spdm_digest_to_claims(
+    mb: MeasurementBlock,
+    claims: measurement-values-map
+) -> measurement-values-map {
+    t := mb.DMTFSpecMeasurementValueType
 
-{: mbk-enum}
-* if DMTFSpecMeasurementValueType is in range \[0x80 - 0x83\]:
+    IF t >= 0x80 AND t <= 0x83:
+        claims.digests = mb.DMTFSpecMeasurementValue
+    ELIF t == 0x88:
+        claims.integrity-registers = mb.DMTFSpecMeasurementValue
 
-   > **copy**(SPDM.`MeasurementBlock`.DMTFSpecMeasurementValue , ECT.`environment`.`measurement-map`.`mval`.`digests`).
-
-* if DMTFSpecMeasurementValueType is in range \[0x88\]:
-
-   > **copy**(SPDM.`MeasurementBlock`.DMTFSpecMeasurementValue , ECT.`environment`.`measurement-map`.`mval`.`integrity-registers`).
+    RETURN claims
+}
+~~~
+{: #algo-spdm-digest title="SPDM Measurement Block Digest Transformation"}
 
 # Transforming SPDM Measurement Block Raw Value
 
-{:mbrv-enum: counter="mbrv" style="format Step %d."}
+~~~ pseudocode
+FUNC spdm_raw_to_claims(
+    mb: MeasurementBlock,
+    claims: measurement-values-map
+) -> measurement-values-map {
+    t := mb.DMTFSpecMeasurementValueType
 
-{: mbrv-enum}
-* if DMTFSpecMeasurementValueType is in range \[0x7\]:
+    IF t == 0x07:
+        claims.svn = mb.DMTFSpecMeasurementValue
 
-   > **copy**(SPDM.`MeasurementBlock`.DMTFSpecMeasurementValue , ECT.`environment`.`measurement-map`.`mval`.`svn`).
+    RETURN claims
+}
+~~~
+{: #algo-spdm-raw title="SPDM Measurement Block Raw Value Transformation"}
+
+<cref>Per the Measurement Block definition above, bit 7 of DMTFSpecMeasurementValueType is 0 for a digest and 1 for a raw bit stream.
+The ranges used in {{algo-spdm-digest}} and {{algo-spdm-raw}} are those of the previous text, and appear to have bit 7 swapped.
+Also, `digests` requires a hash algorithm identifier, which the Measurement Block does not carry.</cref>
 
 # Transforming EAT Conveyed by SPDM
 
 The EAT shall be reported in Measurement Block 0xFD.
 The Concise Evidence CBOR Tag is serialized inside eat-measurements (273) claim ($measurements-body-cbor /= bytes .cbor concise-evidence-map)
 Subsequently the transformation steps defined in {{sec-ce-trans}}.
+
+~~~ pseudocode
+FUNC spdm_eat_to_ae(
+    mb: MeasurementBlock,
+    signer: [ + $crypto-key-type-choice ]
+) -> ae {
+    eat := mb.DMTFSpecMeasurementValue
+    // $measurements-body-cbor /= bytes .cbor concise-evidence-map
+    ce := eat.eat-measurements
+
+    RETURN transform_ce(ce, signer)
+}
+~~~
+{: #algo-spdm-eat title="EAT Conveyed by SPDM Transformation"}
 
 # Transforming SPDM Evidence {#sec-spdm-trans}
 
@@ -543,22 +605,51 @@ This section defines how Evidence from SPDM {{-spdm}} is transformed into an int
 Verifiers supporting the SPDM Evidence format SHOULD implement this transformation.
 SPDM Responders SHALL support a minimum version of 1.2
 
-Theory of Operations:
+The SPDM Requestor SHALL retrieve the measurement Manifest at Block 0xFD (Manifest Block) and send its payload to the Verifier.
+The Verifier SHALL decode the payload as a tagged-spdm-toc CBOR tag and extract the tagged-concise-evidence CBOR tag from it.
 
-- The SPDM Requestor SHALL retrieve the measurement Manifest at Block 0xFD (Manifest Block) and send its payload to the Verifier
-  - The Verifier SHALL decode the payload as a tagged-spdm-toc CBOR tag.
-  - The Verifier SHALL extract the tagged-concise-evidence CBOR TAG from the tagged-spdm-toc CBOR tag
+The `concise-evidence` has a format that is similar to CoRIM `triples-map` (their semantics follows the matching rules described above).
 
-The`concise-evidence` has a format that is similar to CoRIM `triples-map` (their semantics follows the matching rules described above).
+For every `spdm-indirect` measurement the Verifier shall ask the SPDM Requestor to retrieve the measurement block indicated by the index.
 
-- For every `spdm-indirect` measurement the Verifier shall ask the SPDM Requestor to retrieve the measurement block indicated by the index
-  - if the index is in range \[0x1 - 0xEF\] (refer to #Transforming SPDM Measurement Block Digest)
-  - if the index is 0xFD (refer to #Transforming EAT Conveyed by SPDM] )
+~~~ pseudocode
+FUNC transform_spdm(
+    mb-fd: MeasurementBlock,
+    requestor: SPDM-Requestor,
+    signer: [ + $crypto-key-type-choice ]
+) -> ae {
+    // mb-fd is Measurement Block 0xFD (Manifest Block)
+    toc := mb-fd.DMTFSpecMeasurementValue    // tagged-spdm-toc
+    ce := ~toc.tagged-concise-evidence
+
+    result := transform_ce(ce, signer)
+    eats := ae::NEW()
+
+    FOREACH item IN result:
+        FOREACH em IN item.addition.element-list:
+            IF em.element-claims.spdm-indirect:
+                index := em.element-claims.spdm-indirect
+                mb := requestor::GET_MEASUREMENT_BLOCK(index)
+
+                IF index >= 0x01 AND index <= 0xEF:
+                    em.element-claims =
+                        spdm_digest_to_claims(mb, em.element-claims)
+                    em.element-claims =
+                        spdm_raw_to_claims(mb, em.element-claims)
+                ELIF index == 0xFD:
+                    eats::APPEND(spdm_eat_to_ae(mb, signer))
+
+    result::APPEND(eats)
+
+    RETURN result
+}
+~~~
+{: #algo-spdm-transform title="SPDM Evidence Transformation"}
+
+The `signer` parameter is set up as described in {{sec-authority}}: its keys SHOULD include the key which signed the SPDM MEASUREMENTS response carrying the Evidence and keys which authorized that key.
 
 The TCG DICE Concise Evidence Binding for SPDM specification {{-ce}} describes a process for converting the SPDM Measurement Block to Concise Evidence.
 Subsequently the transformation steps defined in {{sec-ce-trans}}.
-
-The keys provided in the ECT.`authority` field SHOULD include the key which signed the SPDM MEASUREMENTS response carrying the Evidence and keys which authorized that key as described in {{sec-authority}}.```
 
 # Implementation Status
 
