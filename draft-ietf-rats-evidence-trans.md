@@ -344,7 +344,7 @@ The completed ECT is added to the `ae` list.
 ## Transforming Key Triples {#sec-key-triples}
 
 The concise evidence identity and attest key triples structure are lists of `ev-identity-triple-record` and `ev-attest-key-triple-record` respectively (see {{-ce}}).
-Both `ev-identity-triple-record` and `ev-attest-key-triple-record` consist of an environment (`environment-map`) and a key-list (`[ + $crypto-key-type-choice ]` ) respectively.
+Both `ev-identity-triple-record` and `ev-attest-key-triple-record` consist of an environment (`environment-map`) and a key list (`[ + $crypto-key-type-choice ]`), respectively.
 
 Keys transformation involves mapping these triples into a Verifier's internal representation as defined in {{Section 8.3.2 of -corim}} called the `keys` relation.
 The `keys` relation is a list of `key-item` which contains a `Key-addition-ECT` that is staged for key verification.
